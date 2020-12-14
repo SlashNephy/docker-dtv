@@ -1,0 +1,160 @@
+version: '3.8'
+
+# Derived from https://github.com/Chinachu/docker-mirakurun-chinachu
+#              https://github.com/l3tnun/docker-mirakurun-epgstation
+services:
+  mirakurun:
+    container_name: Mirakurun
+    build: mirakurun
+    restart: always
+    cap_add:
+      - SYS_ADMIN
+      - SYS_NICE
+    devices:
+      - /dev/px4video0:/dev/px4video0
+      - /dev/px4video1:/dev/px4video1
+      - /dev/px4video2:/dev/px4video2
+      - /dev/px4video3:/dev/px4video3
+      - /dev/px4video4:/dev/px4video4
+      - /dev/px4video5:/dev/px4video5
+      - /dev/px4video6:/dev/px4video6
+      - /dev/px4video7:/dev/px4video7
+    ports:
+      - '40772:40772'
+      - '9229:9229'
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./mirakurun/conf:/usr/local/etc/mirakurun
+      - ./mirakurun/db:/usr/local/var/db/mirakurun
+    environment:
+      TZ: Asia/Tokyo
+
+  chinachu:
+    container_name: Chinachu
+    build:
+      context: chinachu
+      args:
+        - REPOSITORY=git://github.com/Chinachu/Chinachu.git
+        - BRANCH=gamma
+    restart: always
+    ports:
+      - '10772:10772'
+      - '20772:20772'
+      - '5353:5353/udp'
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./chinachu/conf/config.json:/usr/local/chinachu/config.json
+      - ./chinachu/conf/rules.json:/usr/local/chinachu/rules.json
+      - ./chinachu/data:/usr/local/chinachu/data
+      - /mnt:/mnt
+    environment:
+      TZ: Asia/Tokyo
+
+  chinachu-proxy:
+    container_name: Chinachu_OAuth2Proxy
+    image: quay.io/oauth2-proxy/oauth2-proxy:latest
+    restart: always
+    ports:
+      - '20773:20773'
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      TZ: Asia/Tokyo
+      OAUTH2_PROXY_HTTP_ADDRESS: 0.0.0.0:20773
+      OAUTH2_PROXY_REVERSE_PROXY: '1'
+      OAUTH2_PROXY_REAL_CLIENT_IP_HEADER: X-Forwarded-For
+      OAUTH2_PROXY_UPSTREAMS: http://chinachu:20772/
+      # OAUTH2_PROXY_PROVIDER: github
+      # OAUTH2_PROXY_CLIENT_ID: xxx
+      # OAUTH2_PROXY_CLIENT_SECRET: xxx
+      # OAUTH2_PROXY_GITHUB_ORG: xxx
+      # OAUTH2_PROXY_GITHUB_TEAM: xxx
+      # OAUTH2_PROXY_EMAIL_DOMAINS: '*'
+      # OAUTH2_PROXY_COOKIE_SECRET: xxx
+
+  comskip:
+    container_name: Comskip
+    build: Comskip
+    restart: always
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /mnt:/mnt
+      - ./Comskip/comskip.ini:/etc/comskip.ini:ro
+    environment:
+      TZ: Asia/Tokyo
+
+  epgstation-mysql:
+    container_name: EPGStation_MySQL
+    image: mariadb:10.4
+    command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci --performance-schema=false --expire_logs_days=1
+    restart: always
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./epgstation/db:/var/lib/mysql
+    environment:
+      TZ: "Asia/Tokyo"
+      MYSQL_USER: epgstation
+      MYSQL_PASSWORD: epgstation
+      MYSQL_ROOT_PASSWORD: epgstation
+      MYSQL_DATABASE: epgstation 
+
+  epgstation:
+    container_name: EPGStation
+    build:
+      context: epgstation
+      args:
+        - CPUCORE=4
+    restart: always
+    ports:
+      - '8888:8888'
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./epgstation/config:/app/config
+      - ./epgstation/data:/app/data
+      - ./epgstation/thumbnail:/app/thumbnail
+      - ./epgstation/logs:/app/logs
+      - /mnt:/mnt
+    environment:
+      TZ: Asia/Tokyo
+    depends_on:
+      - mirakurun
+      - epgstation-mysql
+
+  epgstation-proxy:
+    container_name: EPGStation_OAuth2Proxy
+    image: quay.io/oauth2-proxy/oauth2-proxy:latest
+    restart: always
+    ports:
+      - '8889:8889'
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      TZ: Asia/Tokyo
+      OAUTH2_PROXY_HTTP_ADDRESS: 0.0.0.0:8889
+      OAUTH2_PROXY_REVERSE_PROXY: '1'
+      OAUTH2_PROXY_REAL_CLIENT_IP_HEADER: X-Forwarded-For
+      OAUTH2_PROXY_UPSTREAMS: http://epgstation:8888/
+      # OAUTH2_PROXY_PROVIDER: github
+      # OAUTH2_PROXY_CLIENT_ID: xxx
+      # OAUTH2_PROXY_CLIENT_SECRET: xxx
+      # OAUTH2_PROXY_GITHUB_ORG: xxx
+      # OAUTH2_PROXY_GITHUB_TEAM: xxx
+      # OAUTH2_PROXY_EMAIL_DOMAINS: '*'
+      # OAUTH2_PROXY_COOKIE_SECRET: xxx
+
+  samba:
+    container_name: samba
+    build:
+      context: samba
+      args:
+        SMB_USER: xxx
+        SMB_PASSWORD: xxx
+    restart: always
+    ports:
+      - '445:445'
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /mnt:/mnt:ro
+      - ./samba/logs:/var/log/samba
+    environment:
+      TZ: Asia/Tokyo
