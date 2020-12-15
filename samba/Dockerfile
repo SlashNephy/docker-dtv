@@ -15,7 +15,7 @@ RUN echo $SMB_PASSWORD | tee - | smbpasswd -a -s $SMB_USER
 RUN { \
     echo "[global]"; \
     echo "  security = user"; \
-    echo "  min protocol = SMB3"; \
+    echo "  min protocol = SMB2"; \
     echo "  log level = 2"; \
     echo "  log file = /var/log/samba/%m.log"; \
     echo "  max log size = 4096"; \
