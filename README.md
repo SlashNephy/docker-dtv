@@ -76,6 +76,10 @@ sudo docker-compose down
   - `/mnt` を読み取り専用で共有するように構成されています。
   - 各種ログは `./samba/logs` に保存されます。
 
+- storage-watcher
+  - `/mnt` 以下のマウントポイントのストレージの空き容量を監視します。
+  - `LOW_SPACE_THRESHOLD_PERCENT`, `LOW_SPACE_THRESHOLD_GB` で空き容量のしきい値を設定でき, 下回った際に `DISCORD_WEBHOOK_URL` に Discord メッセージを送信します。
+
 ## 活用例
 
 - Mirakurun : `http://<ip address>:40772`

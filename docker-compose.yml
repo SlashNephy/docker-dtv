@@ -158,3 +158,16 @@ services:
       - ./samba/logs:/var/log/samba
     environment:
       TZ: Asia/Tokyo
+
+  storage-watcher:
+    container_name: StorageWatcher
+    build: storage_watcher
+    restart: always
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /mnt:/mnt
+    environment:
+      TZ: Asia/Tokyo
+      LOW_SPACE_THRESHOLD_PERCENT: 5
+      LOW_SPACE_THRESHOLD_GB: 30
+      DISCORD_WEBHOOK_URL: https://discord.com/api/webhooks/xxx/xxx
