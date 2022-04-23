@@ -1,4 +1,4 @@
-FROM alpine:3.12.2
+FROM alpine:3.15.4
 
 # install samba
 RUN apk update \
