@@ -1,4 +1,4 @@
-FROM alpine:3.11
+FROM alpine:3.15
 
 RUN apk --no-cache add python python3 python3-dev ffmpeg tzdata bash \
     && apk --no-cache add --virtual=builddeps \
