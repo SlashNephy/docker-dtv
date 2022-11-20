@@ -1,4 +1,4 @@
-FROM node:10-alpine
+FROM node:19-alpine
 
 ENV DOCKER="YES"
 ARG REPOSITORY="git://github.com/Chinachu/Chinachu.git"
