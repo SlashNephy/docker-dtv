@@ -1,4 +1,4 @@
-FROM l3tnun/epgstation:master-debian
+FROM l3tnun/epgstation:master-debian@sha256:78132199398bca747ac1ff4df39de6ae936e140a4f5c42f2acbcbe15c71e77a9
 EXPOSE 8888
 ARG CPUCORE="1"
 ENV DEV="make gcc git g++ automake curl wget autoconf build-essential libass-dev libfreetype6-dev libsdl1.2-dev libtheora-dev libtool libva-dev libvdpau-dev libvorbis-dev libxcb1-dev libxcb-shm0-dev libxcb-xfixes0-dev pkg-config texinfo zlib1g-dev"
