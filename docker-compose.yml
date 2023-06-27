@@ -85,7 +85,7 @@ services:
 
   epgstation-mysql:
     container_name: EPGStation_MySQL
-    image: mariadb:10.11@sha256:d7fc6651c88b98384a93f8b270fbe6a0b1b7b169ad7b1266b47aad569dd0e1ac
+    image: mariadb:10.11@sha256:6bbe113353fc794097152369f92bc9ee96037c5e7891eb75ac7c597f0b8aee08
     command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci --performance-schema=false --expire_logs_days=1
     restart: always
     volumes:
