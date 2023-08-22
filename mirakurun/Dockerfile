@@ -1,4 +1,4 @@
-FROM node:10-alpine
+FROM node:20-alpine@sha256:f62abc08fe1004555c4f28b6793af8345a76230b21d2d249976f329079e2fef2
 
 ENV DOCKER="YES"
 
