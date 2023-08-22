@@ -32,7 +32,7 @@ RUN <<EOF
   curl "https://ffmpeg.org/releases/ffmpeg-${FFMPEG_VERSION}.tar.bz2" | tar jx --strip-components=1 -C /ffmpeg
 EOF
 
-FROM --platform=$TARGETPLATFORM debian:11.7-slim@sha256:3460d74bec6b88496cd183d7731930be55234c094f581f7dbdd96f56c1fc34d8
+FROM --platform=$TARGETPLATFORM debian:11.7-slim@sha256:61386e11b5256efa33823cbfafd668dd651dbce810b24a8fb7b2e32fa7f65a85
 ARG CPUS
 ARG RUNTIMES
 ARG DEPENDENCIES
