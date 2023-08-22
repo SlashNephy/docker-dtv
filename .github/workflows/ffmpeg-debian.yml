@@ -1,0 +1,22 @@
+name: ffmpeg-debian
+
+on:
+  push:
+    paths:
+      - 'src/ffmpeg/debian/**'
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+  actions: read
+  security-events: write
+
+jobs:
+  build:
+    uses: SlashNephy/.github/.github/workflows/docker-build.yml@master
+    with:
+      image-name: ghcr.io/slashnephy/ffmpeg-debian
+      context: src/ffmpeg/debian
+      image-platforms: linux/amd64,linux/arm64
