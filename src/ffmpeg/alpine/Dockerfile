@@ -51,6 +51,7 @@ RUN <<EOF
   apk add --no-cache ${RUNTIMES}
 
   # build ffmpeg
+  cd /tmp/ffmpeg/
   ./configure \
     --extra-libs="-lpthread -lm -lz" \
     --enable-small \
