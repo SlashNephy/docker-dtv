@@ -16,7 +16,7 @@ RUN <<EOF
   git clone https://github.com/kazuki0824/recisdb-rs -b "${REF}" --recursive /app
 EOF
 
-FROM --platform=$TARGETPLATFORM rust:1.71.1-slim-bookworm@sha256:c098b7e10b0dfa83b2e3eeca99f7654a51802fe69e1a411faed8b2630d8df162 AS chef
+FROM --platform=$TARGETPLATFORM rust:1.72.0-slim-bookworm@sha256:f7a362d746c5ac96d98afd299894d710fef87f45946e9b37d7cd7710499858ba AS chef
 
 RUN cargo install cargo-chef
 WORKDIR /app
