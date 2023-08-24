@@ -16,7 +16,7 @@ RUN <<EOF
   git clone https://github.com/kazuki0824/recisdb-rs -b "${REF}" --recursive /app
 EOF
 
-FROM --platform=$TARGETPLATFORM rust:1.71.1-slim-bookworm AS chef
+FROM --platform=$TARGETPLATFORM rust:1.71.1-slim-bookworm@sha256:c098b7e10b0dfa83b2e3eeca99f7654a51802fe69e1a411faed8b2630d8df162 AS chef
 
 RUN cargo install cargo-chef
 WORKDIR /app
@@ -44,7 +44,7 @@ RUN <<EOF
   cargo build --release --workspace --verbose
 EOF
 
-FROM --platform=$TARGETPLATFORM debian:12.1-slim AS runtime
+FROM --platform=$TARGETPLATFORM debian:12.1-slim@sha256:741bae561f5c2261f4cdd535e4fd4c248dec0aafc1b9a1410b3d67ad24571340 AS runtime
 ARG RUNTIMES
 ENV DEBIAN_FRONTEND="noninteractive"
 
