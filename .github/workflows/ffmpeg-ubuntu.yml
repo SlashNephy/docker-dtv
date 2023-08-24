@@ -21,7 +21,7 @@ jobs:
       context: src/ffmpeg/ubuntu
       build-args: |
         FFMPEG_VERSION=6.0
-        NV_CODEC_HEADERS_TAG=n12.0.16.0
-        AMF_TAG=v1.4.30
+        NV_CODEC_HEADERS_REF=n12.0.16.0
+        AMF_REF=v1.4.30
       tag-spec: |
         type=raw,6.0
