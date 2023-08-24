@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
-ARG FFMPEG_VERSION
-ARG NV_CODEC_HEADERS_REF
-ARG AMF_REF
+ARG FFMPEG_VERSION="snapshot"
+ARG NV_CODEC_HEADERS_REF="master"
+ARG AMF_REF="master"
 ARG CPUS=4
 ARG X264_RUNTIMES="libx264-163"
 ARG X264_DEPENDENCIES="libx264-dev"
@@ -41,13 +41,13 @@ EOF
 FROM downloader AS download-nv-codec-headers
 ARG NV_CODEC_HEADERS_REF
 
-RUN git clone https://git.videolan.org/git/ffmpeg/nv-codec-headers.git -b "${NV_CODEC_HEADERS_REF:-master}" --recursive
+RUN git clone https://git.videolan.org/git/ffmpeg/nv-codec-headers.git -b "${NV_CODEC_HEADERS_REF}" --recursive
 
 # download AMF
 FROM downloader AS download-amf
 ARG AMF_REF
 
-RUN git clone https://github.com/GPUOpen-LibrariesAndSDKs/AMF -b "${AMF_REF:-master}" --recursive
+RUN git clone https://github.com/GPUOpen-LibrariesAndSDKs/AMF -b "${AMF_REF}" --recursive
 
 # download ffmpeg
 FROM downloader AS download-ffmpeg

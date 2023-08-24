@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-ARG FFMPEG_VERSION
+ARG FFMPEG_VERSION="snapshot"
 ARG CPUS=4
 ARG X264_RUNTIMES="libx264-160"
 ARG X264_DEPENDENCIES="libx264-dev"
