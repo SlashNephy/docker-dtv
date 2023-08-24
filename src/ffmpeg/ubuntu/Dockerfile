@@ -33,7 +33,7 @@ FROM debian:stable@sha256:9745edf9e4904fd9ff5fbb2e0c0ba0c28a74e77ca645ed751a0aad
 RUN <<EOF
   set -eux
 
-  apt update
+  apt-get update
   apt-get install -y --no-install-recommends git curl tar bzip2 ca-certificates
 EOF
 

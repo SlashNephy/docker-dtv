@@ -25,7 +25,7 @@ ARG VERSION
 RUN <<EOF
   set -eux
 
-  apt update
+  apt-get update
   apt-get install -y --no-install-recommends curl tar bzip2 ca-certificates
 
   mkdir -p /ffmpeg
