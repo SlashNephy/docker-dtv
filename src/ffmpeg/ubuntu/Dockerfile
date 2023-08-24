@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-ARG FFMPEG_VERSION="snapshot"
+ARG VERSION="snapshot"
 ARG NV_CODEC_HEADERS_REF="master"
 ARG AMF_REF="master"
 ARG CPUS=4
@@ -51,13 +51,13 @@ RUN git clone https://github.com/GPUOpen-LibrariesAndSDKs/AMF -b "${AMF_REF}" --
 
 # download ffmpeg
 FROM downloader AS download-ffmpeg
-ARG FFMPEG_VERSION
+ARG VERSION
 
 RUN <<EOF
   set -eux
 
   mkdir -p /ffmpeg
-  curl "https://ffmpeg.org/releases/ffmpeg-${FFMPEG_VERSION}.tar.bz2" | tar jx --strip-components=1 -C /ffmpeg
+  curl "https://ffmpeg.org/releases/ffmpeg-${VERSION}.tar.bz2" | tar jx --strip-components=1 -C /ffmpeg
 EOF
 
 FROM nvidia/cuda:12.2.0-devel-ubuntu22.04@sha256:7e81c70fb55bfc54e6711700eb721bb94159a3cd546620b37210d12c17914fa6 AS build

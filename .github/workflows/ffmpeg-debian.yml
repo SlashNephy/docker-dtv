@@ -21,6 +21,6 @@ jobs:
       context: src/ffmpeg/debian
       image-platforms: linux/amd64,linux/arm64
       build-args: |
-        FFMPEG_VERSION=6.0
+        VERSION=6.0
       tag-spec: |
         type=raw,6.0

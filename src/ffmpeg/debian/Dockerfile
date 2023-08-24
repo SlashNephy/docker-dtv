@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-ARG FFMPEG_VERSION="snapshot"
+ARG VERSION="snapshot"
 ARG CPUS=4
 ARG X264_RUNTIMES="libx264-160"
 ARG X264_DEPENDENCIES="libx264-dev"
@@ -20,7 +20,7 @@ ARG ADDITIONAL_DEPENDENCIES="build-essential software-properties-common"
 ARG DEPENDENCIES="${ADDITIONAL_DEPENDENCIES} ${X264_DEPENDENCIES} ${X265_DEPENDENCIES} ${FDK_AAC_DEPENDENCIES} ${WEBM_DEPENDENCIES} ${ASS_DEPENDENCIES} ${ARIBB24_DEPENDENCIES} ${VA_API_DEPENDENCIES}"
 
 FROM --platform=$TARGETPLATFORM debian:stable@sha256:9745edf9e4904fd9ff5fbb2e0c0ba0c28a74e77ca645ed751a0aadff56c439bc AS download-ffmpeg
-ARG FFMPEG_VERSION
+ARG VERSION
 
 RUN <<EOF
   set -eux
@@ -29,7 +29,7 @@ RUN <<EOF
   apt-get install -y --no-install-recommends curl tar bzip2 ca-certificates
 
   mkdir -p /ffmpeg
-  curl "https://ffmpeg.org/releases/ffmpeg-${FFMPEG_VERSION}.tar.bz2" | tar jx --strip-components=1 -C /ffmpeg
+  curl "https://ffmpeg.org/releases/ffmpeg-${VERSION}.tar.bz2" | tar jx --strip-components=1 -C /ffmpeg
 EOF
 
 FROM --platform=$TARGETPLATFORM debian:11.7-slim@sha256:61386e11b5256efa33823cbfafd668dd651dbce810b24a8fb7b2e32fa7f65a85
