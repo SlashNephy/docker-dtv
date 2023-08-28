@@ -16,7 +16,7 @@ RUN <<EOF
   git clone https://github.com/Chinachu/Chinachu -b "${REF}" --recursive /app
 EOF
 
-FROM --platform=$TARGETPLATFORM node:16.20.0-buster-slim@sha256:ad8435d974838c10fdbbbcf607b829cc64131210150ce9585b8292130e677ab4 AS build
+FROM --platform=$TARGETPLATFORM node:16.20.2-buster-slim@sha256:728a892464c1f90842b3cefa50b2e4e0ec5211841a35bf8f2f7b9bd686070c64 AS build
 ARG RUNTIMES
 ARG DEPENDENCIES
 ENV DOCKER="YES"
