@@ -41,14 +41,12 @@ EOF
 FROM downloader AS download-nv-codec-headers
 ARG NV_CODEC_HEADERS_REF
 
-ADD https://api.github.com/repos/FFmpeg/nv-codec-headers/git/refs/heads/${NV_CODEC_HEADERS_REF} /tmp/git.json
-RUN git clone https://github.com/FFmpeg/nv-codec-headers -b "${NV_CODEC_HEADERS_REF}" --recursive
+RUN git clone https://git.videolan.org/git/ffmpeg/nv-codec-headers.git -b "${NV_CODEC_HEADERS_REF}" --recursive
 
 # download AMF
 FROM downloader AS download-amf
 ARG AMF_REF
 
-ADD https://api.github.com/repos/GPUOpen-LibrariesAndSDKs/AMF/git/refs/heads/${AMF_REF} /tmp/git.json
 RUN git clone https://github.com/GPUOpen-LibrariesAndSDKs/AMF -b "${AMF_REF}" --recursive
 
 # download ffmpeg
