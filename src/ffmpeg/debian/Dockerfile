@@ -1,5 +1,8 @@
 # syntax=docker/dockerfile:1
-ARG VERSION="snapshot"
+
+# renovate: datasource=github-tags depName=FFmpeg/FFmpeg
+ARG FFMPEG_VERSION="n6.0"
+
 ARG CPUS=4
 ARG X264_RUNTIMES="libx264-160"
 ARG X264_DEPENDENCIES="libx264-dev"
@@ -19,18 +22,19 @@ ARG RUNTIMES="${X264_RUNTIMES} ${X265_RUNTIMES} ${FDK_AAC_RUNTIMES} ${WEBM_RUNTI
 ARG ADDITIONAL_DEPENDENCIES="build-essential software-properties-common"
 ARG DEPENDENCIES="${ADDITIONAL_DEPENDENCIES} ${X264_DEPENDENCIES} ${X265_DEPENDENCIES} ${FDK_AAC_DEPENDENCIES} ${WEBM_DEPENDENCIES} ${ASS_DEPENDENCIES} ${ARIBB24_DEPENDENCIES} ${VA_API_DEPENDENCIES}"
 
-FROM --platform=$BUILDPLATFORM debian:stable@sha256:9745edf9e4904fd9ff5fbb2e0c0ba0c28a74e77ca645ed751a0aadff56c439bc AS download-ffmpeg
-ARG VERSION
+FROM --platform=$BUILDPLATFORM debian:stable@sha256:9745edf9e4904fd9ff5fbb2e0c0ba0c28a74e77ca645ed751a0aadff56c439bc AS downloader
 
 RUN <<EOF
   set -eux
 
   apt-get update
-  apt-get install -y --no-install-recommends curl tar bzip2 ca-certificates
-
-  mkdir -p /ffmpeg
-  curl "https://ffmpeg.org/releases/ffmpeg-${VERSION}.tar.bz2" | tar jx --strip-components=1 -C /ffmpeg
+  apt-get install -y --no-install-recommends git ca-certificates
 EOF
+
+FROM --platform=$BUILDPLATFORM downloader AS download-ffmpeg
+ARG FFMPEG_VERSION
+
+RUN git clone https://github.com/FFmpeg/FFmpeg -b "${FFMPEG_VERSION}" --recursive
 
 FROM --platform=$TARGETPLATFORM debian:11.7-slim@sha256:61386e11b5256efa33823cbfafd668dd651dbce810b24a8fb7b2e32fa7f65a85
 ARG CPUS
@@ -38,7 +42,7 @@ ARG RUNTIMES
 ARG DEPENDENCIES
 
 # copy ffmpeg
-COPY --from=download-ffmpeg /ffmpeg/ /tmp/ffmpeg/
+COPY --from=download-ffmpeg /FFmpeg/ /tmp/ffmpeg/
 
 ENV DEBIAN_FRONTEND="noninteractive"
 RUN <<EOF

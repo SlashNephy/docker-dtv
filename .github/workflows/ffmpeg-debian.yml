@@ -13,6 +13,10 @@ permissions:
   actions: read
   security-events: write
 
+env:
+  # renovate: datasource=github-tags depName=FFmpeg/FFmpeg
+  FFMPEG_VERSION: 6.0
+
 jobs:
   build:
     uses: SlashNephy/.github/.github/workflows/docker-build.yml@master
@@ -20,7 +24,5 @@ jobs:
       image-name: ghcr.io/slashnephy/ffmpeg-debian
       context: src/ffmpeg/debian
       image-platforms: linux/amd64,linux/arm64
-      build-args: |
-        VERSION=6.0
       tag-spec: |
-        type=raw,6.0
+        type=raw,${{ env.FFMPEG_VERSION }}

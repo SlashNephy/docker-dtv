@@ -1,7 +1,12 @@
 # syntax=docker/dockerfile:1
-ARG VERSION="snapshot"
-ARG NV_CODEC_HEADERS_REF="master"
-ARG AMF_REF="master"
+
+# renovate: datasource=github-tags depName=FFmpeg/FFmpeg
+ARG FFMPEG_VERSION="n6.0"
+# renovate: datasource=github-tags depName=FFmpeg/nv-codec-headers
+ARG NV_CODEC_HEADERS_VERSION="n12.0.16.0"
+# renovate: datasource=github-tags depName=GPUOpen-LibrariesAndSDKs/AMF
+ARG AMF_VERSION="v1.4.30"
+
 ARG CPUS=4
 ARG X264_RUNTIMES="libx264-163"
 ARG X264_DEPENDENCIES="libx264-dev"
@@ -34,31 +39,26 @@ RUN <<EOF
   set -eux
 
   apt-get update
-  apt-get install -y --no-install-recommends git curl tar bzip2 ca-certificates
+  apt-get install -y --no-install-recommends git ca-certificates
 EOF
 
 # download nv-codec-headers
 FROM --platform=$BUILDPLATFORM downloader AS download-nv-codec-headers
-ARG NV_CODEC_HEADERS_REF
+ARG NV_CODEC_HEADERS_VERSION
 
-RUN git clone https://git.videolan.org/git/ffmpeg/nv-codec-headers.git -b "${NV_CODEC_HEADERS_REF}" --recursive
+RUN git clone https://github.com/FFmpeg/nv-codec-headers -b "${NV_CODEC_HEADERS_VERSION}" --recursive
 
 # download AMF
 FROM --platform=$BUILDPLATFORM downloader AS download-amf
-ARG AMF_REF
+ARG AMF_VERSION
 
-RUN git clone https://github.com/GPUOpen-LibrariesAndSDKs/AMF -b "${AMF_REF}" --recursive
+RUN git clone https://github.com/GPUOpen-LibrariesAndSDKs/AMF -b "${AMF_VERSION}" --recursive
 
 # download ffmpeg
 FROM --platform=$BUILDPLATFORM downloader AS download-ffmpeg
-ARG VERSION
+ARG FFMPEG_VERSION
 
-RUN <<EOF
-  set -eux
-
-  mkdir -p /ffmpeg
-  curl "https://ffmpeg.org/releases/ffmpeg-${VERSION}.tar.bz2" | tar jx --strip-components=1 -C /ffmpeg
-EOF
+RUN git clone https://github.com/FFmpeg/FFmpeg -b "${FFMPEG_VERSION}" --recursive
 
 FROM --platform=$TARGETPLATFORM nvidia/cuda:12.2.0-devel-ubuntu22.04@sha256:7e81c70fb55bfc54e6711700eb721bb94159a3cd546620b37210d12c17914fa6 AS build
 ARG CPUS
@@ -79,7 +79,7 @@ EOF
 COPY --from=download-amf /AMF/amf/public/include/ /usr/local/include/AMF/
 
 # copy ffmpeg
-COPY --from=download-ffmpeg /ffmpeg/ /tmp/ffmpeg/
+COPY --from=download-ffmpeg /FFmpeg/ /tmp/ffmpeg/
 
 ENV DEBIAN_FRONTEND="noninteractive"
 RUN <<EOF
