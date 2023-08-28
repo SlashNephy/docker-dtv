@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 ARG REF="gamma"
 ARG RUNTIMES="curl"
 ARG DEPENDENCIES="build-essential git sudo ca-certificates python wget xz-utils"

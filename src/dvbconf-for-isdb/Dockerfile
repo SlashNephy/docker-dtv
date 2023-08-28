@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 ARG REF="master"
 
 FROM --platform=$BUILDPLATFORM debian:stable@sha256:9745edf9e4904fd9ff5fbb2e0c0ba0c28a74e77ca645ed751a0aadff56c439bc AS download

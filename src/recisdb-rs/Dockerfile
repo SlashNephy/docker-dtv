@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 ARG REF="master"
 ARG RUNTIMES="libpcsclite1"
 ARG DEPENDENCIES="build-essential cmake clang pkg-config libpcsclite-dev"
