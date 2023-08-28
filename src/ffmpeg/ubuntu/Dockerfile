@@ -28,7 +28,7 @@ ARG RUNTIMES="${X264_RUNTIMES} ${X265_RUNTIMES} ${FDK_AAC_RUNTIMES} ${WEBM_RUNTI
 ARG ADDITIONAL_DEPENDENCIES="build-essential"
 ARG DEPENDENCIES="${ADDITIONAL_DEPENDENCIES} ${X264_DEPENDENCIES} ${X265_DEPENDENCIES} ${FDK_AAC_DEPENDENCIES} ${WEBM_DEPENDENCIES} ${ASS_DEPENDENCIES} ${ARIBB24_DEPENDENCIES} ${VA_API_DEPENDENCIES} ${NVIDIA_NVENC_DEPENDENCIES} ${INTEL_QSV_DEPENDENCIES} ${AMD_AMF_DEPENDENCIES}"
 
-FROM debian:stable@sha256:9745edf9e4904fd9ff5fbb2e0c0ba0c28a74e77ca645ed751a0aadff56c439bc AS downloader
+FROM --platform=$BUILDPLATFORM debian:stable@sha256:9745edf9e4904fd9ff5fbb2e0c0ba0c28a74e77ca645ed751a0aadff56c439bc AS downloader
 
 RUN <<EOF
   set -eux
@@ -38,19 +38,19 @@ RUN <<EOF
 EOF
 
 # download nv-codec-headers
-FROM downloader AS download-nv-codec-headers
+FROM --platform=$BUILDPLATFORM downloader AS download-nv-codec-headers
 ARG NV_CODEC_HEADERS_REF
 
 RUN git clone https://git.videolan.org/git/ffmpeg/nv-codec-headers.git -b "${NV_CODEC_HEADERS_REF}" --recursive
 
 # download AMF
-FROM downloader AS download-amf
+FROM --platform=$BUILDPLATFORM downloader AS download-amf
 ARG AMF_REF
 
 RUN git clone https://github.com/GPUOpen-LibrariesAndSDKs/AMF -b "${AMF_REF}" --recursive
 
 # download ffmpeg
-FROM downloader AS download-ffmpeg
+FROM --platform=$BUILDPLATFORM downloader AS download-ffmpeg
 ARG VERSION
 
 RUN <<EOF
@@ -60,7 +60,7 @@ RUN <<EOF
   curl "https://ffmpeg.org/releases/ffmpeg-${VERSION}.tar.bz2" | tar jx --strip-components=1 -C /ffmpeg
 EOF
 
-FROM nvidia/cuda:12.2.0-devel-ubuntu22.04@sha256:7e81c70fb55bfc54e6711700eb721bb94159a3cd546620b37210d12c17914fa6 AS build
+FROM --platform=$TARGETPLATFORM nvidia/cuda:12.2.0-devel-ubuntu22.04@sha256:7e81c70fb55bfc54e6711700eb721bb94159a3cd546620b37210d12c17914fa6 AS build
 ARG CPUS
 ARG RUNTIMES
 ARG DEPENDENCIES
@@ -130,7 +130,7 @@ RUN <<EOF
   make install
 EOF
 
-FROM nvidia/cuda:12.2.0-base-ubuntu22.04@sha256:1069ccd2910506f68e1d7c0907a32aaa877b8038d1aa24cb7ffb2d2a85d725c7
+FROM --platform=$TARGETPLATFORM nvidia/cuda:12.2.0-base-ubuntu22.04@sha256:1069ccd2910506f68e1d7c0907a32aaa877b8038d1aa24cb7ffb2d2a85d725c7
 ARG RUNTIMES
 ENV LANG="C.UTF-8"
 ENV NVIDIA_VISIBLE_DEVICES="all"
