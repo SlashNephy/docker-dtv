@@ -1,0 +1,22 @@
+name: chinachu
+
+on:
+  push:
+    paths:
+      - 'src/chinachu/**'
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+  actions: read
+  security-events: write
+
+jobs:
+  build:
+    uses: SlashNephy/.github/.github/workflows/docker-build.yml@master
+    with:
+      image-name: ghcr.io/slashnephy/chinachu
+      context: src/chinachu
+      image-platforms: linux/amd64,linux/arm64
