@@ -1,0 +1,21 @@
+name: dvbconf-for-isdb
+
+on:
+  push:
+    paths:
+      - 'src/dvbconf-for-isdb/**'
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+  actions: read
+  security-events: write
+
+jobs:
+  build:
+    uses: SlashNephy/.github/.github/workflows/docker-build.yml@master
+    with:
+      image-name: ghcr.io/slashnephy/dvbconf-for-isdb
+      context: src/dvbconf-for-isdb
