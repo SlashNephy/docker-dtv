@@ -3,7 +3,7 @@ ARG REF="gamma"
 ARG RUNTIMES="curl"
 ARG DEPENDENCIES="build-essential git sudo ca-certificates python wget xz-utils"
 
-FROM --platform=$BUILDPLATFORM debian:stable@sha256:9745edf9e4904fd9ff5fbb2e0c0ba0c28a74e77ca645ed751a0aadff56c439bc AS downloader
+FROM --platform=$BUILDPLATFORM debian:stable@sha256:6662bb5ae28ce4ce754cb4cc4b03deb9b4f24ab052b812b966aa773942e27745 AS downloader
 
 RUN <<EOF
   set -eux
