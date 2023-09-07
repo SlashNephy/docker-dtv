@@ -47,7 +47,7 @@ RUN <<EOF
   cargo build --release --workspace --verbose
 EOF
 
-FROM --platform=$TARGETPLATFORM debian:12.1-slim@sha256:741bae561f5c2261f4cdd535e4fd4c248dec0aafc1b9a1410b3d67ad24571340 AS runtime
+FROM --platform=$TARGETPLATFORM debian:12.1-slim@sha256:050f00e86cc4d928b21de66096126fac52c2ea47885c232932b2e4c00f0c116d AS runtime
 ARG RUNTIMES
 ENV DEBIAN_FRONTEND="noninteractive"
 
