@@ -60,7 +60,7 @@ ARG FFMPEG_VERSION
 
 RUN git clone https://github.com/FFmpeg/FFmpeg -b "${FFMPEG_VERSION}" --recursive
 
-FROM --platform=$TARGETPLATFORM nvidia/cuda:12.2.0-devel-ubuntu22.04@sha256:7e81c70fb55bfc54e6711700eb721bb94159a3cd546620b37210d12c17914fa6 AS build
+FROM --platform=$TARGETPLATFORM nvidia/cuda:12.2.0-devel-ubuntu22.04@sha256:0e2d7e252847c334b056937e533683556926f5343a472b6b92f858a7af8ab880 AS build
 ARG CPUS
 ARG RUNTIMES
 ARG DEPENDENCIES
