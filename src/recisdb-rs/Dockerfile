@@ -3,7 +3,7 @@ ARG REF="master"
 ARG RUNTIMES="libpcsclite1"
 ARG DEPENDENCIES="build-essential cmake clang pkg-config libpcsclite-dev"
 
-FROM --platform=$BUILDPLATFORM debian:stable@sha256:6662bb5ae28ce4ce754cb4cc4b03deb9b4f24ab052b812b966aa773942e27745 AS downloader
+FROM --platform=$BUILDPLATFORM debian:stable@sha256:3d7b0e24f9e1f72368f0e0a669b612b534a6a05c47f2c742346f7cec072f1590 AS downloader
 
 RUN <<EOF
   set -eux
