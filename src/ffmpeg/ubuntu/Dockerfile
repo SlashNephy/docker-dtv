@@ -3,7 +3,7 @@
 # renovate: datasource=github-tags depName=FFmpeg/FFmpeg
 ARG FFMPEG_VERSION="n6.0"
 # renovate: datasource=github-tags depName=FFmpeg/nv-codec-headers
-ARG NV_CODEC_HEADERS_VERSION="n12.0.16.0"
+ARG NV_CODEC_HEADERS_VERSION="n12.1.14.0"
 # renovate: datasource=github-tags depName=GPUOpen-LibrariesAndSDKs/AMF
 ARG AMF_VERSION="v1.4.30"
 
