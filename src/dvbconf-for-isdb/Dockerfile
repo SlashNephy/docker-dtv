@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 ARG REF="master"
 
-FROM --platform=$BUILDPLATFORM debian:stable@sha256:3d7b0e24f9e1f72368f0e0a669b612b534a6a05c47f2c742346f7cec072f1590 AS downloader
+FROM --platform=$BUILDPLATFORM debian:stable@sha256:fd865da5f887f2fdb7af19c3a33fe9c98cb00a26859df66508cadadc35cb8676 AS downloader
 
 RUN <<EOF
   set -eux
