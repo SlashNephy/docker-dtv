@@ -19,7 +19,7 @@ ENV DEBIAN_FRONTEND="noninteractive"
 ADD https://api.github.com/repos/kazuki0824/recisdb-rs/git/refs/heads/${REF} /tmp/git.json
 RUN git clone https://github.com/kazuki0824/recisdb-rs -b "${REF}" --recursive /app
 
-FROM --platform=$TARGETPLATFORM rust:1.73.0-slim-bookworm@sha256:dd5cb8c36ea817fd7e6fb901a7f3d3533100de3f5d096a677b792e8da6a3fcdc AS chef
+FROM --platform=$TARGETPLATFORM rust:1.73.0-slim-bookworm@sha256:89e1efffc83a631bced1bf86135f4f671223cc5dc32ebf26ef8b3efd1b97ffff AS chef
 
 RUN cargo install cargo-chef
 WORKDIR /app
