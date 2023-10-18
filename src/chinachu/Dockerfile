@@ -19,7 +19,7 @@ ENV DEBIAN_FRONTEND="noninteractive"
 ADD https://api.github.com/repos/Chinachu/Chinachu/git/refs/heads/${REF} /tmp/git.json
 RUN git clone https://github.com/Chinachu/Chinachu -b "${REF}" --recursive /app
 
-FROM --platform=$TARGETPLATFORM node:16.20.2-buster-slim@sha256:3ebf2875c188d22939c6ab080cfb1a4a6248cc86bae600ea8e2326aa03acdb8f AS build
+FROM --platform=$TARGETPLATFORM node:20.8.1-buster-slim@sha256:4dff6bf898edc18bff318ccbdf27a755e998fa2b195d02287204db15a2b34b5b AS build
 ARG RUNTIMES
 ARG DEPENDENCIES
 ENV DOCKER="YES"
