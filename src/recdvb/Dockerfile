@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-# renovate: datasource=github-tags depName=FFmpeg/FFmpeg
+# renovate: datasource=github-tags depName=k-pi/recdvb
 ARG RECDVB_VERSION="v1.3.3"
 
 ARG DEPENDENCIES="build-essential autoconf automake"
