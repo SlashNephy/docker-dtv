@@ -1,10 +1,10 @@
-FROM --platform=$BUILDPLATFORM debian:11.7-slim@sha256:3460d74bec6b88496cd183d7731930be55234c094f581f7dbdd96f56c1fc34d8 AS git
+FROM --platform=$BUILDPLATFORM debian:11.8-slim@sha256:9bec46ecd98ce4bf8305840b021dda9b3e1f8494a0768c407e2b233180fa1466 AS git
 ADD https://api.github.com/repos/l3tnun/EPGStation/git/refs/heads/v2 /tmp/EPGStation.json
 RUN apt update \
     && apt install -y --no-install-recommends git ca-certificates \
     && git clone -b v2 https://github.com/l3tnun/EPGStation /app
 
-FROM --platform=$BUILDPLATFORM debian:11.7-slim@sha256:3460d74bec6b88496cd183d7731930be55234c094f581f7dbdd96f56c1fc34d8 AS source
+FROM --platform=$BUILDPLATFORM debian:11.8-slim@sha256:9bec46ecd98ce4bf8305840b021dda9b3e1f8494a0768c407e2b233180fa1466 AS source
 WORKDIR /app
 COPY --from=git /app/ /app/
 COPY ./*.patch /tmp/
@@ -12,7 +12,7 @@ RUN apt update \
     && apt install -y --no-install-recommends git ca-certificates \
     && git apply --numstat --summary --check --apply --ignore-whitespace -v /tmp/*.patch
 
-FROM --platform=$BUILDPLATFORM debian:11.7-slim@sha256:3460d74bec6b88496cd183d7731930be55234c094f581f7dbdd96f56c1fc34d8 AS version
+FROM --platform=$BUILDPLATFORM debian:11.8-slim@sha256:9bec46ecd98ce4bf8305840b021dda9b3e1f8494a0768c407e2b233180fa1466 AS version
 ARG COMMIT_ID=unknown
 COPY --from=git /app/package.json /app/package.json
 COPY --from=git /app/client/package.json /app/client/package.json
