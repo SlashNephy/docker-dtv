@@ -1,0 +1,1058 @@
+diff --git a/api.d.ts b/api.d.ts
+index 412e9b5c..372023ab 100644
+--- a/api.d.ts
++++ b/api.d.ts
+@@ -14,7 +14,7 @@ export type ThumbnailId = number;
+ export type DropLogFileId = number;
+ export type RecordedTagId = number;
+ export type EncodeId = number;
+-export type ChannelType = 'GR' | 'BS' | 'CS' | 'SKY';
++export type ChannelType = 'GR' | 'BS' | 'CS' | 'SKY' | 'EXT1' | 'EXT2' | 'EXT3' | 'EXT4' | 'EXT5' | 'EXT6' | 'EXT7' | 'EXT8' | 'EXT9';
+ export type ProgramGenreLv1 = number;
+ export type ProgramGenreLv2 = number;
+ export type ProgramVideoType = 'mpeg2' | 'h.264' | 'h.265';
+@@ -190,6 +190,15 @@ export interface BroadcastStatus {
+     BS: boolean;
+     CS: boolean;
+     SKY: boolean;
++    EXT1: boolean;
++    EXT2: boolean;
++    EXT3: boolean;
++    EXT4: boolean;
++    EXT5: boolean;
++    EXT6: boolean;
++    EXT7: boolean;
++    EXT8: boolean;
++    EXT9: boolean;
+ }
+ 
+ /**
+@@ -275,6 +284,15 @@ export interface RuleSearchOption {
+     BS?: boolean; // BS
+     CS?: boolean; // CS
+     SKY?: boolean; // SKY
++    EXT1?: boolean;
++    EXT2?: boolean;
++    EXT3?: boolean;
++    EXT4?: boolean;
++    EXT5?: boolean;
++    EXT6?: boolean;
++    EXT7?: boolean;
++    EXT8?: boolean;
++    EXT9?: boolean;
+     channelIds?: ChannelId[]; // channels ids
+     genres?: Genre[];
+     times?: SearchTime[]; // 開始時間からの有効時間
+@@ -532,6 +550,15 @@ export interface ScheduleOption {
+     BS: boolean;
+     CS: boolean;
+     SKY: boolean;
++    EXT1: boolean;
++    EXT2: boolean;
++    EXT3: boolean;
++    EXT4: boolean;
++    EXT5: boolean;
++    EXT6: boolean;
++    EXT7: boolean;
++    EXT8: boolean;
++    EXT9: boolean;
+ }
+ 
+ /**
+diff --git a/api.yml b/api.yml
+index 9894f789..327edc70 100644
+--- a/api.yml
++++ b/api.yml
+@@ -87,6 +87,15 @@ components:
+                 - BS
+                 - CS
+                 - SKY
++                - EXT1
++                - EXT2
++                - EXT3
++                - EXT4
++                - EXT5
++                - EXT6
++                - EXT7
++                - EXT8
++                - EXT9
+ 
+         ProgramGenreLv1:
+             description: ジャンル
+@@ -192,6 +201,15 @@ components:
+                         - BS
+                         - CS
+                         - SKY
++                        - EXT1
++                        - EXT2
++                        - EXT3
++                        - EXT4
++                        - EXT5
++                        - EXT6
++                        - EXT7
++                        - EXT8
++                        - EXT9
+                     properties:
+                         GR:
+                             type: boolean
+@@ -201,6 +219,24 @@ components:
+                             type: boolean
+                         SKY:
+                             type: boolean
++                        EXT1:
++                            type: boolean
++                        EXT2:
++                            type: boolean
++                        EXT3:
++                            type: boolean
++                        EXT4:
++                            type: boolean
++                        EXT5:
++                            type: boolean
++                        EXT6:
++                            type: boolean
++                        EXT7:
++                            type: boolean
++                        EXT8:
++                            type: boolean
++                        EXT9:
++                            type: boolean
+                 recorded:
+                     description: 指定可能な録画ディレクトリ名
+                     type: array
+@@ -603,6 +639,33 @@ components:
+                 SKY:
+                     description: SKY
+                     type: boolean
++                EXT1:
++                    description: EXT1
++                    type: boolean
++                EXT2:
++                    description: EXT2
++                    type: boolean
++                EXT3:
++                    description: EXT3
++                    type: boolean
++                EXT4:
++                    description: EXT4
++                    type: boolean
++                EXT5:
++                    description: EXT5
++                    type: boolean
++                EXT6:
++                    description: EXT6
++                    type: boolean
++                EXT7:
++                    description: EXT7
++                    type: boolean
++                EXT8:
++                    description: EXT8
++                    type: boolean
++                EXT9:
++                    description: EXT9
++                    type: boolean
+                 channelIds:
+                     description: 放送局
+                     type: array
+@@ -1717,6 +1780,78 @@ components:
+             required: true
+             schema:
+                 type: boolean
++        
++        requiredEXT1:
++            description: EXT1
++            in: query
++            name: EXT1
++            required: true
++            schema:
++                type: boolean
++        
++        requiredEXT2:
++            description: EXT2
++            in: query
++            name: EXT2
++            required: true
++            schema:
++                type: boolean
++        
++        requiredEXT3:
++            description: EXT3
++            in: query
++            name: EXT3
++            required: true
++            schema:
++                type: boolean
++        
++        requiredEXT4:
++            description: EXT4
++            in: query
++            name: EXT4
++            required: true
++            schema:
++                type: boolean
++
++        requiredEXT5:
++            description: EXT5
++            in: query
++            name: EXT5
++            required: true
++            schema:
++                type: boolean
++
++        requiredEXT6:
++            description: EXT6
++            in: query
++            name: EXT6
++            required: true
++            schema:
++                type: boolean
++
++        requiredEXT7:
++            description: EXT7
++            in: query
++            name: EXT7
++            required: true
++            schema:
++                type: boolean
++
++        requiredEXT8:
++            description: EXT8
++            in: query
++            name: EXT8
++            required: true
++            schema:
++                type: boolean
++
++        requiredEXT9:
++            description: EXT9
++            in: query
++            name: EXT9
++            required: true
++            schema:
++                type: boolean
+ 
+         GetReserveType:
+             description: 予約情報取得タイプ
+diff --git a/client/src/components/guide/GuideTimeSelector.vue b/client/src/components/guide/GuideTimeSelector.vue
+index 4d1eb8eb..88e37546 100644
+--- a/client/src/components/guide/GuideTimeSelector.vue
++++ b/client/src/components/guide/GuideTimeSelector.vue
+@@ -143,6 +143,33 @@ export default class GuideTimeSelector extends Vue {
+             if (config.broadcast.SKY === true) {
+                 this.broadcastItems.push('SKY');
+             }
++            if (config.broadcast.EXT1 === true) {
++                this.broadcastItems.push('EXT1');
++            }
++            if (config.broadcast.EXT2 === true) {
++                this.broadcastItems.push('EXT2');
++            }
++            if (config.broadcast.EXT3 === true) {
++                this.broadcastItems.push('EXT3');
++            }
++            if (config.broadcast.EXT4 === true) {
++                this.broadcastItems.push('EXT4');
++            }
++            if (config.broadcast.EXT5 === true) {
++                this.broadcastItems.push('EXT5');
++            }
++            if (config.broadcast.EXT6 === true) {
++                this.broadcastItems.push('EXT6');
++            }
++            if (config.broadcast.EXT7 === true) {
++                this.broadcastItems.push('EXT7');
++            }
++            if (config.broadcast.EXT8 === true) {
++                this.broadcastItems.push('EXT8');
++            }
++            if (config.broadcast.EXT9 === true) {
++                this.broadcastItems.push('EXT9');
++            }
+         }
+ 
+         // 日付
+diff --git a/client/src/components/search/SearchOption.vue b/client/src/components/search/SearchOption.vue
+index 4fa941c6..c50893d5 100644
+--- a/client/src/components/search/SearchOption.vue
++++ b/client/src/components/search/SearchOption.vue
+@@ -57,6 +57,60 @@
+                             class="mx-1 my-0"
+                             label="SKY"
+                         ></v-checkbox>
++                        <v-checkbox
++                            v-if="searchState.searchOption.broadcastWave.EXT1.isShow"
++                            v-model="searchState.searchOption.broadcastWave.EXT1.isEnable"
++                            class="mx-1 my-0"
++                            label="EXT1"
++                        ></v-checkbox>
++                        <v-checkbox
++                            v-if="searchState.searchOption.broadcastWave.EXT2.isShow"
++                            v-model="searchState.searchOption.broadcastWave.EXT2.isEnable"
++                            class="mx-1 my-0"
++                            label="EXT2"
++                        ></v-checkbox>
++                        <v-checkbox
++                            v-if="searchState.searchOption.broadcastWave.EXT3.isShow"
++                            v-model="searchState.searchOption.broadcastWave.EXT3.isEnable"
++                            class="mx-1 my-0"
++                            label="EXT3"
++                        ></v-checkbox>
++                        <v-checkbox
++                            v-if="searchState.searchOption.broadcastWave.EXT4.isShow"
++                            v-model="searchState.searchOption.broadcastWave.EXT4.isEnable"
++                            class="mx-1 my-0"
++                            label="EXT4"
++                        ></v-checkbox>
++                        <v-checkbox
++                            v-if="searchState.searchOption.broadcastWave.EXT5.isShow"
++                            v-model="searchState.searchOption.broadcastWave.EXT5.isEnable"
++                            class="mx-1 my-0"
++                            label="EXT5"
++                        ></v-checkbox>
++                        <v-checkbox
++                            v-if="searchState.searchOption.broadcastWave.EXT6.isShow"
++                            v-model="searchState.searchOption.broadcastWave.EXT6.isEnable"
++                            class="mx-1 my-0"
++                            label="EXT6"
++                        ></v-checkbox>
++                        <v-checkbox
++                            v-if="searchState.searchOption.broadcastWave.EXT7.isShow"
++                            v-model="searchState.searchOption.broadcastWave.EXT7.isEnable"
++                            class="mx-1 my-0"
++                            label="EXT7"
++                        ></v-checkbox>
++                        <v-checkbox
++                            v-if="searchState.searchOption.broadcastWave.EXT8.isShow"
++                            v-model="searchState.searchOption.broadcastWave.EXT8.isEnable"
++                            class="mx-1 my-0"
++                            label="EXT8"
++                        ></v-checkbox>
++                        <v-checkbox
++                            v-if="searchState.searchOption.broadcastWave.EXT9.isShow"
++                            v-model="searchState.searchOption.broadcastWave.EXT9.isEnable"
++                            class="mx-1 my-0"
++                            label="EXT9"
++                        ></v-checkbox>
+                     </div>
+                 </SearchOptionRow>
+                 <SearchOptionRow title="ジャンル">
+diff --git a/client/src/model/state/guide/GuideState.ts b/client/src/model/state/guide/GuideState.ts
+index b2ade080..1d98542f 100644
+--- a/client/src/model/state/guide/GuideState.ts
++++ b/client/src/model/state/guide/GuideState.ts
+@@ -101,6 +101,15 @@ class GuideState implements IGuideState {
+                 BS: false,
+                 CS: false,
+                 SKY: false,
++                EXT1: false,
++                EXT2: false,
++                EXT3: false,
++                EXT4: false,
++                EXT5: false,
++                EXT6: false,
++                EXT7: false,
++                EXT8: false,
++                EXT9: false,
+             };
+ 
+             // 放送波設定
+@@ -109,6 +118,15 @@ class GuideState implements IGuideState {
+                 scheduleOption.BS = true;
+                 scheduleOption.CS = true;
+                 scheduleOption.SKY = true;
++                scheduleOption.EXT1 = true;
++                scheduleOption.EXT2 = true;
++                scheduleOption.EXT3 = true;
++                scheduleOption.EXT4 = true;
++                scheduleOption.EXT5 = true;
++                scheduleOption.EXT6 = true;
++                scheduleOption.EXT7 = true;
++                scheduleOption.EXT8 = true;
++                scheduleOption.EXT9 = true;
+             } else {
+                 scheduleOption[option.type] = true;
+             }
+diff --git a/client/src/model/state/navigation/NavigationState.ts b/client/src/model/state/navigation/NavigationState.ts
+index a756d12c..e715d36e 100644
+--- a/client/src/model/state/navigation/NavigationState.ts
++++ b/client/src/model/state/navigation/NavigationState.ts
+@@ -60,6 +60,33 @@ export default class NavigationState implements INavigationState {
+             if (config.broadcast.SKY === true) {
+                 types.push('SKY');
+             }
++            if (config.broadcast.EXT1 === true) {
++                types.push('EXT1');
++            }
++            if (config.broadcast.EXT2 === true) {
++                types.push('EXT2');
++            }
++            if (config.broadcast.EXT3 === true) {
++                types.push('EXT3');
++            }
++            if (config.broadcast.EXT4 === true) {
++                types.push('EXT4');
++            }
++            if (config.broadcast.EXT5 === true) {
++                types.push('EXT5');
++            }
++            if (config.broadcast.EXT6 === true) {
++                types.push('EXT6');
++            }
++            if (config.broadcast.EXT7 === true) {
++                types.push('EXT7');
++            }
++            if (config.broadcast.EXT8 === true) {
++                types.push('EXT8');
++            }
++            if (config.broadcast.EXT9 === true) {
++                types.push('EXT9');
++            }
+ 
+             for (const type of types) {
+                 newItems.push({
+diff --git a/client/src/model/state/onair/OnAirState.ts b/client/src/model/state/onair/OnAirState.ts
+index 708ead4f..fe2a7480 100644
+--- a/client/src/model/state/onair/OnAirState.ts
++++ b/client/src/model/state/onair/OnAirState.ts
+@@ -39,6 +39,33 @@ export default class OnAirState implements IOnAirState {
+             if (config.broadcast.SKY === true) {
+                 this.tabs.push('SKY');
+             }
++            if (config.broadcast.EXT1 === true) {
++                this.tabs.push('EXT1');
++            }
++            if (config.broadcast.EXT2 === true) {
++                this.tabs.push('EXT2');
++            }
++            if (config.broadcast.EXT3 === true) {
++                this.tabs.push('EXT3');
++            }
++            if (config.broadcast.EXT4 === true) {
++                this.tabs.push('EXT4');
++            }
++            if (config.broadcast.EXT5 === true) {
++                this.tabs.push('EXT5');
++            }
++            if (config.broadcast.EXT6 === true) {
++                this.tabs.push('EXT6');
++            }
++            if (config.broadcast.EXT7 === true) {
++                this.tabs.push('EXT7');
++            }
++            if (config.broadcast.EXT8 === true) {
++                this.tabs.push('EXT8');
++            }
++            if (config.broadcast.EXT9 === true) {
++                this.tabs.push('EXT9');
++            }
+         }
+     }
+ 
+diff --git a/client/src/model/state/search/ISearchState.ts b/client/src/model/state/search/ISearchState.ts
+index 65a156ec..a3b8e6ac 100644
+--- a/client/src/model/state/search/ISearchState.ts
++++ b/client/src/model/state/search/ISearchState.ts
+@@ -21,6 +21,15 @@ export interface BroadcastWave {
+     BS: BroadcastWaveState;
+     CS: BroadcastWaveState;
+     SKY: BroadcastWaveState;
++    EXT1: BroadcastWaveState;
++    EXT2: BroadcastWaveState;
++    EXT3: BroadcastWaveState;
++    EXT4: BroadcastWaveState;
++    EXT5: BroadcastWaveState;
++    EXT6: BroadcastWaveState;
++    EXT7: BroadcastWaveState;
++    EXT8: BroadcastWaveState;
++    EXT9: BroadcastWaveState;
+ }
+ 
+ export interface SubGenreIndex {
+diff --git a/client/src/model/state/search/SearchState.ts b/client/src/model/state/search/SearchState.ts
+index 1ae2758f..9aa8d421 100644
+--- a/client/src/model/state/search/SearchState.ts
++++ b/client/src/model/state/search/SearchState.ts
+@@ -195,6 +195,42 @@ export default class SearchState implements ISearchState {
+                     isEnable: true,
+                     isShow: true,
+                 },
++                EXT1: {
++                    isEnable: true,
++                    isShow: true,
++                },
++                EXT2: {
++                    isEnable: true,
++                    isShow: true,
++                },
++                EXT3: {
++                    isEnable: true,
++                    isShow: true,
++                },
++                EXT4: {
++                    isEnable: true,
++                    isShow: true,
++                },
++                EXT5: {
++                    isEnable: true,
++                    isShow: true,
++                },
++                EXT6: {
++                    isEnable: true,
++                    isShow: true,
++                },
++                EXT7: {
++                    isEnable: true,
++                    isShow: true,
++                },
++                EXT8: {
++                    isEnable: true,
++                    isShow: true,
++                },
++                EXT9: {
++                    isEnable: true,
++                    isShow: true,
++                },
+             },
+             genres: {},
+             isShowSubgenres: true,
+@@ -235,6 +271,42 @@ export default class SearchState implements ISearchState {
+                 this.searchOption.broadcastWave.SKY.isEnable = false;
+                 this.searchOption.broadcastWave.SKY.isShow = false;
+             }
++            if (config.broadcast.EXT1 === false) {
++                this.searchOption.broadcastWave.EXT1.isEnable = false;
++                this.searchOption.broadcastWave.EXT1.isShow = false;
++            }
++            if (config.broadcast.EXT2 === false) {
++                this.searchOption.broadcastWave.EXT2.isEnable = false;
++                this.searchOption.broadcastWave.EXT2.isShow = false;
++            }
++            if (config.broadcast.EXT3 === false) {
++                this.searchOption.broadcastWave.EXT3.isEnable = false;
++                this.searchOption.broadcastWave.EXT3.isShow = false;
++            }
++            if (config.broadcast.EXT4 === false) {
++                this.searchOption.broadcastWave.EXT4.isEnable = false;
++                this.searchOption.broadcastWave.EXT4.isShow = false;
++            }
++            if (config.broadcast.EXT5 === false) {
++                this.searchOption.broadcastWave.EXT5.isEnable = false;
++                this.searchOption.broadcastWave.EXT5.isShow = false;
++            }
++            if (config.broadcast.EXT6 === false) {
++                this.searchOption.broadcastWave.EXT6.isEnable = false;
++                this.searchOption.broadcastWave.EXT6.isShow = false;
++            }
++            if (config.broadcast.EXT7 === false) {
++                this.searchOption.broadcastWave.EXT7.isEnable = false;
++                this.searchOption.broadcastWave.EXT7.isShow = false;
++            }
++            if (config.broadcast.EXT8 === false) {
++                this.searchOption.broadcastWave.EXT8.isEnable = false;
++                this.searchOption.broadcastWave.EXT8.isShow = false;
++            }
++            if (config.broadcast.EXT9 === false) {
++                this.searchOption.broadcastWave.EXT9.isEnable = false;
++                this.searchOption.broadcastWave.EXT9.isShow = false;
++            }
+         }
+ 
+         // ジャンル
+@@ -431,6 +503,15 @@ export default class SearchState implements ISearchState {
+             this.searchOption.broadcastWave.BS.isEnable = !!searchOption.BS;
+             this.searchOption.broadcastWave.CS.isEnable = !!searchOption.CS;
+             this.searchOption.broadcastWave.SKY.isEnable = !!searchOption.SKY;
++            this.searchOption.broadcastWave.EXT1.isEnable = !!searchOption.EXT1;
++            this.searchOption.broadcastWave.EXT2.isEnable = !!searchOption.EXT2;
++            this.searchOption.broadcastWave.EXT3.isEnable = !!searchOption.EXT3;
++            this.searchOption.broadcastWave.EXT4.isEnable = !!searchOption.EXT4;
++            this.searchOption.broadcastWave.EXT5.isEnable = !!searchOption.EXT5;
++            this.searchOption.broadcastWave.EXT6.isEnable = !!searchOption.EXT6;
++            this.searchOption.broadcastWave.EXT7.isEnable = !!searchOption.EXT7;
++            this.searchOption.broadcastWave.EXT8.isEnable = !!searchOption.EXT8;
++            this.searchOption.broadcastWave.EXT9.isEnable = !!searchOption.EXT9;
+         }
+ 
+         // ジャンル
+@@ -778,11 +859,29 @@ export default class SearchState implements ISearchState {
+             this.searchOption.broadcastWave.BS.isEnable = false;
+             this.searchOption.broadcastWave.CS.isEnable = false;
+             this.searchOption.broadcastWave.SKY.isEnable = false;
++            this.searchOption.broadcastWave.EXT1.isEnable = false;
++            this.searchOption.broadcastWave.EXT2.isEnable = false;
++            this.searchOption.broadcastWave.EXT3.isEnable = false;
++            this.searchOption.broadcastWave.EXT4.isEnable = false;
++            this.searchOption.broadcastWave.EXT5.isEnable = false;
++            this.searchOption.broadcastWave.EXT6.isEnable = false;
++            this.searchOption.broadcastWave.EXT7.isEnable = false;
++            this.searchOption.broadcastWave.EXT8.isEnable = false;
++            this.searchOption.broadcastWave.EXT9.isEnable = false;
+         } else if (this.isDisabledAllBroadcasWave(this.searchOption.broadcastWave)) {
+             this.searchOption.broadcastWave.GR.isEnable = true;
+             this.searchOption.broadcastWave.BS.isEnable = true;
+             this.searchOption.broadcastWave.CS.isEnable = true;
+             this.searchOption.broadcastWave.SKY.isEnable = true;
++            this.searchOption.broadcastWave.EXT1.isEnable = true;
++            this.searchOption.broadcastWave.EXT2.isEnable = true;
++            this.searchOption.broadcastWave.EXT3.isEnable = true;
++            this.searchOption.broadcastWave.EXT4.isEnable = true;
++            this.searchOption.broadcastWave.EXT5.isEnable = true;
++            this.searchOption.broadcastWave.EXT6.isEnable = true;
++            this.searchOption.broadcastWave.EXT7.isEnable = true;
++            this.searchOption.broadcastWave.EXT8.isEnable = true;
++            this.searchOption.broadcastWave.EXT9.isEnable = true;
+         }
+ 
+         // time range
+@@ -843,6 +942,42 @@ export default class SearchState implements ISearchState {
+             return false;
+         }
+ 
++        if (broadcas.EXT1.isShow === true && broadcas.EXT1.isEnable === true) {
++            return false;
++        }
++
++        if (broadcas.EXT2.isShow === true && broadcas.EXT2.isEnable === true) {
++            return false;
++        }
++
++        if (broadcas.EXT3.isShow === true && broadcas.EXT3.isEnable === true) {
++            return false;
++        }
++
++        if (broadcas.EXT4.isShow === true && broadcas.EXT4.isEnable === true) {
++            return false;
++        }
++
++        if (broadcas.EXT5.isShow === true && broadcas.EXT5.isEnable === true) {
++            return false;
++        }
++
++        if (broadcas.EXT6.isShow === true && broadcas.EXT6.isEnable === true) {
++            return false;
++        }
++
++        if (broadcas.EXT7.isShow === true && broadcas.EXT7.isEnable === true) {
++            return false;
++        }
++
++        if (broadcas.EXT8.isShow === true && broadcas.EXT8.isEnable === true) {
++            return false;
++        }
++
++        if (broadcas.EXT9.isShow === true && broadcas.EXT9.isEnable === true) {
++            return false;
++        }
++
+         return true;
+     }
+ 
+@@ -993,6 +1128,33 @@ export default class SearchState implements ISearchState {
+             if (option.broadcastWave.SKY.isShow === true) {
+                 ruleOption.SKY = option.broadcastWave.SKY.isEnable;
+             }
++            if (option.broadcastWave.EXT1.isShow === true) {
++                ruleOption.EXT1 = option.broadcastWave.EXT1.isEnable;
++            }
++            if (option.broadcastWave.EXT2.isShow === true) {
++                ruleOption.EXT2 = option.broadcastWave.EXT2.isEnable;
++            }
++            if (option.broadcastWave.EXT3.isShow === true) {
++                ruleOption.EXT3 = option.broadcastWave.EXT3.isEnable;
++            }
++            if (option.broadcastWave.EXT4.isShow === true) {
++                ruleOption.EXT4 = option.broadcastWave.EXT4.isEnable;
++            }
++            if (option.broadcastWave.EXT5.isShow === true) {
++                ruleOption.EXT5 = option.broadcastWave.EXT5.isEnable;
++            }
++            if (option.broadcastWave.EXT6.isShow === true) {
++                ruleOption.EXT6 = option.broadcastWave.EXT6.isEnable;
++            }
++            if (option.broadcastWave.EXT7.isShow === true) {
++                ruleOption.EXT7 = option.broadcastWave.EXT7.isEnable;
++            }
++            if (option.broadcastWave.EXT8.isShow === true) {
++                ruleOption.EXT8 = option.broadcastWave.EXT8.isEnable;
++            }
++            if (option.broadcastWave.EXT9.isShow === true) {
++                ruleOption.EXT9 = option.broadcastWave.EXT9.isEnable;
++            }
+         }
+ 
+         // genres
+@@ -1077,6 +1239,42 @@ export default class SearchState implements ISearchState {
+             return false;
+         }
+ 
++        if (broadcas.EXT1.isShow === true && broadcas.EXT1.isEnable !== true) {
++            return false;
++        }
++
++        if (broadcas.EXT2.isShow === true && broadcas.EXT2.isEnable !== true) {
++            return false;
++        }
++
++        if (broadcas.EXT3.isShow === true && broadcas.EXT3.isEnable !== true) {
++            return false;
++        }
++
++        if (broadcas.EXT4.isShow === true && broadcas.EXT4.isEnable !== true) {
++            return false;
++        }
++
++        if (broadcas.EXT5.isShow === true && broadcas.EXT5.isEnable !== true) {
++            return false;
++        }
++
++        if (broadcas.EXT6.isShow === true && broadcas.EXT6.isEnable !== true) {
++            return false;
++        }
++
++        if (broadcas.EXT7.isShow === true && broadcas.EXT7.isEnable !== true) {
++            return false;
++        }
++
++        if (broadcas.EXT8.isShow === true && broadcas.EXT8.isEnable !== true) {
++            return false;
++        }
++
++        if (broadcas.EXT9.isShow === true && broadcas.EXT9.isEnable !== true) {
++            return false;
++        }
++
+         return true;
+     }
+ 
+diff --git a/src/db/entities/Rule.ts b/src/db/entities/Rule.ts
+index 44f22f96..3671bfef 100644
+--- a/src/db/entities/Rule.ts
++++ b/src/db/entities/Rule.ts
+@@ -121,6 +121,51 @@ export default class Rule extends BaseEntity {
+     })
+     public SKY: boolean = false; // SKY
+ 
++    @Column({
++        default: false,
++    })
++    public EXT1: boolean = false;
++
++    @Column({
++        default: false,
++    })
++    public EXT2: boolean = false;
++
++    @Column({
++        default: false,
++    })
++    public EXT3: boolean = false;
++
++    @Column({
++        default: false,
++    })
++    public EXT4: boolean = false;
++
++    @Column({
++        default: false,
++    })
++    public EXT5: boolean = false;
++
++    @Column({
++        default: false,
++    })
++    public EXT6: boolean = false;
++
++    @Column({
++        default: false,
++    })
++    public EXT7: boolean = false;
++
++    @Column({
++        default: false,
++    })
++    public EXT8: boolean = false;
++
++    @Column({
++        default: false,
++    })
++    public EXT9: boolean = false;
++
+     @Column({
+         type: 'text',
+         nullable: true,
+diff --git a/src/model/api/iptv/IPTVApiModel.ts b/src/model/api/iptv/IPTVApiModel.ts
+index c9900198..decccaf8 100644
+--- a/src/model/api/iptv/IPTVApiModel.ts
++++ b/src/model/api/iptv/IPTVApiModel.ts
+@@ -79,7 +79,7 @@ class IPTVApiModel implements IIPTVApiModel {
+             startAt: now,
+             endAt: now + 1000 * 60 * 60 * 24 * days,
+             isHalfWidth: isHalfWidth,
+-            types: ['GR', 'BS', 'CS', 'SKY'],
++            types: ['GR', 'BS', 'CS', 'SKY', 'EXT1', 'EXT2', 'EXT3', 'EXT4', 'EXT5', 'EXT6', 'EXT7', 'EXT8', 'EXT9'],
+         });
+         const channels = await this.channelDB.findAll();
+ 
+diff --git a/src/model/api/schedule/ScheduleApiModel.ts b/src/model/api/schedule/ScheduleApiModel.ts
+index 21a36ede..b9e3e393 100644
+--- a/src/model/api/schedule/ScheduleApiModel.ts
++++ b/src/model/api/schedule/ScheduleApiModel.ts
+@@ -50,6 +50,33 @@ export default class ScheduleApiModel implements IScheduleApiModel {
+         if (option.SKY === true) {
+             types.push('SKY');
+         }
++        if (option.EXT1 === true) {
++            types.push('EXT1');
++        }
++        if (option.EXT2 === true) {
++            types.push('EXT2');
++        }
++        if (option.EXT3 === true) {
++            types.push('EXT3');
++        }
++        if (option.EXT4 === true) {
++            types.push('EXT4');
++        }
++        if (option.EXT5 === true) {
++            types.push('EXT5');
++        }
++        if (option.EXT6 === true) {
++            types.push('EXT6');
++        }
++        if (option.EXT7 === true) {
++            types.push('EXT7');
++        }
++        if (option.EXT8 === true) {
++            types.push('EXT8');
++        }
++        if (option.EXT9 === true) {
++            types.push('EXT9');
++        }
+ 
+         if (types.length === 0) {
+             throw new Error('GetScheduleTypesError');
+diff --git a/src/model/db/ChannelDB.ts b/src/model/db/ChannelDB.ts
+index 98daf9a7..570f7282 100644
+--- a/src/model/db/ChannelDB.ts
++++ b/src/model/db/ChannelDB.ts
+@@ -11,6 +11,7 @@ import ILoggerModel from '../ILoggerModel';
+ import IPromiseRetry from '../IPromiseRetry';
+ import IChannelDB, { ChannelUpdateValues } from './IChannelDB';
+ import IDBOperator from './IDBOperator';
++import { ChannelType } from '../../../api';
+ 
+ @injectable()
+ export default class ChannelDB implements IChannelDB {
+@@ -104,7 +105,7 @@ export default class ChannelDB implements IChannelDB {
+      * ChannelTypeId を取得する
+      * @paramChannelTypeId
+      */
+-    private getChannelTypeId(type: mapid.ChannelType): number {
++    private getChannelTypeId(type: ChannelType): number {
+         switch (type) {
+             case 'GR':
+                 return 0;
+@@ -114,8 +115,26 @@ export default class ChannelDB implements IChannelDB {
+                 return 2;
+             case 'SKY':
+                 return 3;
+-            default:
++            case 'EXT1':
+                 return 4;
++            case 'EXT2':
++                return 5;
++            case 'EXT3':
++                return 6;
++            case 'EXT4':
++                return 7;
++            case 'EXT5':
++                return 8;
++            case 'EXT6':
++                return 9;
++            case 'EXT7':
++                return 10;
++            case 'EXT8':
++                return 11;
++            case 'EXT9':
++                return 12;
++            default:
++                return 13;
+         }
+     }
+ 
+diff --git a/src/model/db/ProgramDB.ts b/src/model/db/ProgramDB.ts
+index c51192e7..e693b039 100644
+--- a/src/model/db/ProgramDB.ts
++++ b/src/model/db/ProgramDB.ts
+@@ -608,6 +608,33 @@ export default class ProgramDB implements IProgramDB {
+             if (!!searchOption.SKY === true) {
+                 channelTypes.push('SKY');
+             }
++            if (!!searchOption.EXT1 === true) {
++                channelTypes.push('EXT1');
++            }
++            if (!!searchOption.EXT2 === true) {
++                channelTypes.push('EXT2');
++            }
++            if (!!searchOption.EXT3 === true) {
++                channelTypes.push('EXT3');
++            }
++            if (!!searchOption.EXT4 === true) {
++                channelTypes.push('EXT4');
++            }
++            if (!!searchOption.EXT5 === true) {
++                channelTypes.push('EXT5');
++            }
++            if (!!searchOption.EXT6 === true) {
++                channelTypes.push('EXT6');
++            }
++            if (!!searchOption.EXT7 === true) {
++                channelTypes.push('EXT7');
++            }
++            if (!!searchOption.EXT8 === true) {
++                channelTypes.push('EXT8');
++            }
++            if (!!searchOption.EXT9 === true) {
++                channelTypes.push('EXT9');
++            }
+             this.createInQuery(query, 'channelType', channelTypes);
+         }
+     }
+diff --git a/src/model/db/RuleDB.ts b/src/model/db/RuleDB.ts
+index c25378fd..4f289675 100644
+--- a/src/model/db/RuleDB.ts
++++ b/src/model/db/RuleDB.ts
+@@ -230,6 +230,15 @@ export default class RuleDB implements IRuleDB {
+             BS: !!rule.searchOption.BS,
+             CS: !!rule.searchOption.CS,
+             SKY: !!rule.searchOption.SKY,
++            EXT1: !!rule.searchOption.EXT1,
++            EXT2: !!rule.searchOption.EXT2,
++            EXT3: !!rule.searchOption.EXT3,
++            EXT4: !!rule.searchOption.EXT4,
++            EXT5: !!rule.searchOption.EXT5,
++            EXT6: !!rule.searchOption.EXT6,
++            EXT7: !!rule.searchOption.EXT7,
++            EXT8: !!rule.searchOption.EXT8,
++            EXT9: !!rule.searchOption.EXT9,
+             channelIds:
+                 typeof rule.searchOption.channelIds === 'undefined'
+                     ? null
+@@ -332,6 +341,15 @@ export default class RuleDB implements IRuleDB {
+                 BS: rule.BS,
+                 CS: rule.CS,
+                 SKY: rule.SKY,
++                EXT1: rule.EXT1,
++                EXT2: rule.EXT2,
++                EXT3: rule.EXT3,
++                EXT4: rule.EXT4,
++                EXT5: rule.EXT5,
++                EXT6: rule.EXT6,
++                EXT7: rule.EXT7,
++                EXT8: rule.EXT8,
++                EXT9: rule.EXT9,
+                 isFree: rule.isFree,
+             },
+             reserveOption: {
+diff --git a/src/model/operator/ReserveOptionChecker.ts b/src/model/operator/ReserveOptionChecker.ts
+index 8ab67c82..e83e7e33 100644
+--- a/src/model/operator/ReserveOptionChecker.ts
++++ b/src/model/operator/ReserveOptionChecker.ts
+@@ -94,7 +94,22 @@ export default class ReserveOptionChecker implements IReserveOptionChecker {
+         // channel と 放送局
+         if (typeof option.channelIds !== 'undefined') {
+             // channleIds が有効な場合は false でないといけない
+-            if (!!option.GR === true || !!option.BS === true || !!option.CS === true || !!option.SKY === true) {
++            if (
++                !!option.GR === true ||
++                !!option.BS === true ||
++                !!option.CS === true ||
++                !!option.SKY === true ||
++                !!option.EXT1 === true ||
++                !!option.EXT2 === true ||
++                !!option.EXT3 === true ||
++                !!option.EXT4 === true ||
++                !!option.EXT5 === true ||
++                !!option.EXT6 === true ||
++                !!option.EXT7 === true ||
++                !!option.EXT8 === true ||
++                !!option.EXT9 === true
++            ) {
++                /* eslint-disable-line max-len */
+                 return false;
+             }
+         }
+diff --git a/src/model/operator/reservation/ReservationManageModel.ts b/src/model/operator/reservation/ReservationManageModel.ts
+index 9011b5b2..f56f5405 100644
+--- a/src/model/operator/reservation/ReservationManageModel.ts
++++ b/src/model/operator/reservation/ReservationManageModel.ts
+@@ -43,6 +43,15 @@ class ReservationManageModel implements IReservationManageModel {
+         BS: false,
+         CS: false,
+         SKY: false,
++        EXT1: false,
++        EXT2: false,
++        EXT3: false,
++        EXT4: false,
++        EXT5: false,
++        EXT6: false,
++        EXT7: false,
++        EXT8: false,
++        EXT9: false,
+     };
+ 
+     constructor(
+diff --git a/src/model/service/api/schedules.ts b/src/model/service/api/schedules.ts
+index 0dc16b06..60e8a005 100644
+--- a/src/model/service/api/schedules.ts
++++ b/src/model/service/api/schedules.ts
+@@ -17,6 +17,15 @@ export const get: Operation = async (req, res) => {
+             BS: req.query.BS as any,
+             CS: req.query.CS as any,
+             SKY: req.query.SKY as any,
++            EXT1: req.query.EXT1 as any,
++            EXT2: req.query.EXT2 as any,
++            EXT3: req.query.EXT3 as any,
++            EXT4: req.query.EXT4 as any,
++            EXT5: req.query.EXT5 as any,
++            EXT6: req.query.EXT6 as any,
++            EXT7: req.query.EXT7 as any,
++            EXT8: req.query.EXT8 as any,
++            EXT9: req.query.EXT9 as any,
+         };
+         if (typeof req.query.isFree === 'boolean') {
+             option.isFree = req.query.isFree;
+@@ -59,6 +68,33 @@ get.apiDoc = {
+         {
+             $ref: '#/components/parameters/requiredSKY',
+         },
++        {
++            $ref: '#/components/parameters/requiredEXT1',
++        },
++        {
++            $ref: '#/components/parameters/requiredEXT2',
++        },
++        {
++            $ref: '#/components/parameters/requiredEXT3',
++        },
++        {
++            $ref: '#/components/parameters/requiredEXT4',
++        },
++        {
++            $ref: '#/components/parameters/requiredEXT5',
++        },
++        {
++            $ref: '#/components/parameters/requiredEXT6',
++        },
++        {
++            $ref: '#/components/parameters/requiredEXT7',
++        },
++        {
++            $ref: '#/components/parameters/requiredEXT8',
++        },
++        {
++            $ref: '#/components/parameters/requiredEXT9',
++        },
+     ],
+     responses: {
+         200: {

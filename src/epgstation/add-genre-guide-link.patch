@@ -1,0 +1,287 @@
+diff --git a/client/src/components/guide/GuideDaySelectDialog.vue b/client/src/components/guide/GuideDaySelectDialog.vue
+index c8170d12..320c665d 100644
+--- a/client/src/components/guide/GuideDaySelectDialog.vue
++++ b/client/src/components/guide/GuideDaySelectDialog.vue
+@@ -52,6 +52,9 @@ export default class GuideDaySelectDialog extends Vue {
+         if (typeof this.$route.query.type === 'string') {
+             query.type = this.$route.query.type;
+         }
++        if (typeof this.$route.query.genre === 'string') {
++            query.genre = this.$route.query.genre;
++        }
+         if (typeof this.$route.query.channelId !== 'undefined') {
+             query.channelId = this.$route.query.channelId;
+         }
+diff --git a/client/src/components/guide/GuideTimeSelector.vue b/client/src/components/guide/GuideTimeSelector.vue
+index 4d1eb8eb..9f395cd2 100644
+--- a/client/src/components/guide/GuideTimeSelector.vue
++++ b/client/src/components/guide/GuideTimeSelector.vue
+@@ -83,6 +83,9 @@ export default class GuideTimeSelector extends Vue {
+         if (typeof this.broadcastValue !== 'undefined') {
+             query.type = this.broadcastValue;
+         }
++        if (typeof this.$route.query.genre === 'string') {
++            query.genre = this.$route.query.genre;
++        }
+         if (typeof this.$route.query.channelId !== 'undefined') {
+             query.channelId = this.$route.query.channelId;
+         }
+diff --git a/client/src/model/state/guide/GuideState.ts b/client/src/model/state/guide/GuideState.ts
+index 7b275f84..1e200f16 100644
+--- a/client/src/model/state/guide/GuideState.ts
++++ b/client/src/model/state/guide/GuideState.ts
+@@ -6,7 +6,7 @@ import IScheduleApiModel from '../../api/schedule/IScheduleApiModel';
+ import { ISettingStorageModel } from '../../storage/setting/ISettingStorageModel';
+ import IGuideProgramDialogState, { ProgramDialogOpenOption } from './IGuideProgramDialogState';
+ import IGuideReserveUtil, { ReserveStateItemIndex } from './IGuideReserveUtil';
+-import IGuideState, { DisplayRange, FetchGuideOption, ProgramDomItem } from './IGuideState';
++import IGuideState, { DisplayRange, FetchGuideOption, GuideGenre, ProgramDomItem } from './IGuideState';
+ 
+ interface CreateProgramDomOption {
+     top: number;
+@@ -139,6 +139,21 @@ class GuideState implements IGuideState {
+         this.startAt = startAt;
+         this.endAt = endAt;
+ 
++        const genre = option.genre;
++        if (genre) {
++            this.schedules = this.schedules
++                .map(schedule => {
++                    // チャンネルが持つ番組をフィルタする
++                    schedule.programs = schedule.programs.filter(program => GuideState.filterProgram(program, genre));
++                    return schedule;
++                })
++                // 番組表の期間内に番組を持たないチャンネルを除外
++                .filter(schedule => schedule.programs.filter(program => startAt <= program.startAt && program.endAt <= endAt).length !== 0);
++
++            // 番組表のチャンネルを並び替える
++            this.schedules.sort((a, b) => GuideState.sortSchedule(genre, a, b));
++        }
++
+         // 予約情報取得
+         this.reserveIndex = await this.reserveUtil.getReserveIndex({
+             startAt,
+@@ -209,6 +224,134 @@ class GuideState implements IGuideState {
+         }
+     }
+ 
++    private static filterProgram(program: apid.ScheduleProgramItem, genre: GuideGenre): boolean {
++        switch (genre) {
++            case 'anime':
++                // 5分未満の番組を除く
++                if (program.endAt - program.startAt < 5 * 60 * 1000) {
++                    return false;
++                }
++                // 「趣味・教育: 幼児・小学生」を除く
++                if (this.hasGenre(program, { lv1: 0xa, lv2: 0x8 })) {
++                    return false;
++                }
++                // 「趣味・教育: 中学生・高校生」を除く
++                if (this.hasGenre(program, { lv1: 0xa, lv2: 0x9 })) {
++                    return false;
++                }
++                // 「アニメ・特撮: 海外アニメ」を除く
++                if (this.hasGenre(program, { lv1: 0x7, lv2: 0x1 })) {
++                    return false;
++                }
++
++                // 「映画: アニメ」を含める
++                if (this.hasGenre(program, { lv1: 0x6, lv2: 0x2 })) {
++                    return true;
++                }
++                // 「アニメ・特撮: 国内アニメ」を含める
++                if (this.hasGenre(program, { lv1: 0x7, lv2: 0x0 })) {
++                    return true;
++                }
++
++                return false;
++
++            case 'cinema':
++                // 30分未満の番組を除く
++                if (program.endAt - program.startAt < 30 * 60 * 1000) {
++                    return false;
++                }
++                // 「情報・ワイドショー: 番組紹介・お知らせ」を除く
++                if (this.hasGenre(program, { lv1: 0x2, lv2: 0x7 })) {
++                    return false;
++                }
++
++                // 「映画: 洋画」を含める
++                if (this.hasGenre(program, { lv1: 0x6, lv2: 0x0 })) {
++                    return true;
++                }
++                // 「映画: 邦画」を含める
++                if (this.hasGenre(program, { lv1: 0x6, lv2: 0x1 })) {
++                    return true;
++                }
++                // 「映画: アニメ」を含める
++                if (this.hasGenre(program, { lv1: 0x6, lv2: 0x2 })) {
++                    return true;
++                }
++
++                return false;
++
++            default:
++                return true;
++        }
++    }
++
++    private static hasGenre(program: apid.ScheduleProgramItem, genre: { lv1: number; lv2: number | null }): boolean {
++        if (program.genre1 === genre.lv1 && (genre.lv2 === null || program.subGenre1 === genre.lv2)) {
++            return true;
++        }
++        if (program.genre2 === genre.lv1 && (genre.lv2 === null || program.subGenre2 === genre.lv2)) {
++            return true;
++        }
++        if (program.genre3 === genre.lv1 && (genre.lv2 === null || program.subGenre3 === genre.lv2)) {
++            return true;
++        }
++
++        return false;
++    }
++
++    private static sortSchedule(genre: GuideGenre, a: apid.Schedule, b: apid.Schedule): number {
++        function convertToOrder(channel: apid.ScheduleChannleItem): number {
++            switch (genre) {
++                case 'anime':
++                    switch (channel.id) {
++                        // AT-X
++                        case 700333:
++                            return 0;
++                        // TOKYO MX
++                        case 3239123608:
++                            return 1;
++                        // BS11
++                        case 400211:
++                            return 2;
++                    }
++                    break;
++
++                case 'cinema':
++                    switch (channel.id) {
++                        // スターチャンネル
++                        case 400200:
++                        case 400201:
++                        case 400202:
++                            return 0;
++                        // WOWOWシネマ
++                        case 400193:
++                            return 1;
++                        // WOWOWプライム, WOWOWライブ, WOWOWプラス
++                        case 400191:
++                        case 400192:
++                        case 400252:
++                            return 2;
++                    }
++                    break;
++            }
++
++            switch (channel.channelType) {
++                case 'GR':
++                    return 200;
++                case 'BS':
++                    return 400;
++                case 'CS':
++                    return 600;
++                case 'SKY':
++                    return 800;
++                default:
++                    return 999;
++            }
++        }
++
++        return convertToOrder(a.channel) - convertToOrder(b.channel);
++    }
++
+     /**
+      * 番組表 DOM 生成
+      * @param option: CreateProgramDomOption
+@@ -540,7 +683,11 @@ class GuideState implements IGuideState {
+      * @param type?: string 放送波種別
+      * @return string
+      */
+-    public getTitle(type?: string): string {
++    public getTitle(type?: string, genre?: string): string {
++        if (genre === 'anime') {
++            return 'アニメ番組表';
++        }
++
+         let title = '番組表';
+ 
+         if (typeof type !== 'undefined') {
+diff --git a/client/src/model/state/guide/IGuideState.ts b/client/src/model/state/guide/IGuideState.ts
+index 76b0c4e8..2fc5832e 100644
+--- a/client/src/model/state/guide/IGuideState.ts
++++ b/client/src/model/state/guide/IGuideState.ts
+@@ -1,11 +1,14 @@
+ import * as apid from '../../../../../api';
+ 
++export type GuideGenre = 'anime' | 'cinema';
++
+ export interface FetchGuideOption {
+     type?: apid.ChannelType;
+     channelId?: apid.ChannelId;
+     time?: string; // YYMMddhh
+     length: number;
+     isHalfWidth: boolean;
++    genre?: GuideGenre;
+ }
+ 
+ /**
+diff --git a/client/src/model/state/navigation/NavigationState.ts b/client/src/model/state/navigation/NavigationState.ts
+index a756d12c..53913dba 100644
+--- a/client/src/model/state/navigation/NavigationState.ts
++++ b/client/src/model/state/navigation/NavigationState.ts
+@@ -46,6 +46,28 @@ export default class NavigationState implements INavigationState {
+             });
+         }
+ 
++        newItems.push({
++            icon: 'mdi-television-guide',
++            title: '番組表 (アニメ)',
++            herf: {
++                path: '/guide',
++                query: {
++                    genre: 'anime',
++                },
++            },
++        });
++
++        newItems.push({
++            icon: 'mdi-television-guide',
++            title: '番組表 (映画)',
++            herf: {
++                path: '/guide',
++                query: {
++                    genre: 'cinema',
++                },
++            },
++        });
++
+         if (this.setting.getSavedValue().isEnableDisplayForEachBroadcastWave === true && config !== null) {
+             const types: string[] = [];
+             if (config.broadcast.GR === true) {
+diff --git a/client/src/views/Guide.vue b/client/src/views/Guide.vue
+index 7a8fb12b..e5c77ae8 100644
+--- a/client/src/views/Guide.vue
++++ b/client/src/views/Guide.vue
+@@ -1,7 +1,7 @@
+ <template>
+     <v-main>
+         <TitleBar
+-            :title="typeof $route.query.channelId === 'undefined' ? guideState.getTitle($route.query.type) : guideState.getSingleStationTitle()"
++            :title="typeof $route.query.channelId === 'undefined' ? guideState.getTitle($route.query.type, $route.query.genre) : guideState.getSingleStationTitle()"
+             :needsTitleClickEvent="true"
+             v-on:click="onTitle"
+         >
+@@ -408,6 +408,10 @@ export default class Guide extends Vue {
+             isHalfWidth: this.settingValue.isHalfWidthDisplayed,
+         };
+ 
++        if (typeof this.$route.query.genre !== 'undefined') {
++            result.genre = this.$route.query.genre as any;
++        }
++
+         if (typeof this.$route.query.type !== 'undefined') {
+             result.type = this.$route.query.type as any;
+         }

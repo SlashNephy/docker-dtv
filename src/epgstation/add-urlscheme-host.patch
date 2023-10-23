@@ -1,0 +1,114 @@
+diff --git a/api.d.ts b/api.d.ts
+index 412e9b5c..89c16b80 100644
+--- a/api.d.ts
++++ b/api.d.ts
+@@ -486,6 +486,11 @@ export interface Config {
+     recorded: string[];
+     encode: string[];
+     urlscheme: {
++        host?: string;
++        basic?: {
++            username: string;
++            password: string;
++        }
+         m2ts: URLSchemeInfo;
+         video: URLSchemeInfo;
+         download: URLSchemeInfo;
+diff --git a/client/src/model/state/onair/OnAirSelectStreamState.ts b/client/src/model/state/onair/OnAirSelectStreamState.ts
+index a00e4fed..83b8c26e 100644
+--- a/client/src/model/state/onair/OnAirSelectStreamState.ts
++++ b/client/src/model/state/onair/OnAirSelectStreamState.ts
+@@ -191,7 +191,11 @@ export default class OnAirSelectStreamState implements IOnAirSelectStreamState {
+         }
+ 
+         // URL Schemeの準備
+-        let viewURL = location.host + Util.getSubDirectory() + `/api/streams/live/${channel.id.toString(10)}/m2ts?mode=${this.selectedStreamConfig}`;
++        let host = config?.urlscheme.host ?? location.host;
++        if (config?.urlscheme.basic !== undefined) {
++            host = `${config.urlscheme.basic.username}:${config.urlscheme.basic.password}@${host}`;
++        }
++        let viewURL = host + Util.getSubDirectory() + `/api/streams/live/${channel.id.toString(10)}/m2ts?mode=${this.selectedStreamConfig}`;
+         if (urlScheme.match(/vlc-x-callback/)) {
+             viewURL = encodeURIComponent(viewURL);
+         }
+diff --git a/client/src/model/state/recorded/detail/RecordedDetailState.ts b/client/src/model/state/recorded/detail/RecordedDetailState.ts
+index 430cf1a8..c859d226 100644
+--- a/client/src/model/state/recorded/detail/RecordedDetailState.ts
++++ b/client/src/model/state/recorded/detail/RecordedDetailState.ts
+@@ -81,7 +81,11 @@ export default class RecordedDetailState implements IRecordedDetailState {
+         }
+ 
+         // URL Schemeの準備
+-        let fullVideoURL = location.host + this.getVideoRawURL(video);
++        let host = this.config?.urlscheme.host ?? location.host;
++        if (this.config?.urlscheme.basic !== undefined) {
++            host = `${this.config.urlscheme.basic.username}:${this.config.urlscheme.basic.password}@${host}`;
++        }
++        let fullVideoURL = host + this.getVideoRawURL(video);
+         if (urlScheme.match(/vlc-x-callback/)) {
+             fullVideoURL = encodeURIComponent(fullVideoURL);
+         }
+@@ -131,7 +135,11 @@ export default class RecordedDetailState implements IRecordedDetailState {
+         }
+ 
+         // URL Schemeの準備
+-        let fullVideoURL = location.host + this.getVideoDownloadRawURL(video);
++        let host = this.config?.urlscheme.host ?? location.host;
++        if (this.config?.urlscheme.basic !== undefined) {
++            host = `${this.config.urlscheme.basic.username}:${this.config.urlscheme.basic.password}@${host}`;
++        }
++        let fullVideoURL = host + this.getVideoDownloadRawURL(video);
+         if (urlScheme.match(/vlc-x-callback/)) {
+             fullVideoURL = encodeURIComponent(fullVideoURL);
+         }
+diff --git a/src/model/IConfigFile.ts b/src/model/IConfigFile.ts
+index 6a502e83..0924deea 100644
+--- a/src/model/IConfigFile.ts
++++ b/src/model/IConfigFile.ts
+@@ -158,6 +158,11 @@ export default interface IConfigFile {
+ 
+     // 視聴 URL Scheme 設定
+     urlscheme: {
++        host?: string;
++        basic?: {
++            username: string;
++            password: string;
++        };
+         m2ts: URLSchemeInfo;
+         video: URLSchemeInfo;
+         download: URLSchemeInfo;
+diff --git a/src/model/api/ApiUtil.ts b/src/model/api/ApiUtil.ts
+index 0c5a65f5..2e5f8614 100644
+--- a/src/model/api/ApiUtil.ts
++++ b/src/model/api/ApiUtil.ts
+@@ -34,7 +34,13 @@ export default class ApiUtil implements IApiUtil {
+     public getHost(baseHost: string): string {
+         const config = this.configuration.getConfig();
+ 
+-        return typeof config.subDirectory === 'undefined' ? baseHost : path.join(baseHost, config.subDirectory);
++        const host =
++            typeof config.subDirectory === 'undefined'
++                ? config.urlscheme.host ?? baseHost
++                : path.join(config.urlscheme.host ?? baseHost, config.subDirectory);
++        return config.urlscheme.basic === undefined
++            ? host
++            : `${config.urlscheme.basic.username}:${config.urlscheme.basic.password}@${host}`;
+     }
+ 
+     /**
+diff --git a/src/model/api/config/ConfigApiModel.ts b/src/model/api/config/ConfigApiModel.ts
+index 49f4ed7c..156c3956 100644
+--- a/src/model/api/config/ConfigApiModel.ts
++++ b/src/model/api/config/ConfigApiModel.ts
+@@ -52,6 +52,11 @@ export default class ConfigApiModel implements IConfigApiModel {
+         });
+ 
+         result.urlscheme = {
++            host: config.urlscheme.host,
++            basic: config.urlscheme.basic && {
++                username: config.urlscheme.basic.username,
++                password: config.urlscheme.basic.password,
++            },
+             m2ts: {
+                 ios: config.urlscheme.m2ts.ios,
+                 android: config.urlscheme.m2ts.android,

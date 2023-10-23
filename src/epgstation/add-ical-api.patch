@@ -1,0 +1,244 @@
+diff --git a/client/src/model/api/reserves/IReservesApiModel.ts b/client/src/model/api/reserves/IReservesApiModel.ts
+index 80aeaa9d..42f5c21c 100644
+--- a/client/src/model/api/reserves/IReservesApiModel.ts
++++ b/client/src/model/api/reserves/IReservesApiModel.ts
+@@ -7,6 +7,7 @@ export default interface IReservesApiModel {
+     gets(option: apid.GetReserveOption): Promise<apid.Reserves>;
+     getLists(option: apid.GetReserveListsOption): Promise<apid.ReserveLists>;
+     getCnts(): Promise<apid.ReserveCnts>;
++    getIcal(option: apid.GetReserveOption): Promise<string>;
+     cancel(reserveId: apid.ReserveId): Promise<void>;
+     removeSkip(reserveId: apid.ReserveId): Promise<void>;
+     removeOverlap(reserveId: apid.ReserveId): Promise<void>;
+diff --git a/client/src/model/api/reserves/ReservesApiModel.ts b/client/src/model/api/reserves/ReservesApiModel.ts
+index fcbd3cc6..a081b0cf 100644
+--- a/client/src/model/api/reserves/ReservesApiModel.ts
++++ b/client/src/model/api/reserves/ReservesApiModel.ts
+@@ -86,6 +86,18 @@ export default class ReservesApiModel implements IReservesApiModel {
+         return result.data;
+     }
+ 
++    /**
++     * iCalendar の取得
++     * @return Promise<string>
++     */
++    public async getIcal(option: apid.GetReserveOption): Promise<string> {
++        const result = await this.repository.getText('/reserves/ical', {
++            params: option,
++        });
++
++        return result.data;
++    }
++
+     /**
+      * 予約のキャンセル
+      * @param reserveId: ReserveId
+diff --git a/src/model/api/reserve/IReserveApiModel.ts b/src/model/api/reserve/IReserveApiModel.ts
+index 1023a84d..b766a745 100644
+--- a/src/model/api/reserve/IReserveApiModel.ts
++++ b/src/model/api/reserve/IReserveApiModel.ts
+@@ -7,6 +7,7 @@ export default interface IReserveApiModel {
+     gets(option: apid.GetReserveOption): Promise<apid.Reserves>;
+     getLists(option: apid.GetReserveListsOption): Promise<apid.ReserveLists>;
+     getCnts(): Promise<apid.ReserveCnts>;
++    getIcal(option: apid.GetReserveOption): Promise<string>;
+     cancel(reserveId: apid.ReserveId): Promise<void>;
+     removeSkip(reserveId: apid.ReserveId): Promise<void>;
+     removeOverlap(reserveId: apid.ReserveId): Promise<void>;
+diff --git a/src/model/api/reserve/ReserveApiModel.ts b/src/model/api/reserve/ReserveApiModel.ts
+index 7f44c600..d6195d7e 100644
+--- a/src/model/api/reserve/ReserveApiModel.ts
++++ b/src/model/api/reserve/ReserveApiModel.ts
+@@ -3,6 +3,8 @@ import * as apid from '../../../../api';
+ import Reserve from '../../../db/entities/Reserve';
+ import IReserveDB from '../../db/IReserveDB';
+ import IIPCClient from '../../ipc/IIPCClient';
++import container from '../../ModelContainer';
++import IChannelApiModel from '../channel/IChannelApiModel';
+ import IReserveApiModel from './IReserveApiModel';
+ 
+ @injectable()
+@@ -307,4 +309,82 @@ export default class ReserveApiModel implements IReserveApiModel {
+     public updateAll(): Promise<void> {
+         return this.ipc.reserveation.updateAll(false);
+     }
++
++    /**
++     * iCalendar の取得
++     * @param option: GetReserveOption
++     * @return Promise<string>
++     */
++    public async getIcal(option: apid.GetReserveOption): Promise<string> {
++        const [reserves, _] = await this.reserveDB.findAll(option);
++        const items = reserves.map(r => {
++            return this.toReserveItem(r, option.isHalfWidth);
++        });
++
++        const stamp = (new Date()).getTime();
++        const channels = await this.getChannelNames(option.isHalfWidth);
++
++        const content = [
++            'BEGIN:VCALENDAR',
++            'PRODID:-//EPGStation//EPGStation//JA',
++            'VERSION:2.0',
++            'CALSCALE:GREGORIAN',
++            'METHOD:PUBLISH',
++            'X-WR-CALNAME:EPGStation 予約',
++            'X-WR-CALDESC:EPGStationで予約されている番組の放送スケジュール'
++        ];
++
++        items.forEach(r => {
++            let description = `DESCRIPTION:${r.description?.replace(/\r?\n/g, "\\n")}\\n\\n${r.extended?.replace(/\r?\n/g, "\\n")}`;
++            description = description.match(/.{1,75}/g)!.join("\r\n\t");
++
++            content.push(...[
++                'BEGIN:VEVENT',
++                `UID:reserves_${r.id}_${r.channelId}_${r.programId}`,
++                `DTSTAMP:${this.getIcalTimestamp(stamp)}`,
++                `DTSTART:${this.getIcalTimestamp(r.startAt)}`,
++                `DTEND:${this.getIcalTimestamp(r.endAt)}`,
++                `SUMMARY:${r.name}`,
++                `LOCATION:${channels.get(r.channelId) ?? r.channelId}`,
++                `${description}`,
++                'CLASS:PUBLIC',
++                'SEQUENCE:0',
++                'PRIORITY:0',
++                'STATUS:CONFIRMED',
++                'TRANSP:TRANSPARENT',
++                'END:VEVENT'
++            ]);
++        });
++        content.push('END:VCALENDAR');
++
++        return content.join("\r\n");
++    }
++
++    private async getChannelNames(isHalfWidth: boolean): Promise<Map<number, string>> {
++        const channelApiModel = container.get<IChannelApiModel>('IChannelApiModel');
++        const channels = await channelApiModel.getChannels();
++
++        const result = new Map();
++        channels.forEach(c => {
++            result.set(c.id, isHalfWidth ? c.halfWidthName : c.name);
++        })
++
++        return result;
++    }
++
++    private getIcalTimestamp(time: number): string {
++        function pad(n: number): string {
++            return n < 10 ? '0' + n : n.toString();
++        }
++
++        const date = new Date(time);
++        return date.getUTCFullYear()
++            + pad(date.getUTCMonth() + 1)
++            + pad(date.getUTCDate())
++            + 'T'
++            + pad(date.getUTCHours())
++            + pad(date.getUTCMinutes())
++            + pad(date.getUTCSeconds())
++            + 'Z';
++    }
+ }
+diff --git a/src/model/service/api.ts b/src/model/service/api.ts
+index b240bfc1..24c29ec1 100644
+--- a/src/model/service/api.ts
++++ b/src/model/service/api.ts
+@@ -61,6 +61,13 @@ export const responsePlayList = (req: express.Request, res: express.Response, li
+     res.end();
+ };
+ 
++export const responseText = (res: express.Response, content: string, mime: string): void => {
++    res.setHeader('Content-Type', mime);
++    res.status(200);
++    res.write(content);
++    res.end();
++};
++
+ export const responseFile = (
+     req: express.Request,
+     res: express.Response,
+diff --git a/src/model/service/api/reserves/ical.ts b/src/model/service/api/reserves/ical.ts
+new file mode 100644
+index 00000000..70fee887
+--- /dev/null
++++ b/src/model/service/api/reserves/ical.ts
+@@ -0,0 +1,77 @@
++import { Operation } from 'express-openapi';
++import * as apid from '../../../../../api';
++import IReserveApiModel from '../../../api/reserve/IReserveApiModel';
++import container from '../../../ModelContainer';
++import * as api from '../../api';
++
++export const get: Operation = async (req, res) => {
++    const reserveApiModel = container.get<IReserveApiModel>('IReserveApiModel');
++
++    try {
++        const option: apid.GetReserveOption = {
++            isHalfWidth: req.query.isHalfWidth as any,
++        };
++        if (typeof req.query.type !== 'undefined') {
++            option.type = req.query.type as any;
++        }
++        if (typeof req.query.ruleId !== 'undefined') {
++            option.ruleId = parseInt(req.query.ruleId as any, 10);
++        }
++        if (typeof req.query.offset !== 'undefined') {
++            option.offset = parseInt(req.query.offset as any, 10);
++        }
++        if (typeof req.query.limit !== 'undefined') {
++            option.limit = parseInt(req.query.limit as any, 10);
++        }
++
++        const content = await reserveApiModel.getIcal(option);
++        api.responseText(res, content, 'text/calendar');
++    } catch (err: any) {
++        api.responseServerError(res, err.message);
++    }
++};
++
++get.apiDoc = {
++    summary: 'iCalendar 取得',
++    tags: ['reserves'],
++    description: 'iCalendar を取得する',
++    parameters: [
++        {
++            $ref: '#/components/parameters/Offset',
++        },
++        {
++            $ref: '#/components/parameters/Limit',
++        },
++        {
++            $ref: '#/components/parameters/GetReserveType',
++        },
++        {
++            $ref: '#/components/parameters/IsHalfWidth',
++        },
++        {
++            $ref: '#/components/parameters/QueryRuleId',
++        },
++    ],
++    responses: {
++        200: {
++            description: 'iCalendar を取得しました',
++            content: {
++                'text/calendar': {
++                    schema: {
++                        type: 'string',
++                    },
++                },
++            },
++        },
++        default: {
++            description: '予期しないエラー',
++            content: {
++                'application/json': {
++                    schema: {
++                        $ref: '#/components/schemas/Error',
++                    },
++                },
++            },
++        },
++    },
++};

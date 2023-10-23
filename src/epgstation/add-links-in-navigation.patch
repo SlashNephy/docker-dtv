@@ -1,0 +1,64 @@
+diff --git a/client/src/components/navigation/Navigation.vue b/client/src/components/navigation/Navigation.vue
+index c3ece065..add02b80 100644
+--- a/client/src/components/navigation/Navigation.vue
++++ b/client/src/components/navigation/Navigation.vue
+@@ -103,9 +103,13 @@ export default class Navigation extends Vue {
+             await Util.sleep(200);
+         }
+
+-        Util.move(this.$router, item.herf).catch(err => {
+-            console.error(err);
+-        });
++        if (item.herf.path?.startsWith('https://') === true) {
++            window.open(item.herf.path!, '_blank');
++        } else {
++            Util.move(this.$router, item.herf).catch(err => {
++                console.error(err);
++            });
++        }
+     }
+
+     @Watch('$route', { immediate: true, deep: true })
+diff --git a/client/src/model/state/navigation/NavigationState.ts b/client/src/model/state/navigation/NavigationState.ts
+index a756d12c..2f9e5ebe 100644
+--- a/client/src/model/state/navigation/NavigationState.ts
++++ b/client/src/model/state/navigation/NavigationState.ts
+@@ -34,6 +34,38 @@ export default class NavigationState implements INavigationState {
+             },
+         });
+
++        if (window.location.hostname === 'epgstation.starry.blue') {
++            newItems.push({
++                icon: 'mdi-alert-circle-outline',
++                title: 'Documents',
++                herf: {
++                    path: 'https://docs.starry.blue',
++                },
++            });
++            newItems.push({
++                icon: 'mdi-database-lock-outline',
++                title: '録画ストレージ',
++                herf: {
++                    path: 'https://files.starry.blue/mnt/',
++                },
++            });
++            newItems.push({
++                icon: 'mdi-antenna',
++                title: 'Mahiron',
++                herf: {
++                    path: 'https://mahiron.starry.blue/',
++                },
++            });
++        }
++
++        newItems.push({
++            icon: 'mdi-wizard-hat',
++            title: 'elaina',
++            herf: {
++                path: 'https://elaina-hat.vercel.app/',
++            },
++        });
++
+         const config = this.serverConfig.getConfig();
+
+         if (config !== null && config.isEnableTSLiveStream === true) {

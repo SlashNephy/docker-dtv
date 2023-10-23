@@ -1,0 +1,21 @@
+name: epgstation
+
+on:
+  push:
+    paths:
+      - 'src/epgstation/**'
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+  actions: read
+  security-events: write
+
+jobs:
+  build:
+    uses: SlashNephy/.github/.github/workflows/docker-build.yml@master
+    with:
+      image-name: ghcr.io/slashnephy/epgstation
+      context: src/epgstation

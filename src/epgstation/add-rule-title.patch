@@ -1,0 +1,286 @@
+diff --git a/api.d.ts b/api.d.ts
+index 71f5a615..8fa81be8 100644
+--- a/api.d.ts
++++ b/api.d.ts
+@@ -215,6 +215,8 @@ export interface RuleKeywordInfo {
+  * Rule 追加オプション
+  */
+ export interface AddRuleOption {
++    title?: string;
++    comment?: string;
+     isTimeSpecification: boolean;
+     searchOption: RuleSearchOption;
+     reserveOption: RuleReserveOption;
+diff --git a/api.yml b/api.yml
+index c5c8654a..baaf5d4b 100644
+--- a/api.yml
++++ b/api.yml
+@@ -535,6 +535,10 @@ components:
+                 - searchOption
+                 - reserveOption
+             properties:
++                title:
++                    type: string
++                comment:
++                    type: string
+                 isTimeSpecification:
+                     description: 時刻指定予約か
+                     type: boolean
+diff --git a/client/src/components/rules/RuleListItens.vue b/client/src/components/rules/RuleListItens.vue
+index 893c459a..039c2ae1 100644
+--- a/client/src/components/rules/RuleListItens.vue
++++ b/client/src/components/rules/RuleListItens.vue
+@@ -9,7 +9,7 @@
+                             <!--
+                             {{ item.keyword }}
+                             -->
+-                            <v-list-item-title class="subtitle-1">{{ item.display.keyword }}</v-list-item-title>
++                            <v-list-item-title class="subtitle-1">{{ item.display.title }}</v-list-item-title>
+                         </div>
+                         <div class="menu d-flex align-center">
+                             <span class="mx-2 grey--text text--lighten-1">{{ item.display.reservationsCnt }}</span>
+diff --git a/client/src/components/rules/RuleTableItems.vue b/client/src/components/rules/RuleTableItems.vue
+index 6f437bc7..4b2888e8 100644
+--- a/client/src/components/rules/RuleTableItems.vue
++++ b/client/src/components/rules/RuleTableItems.vue
+@@ -5,10 +5,9 @@
+                 <thead>
+                     <tr>
+                         <td class="text-left toggle"></td>
+-                        <td class="text-left">キーワード</td>
+-                        <td class="text-left">除外キーワード</td>
++                        <td class="text-left">名称</td>
++                        <td class="text-left">概要</td>
+                         <td class="text-left">放送局</td>
+-                        <td class="text-left">ジャンル</td>
+                         <td class="text-left reserve-cnt">予約数</td>
+                         <td class="text-left menu"></td>
+                     </tr>
+@@ -18,10 +17,9 @@
+                         <td class="toggle">
+                             <v-switch v-if="isEditMode === false" v-model="item.display.isEnable" hide-details dense value v-on:change="changeState(item)"></v-switch>
+                         </td>
+-                        <td>{{ item.display.keyword }}</td>
+-                        <td>{{ item.display.ignoreKeyword }}</td>
++                        <td>{{ item.display.title }}</td>
++                        <td>{{ item.display.comment }}</td>
+                         <td>{{ item.display.channels }}</td>
+-                        <td>{{ item.display.genres }}</td>
+                         <td class="reserve-cnt reserve-cnt-body">{{ item.display.reservationsCnt }}</td>
+                         <td class="menu">
+                             <RuleItemMenu v-if="isEditMode === false" :ruleItem="item"></RuleItemMenu>
+diff --git a/client/src/components/search/SearchRuleOption.vue b/client/src/components/search/SearchRuleOption.vue
+index 87ba0748..7572ee15 100644
+--- a/client/src/components/search/SearchRuleOption.vue
++++ b/client/src/components/search/SearchRuleOption.vue
+@@ -3,6 +3,15 @@
+         <v-card class="mx-auto" max-width="800">
+             <div class="pa-4">
+                 <v-expansion-panels :value.sync="searchState.optionPanel" accordion multiple flat class="option-panels">
++                    <v-expansion-panel>
++                        <v-expansion-panel-header>情報</v-expansion-panel-header>
++                        <v-expansion-panel-content>
++                            <SearchOptionRow>
++                                <v-text-field v-model="searchState.title" label="ルール名称" clearable></v-text-field>
++                                <v-textarea v-model="searchState.comment" label="ルール概要" clearable></v-textarea>
++                            </SearchOptionRow>
++                        </v-expansion-panel-content>
++                    </v-expansion-panel>
+                     <v-expansion-panel>
+                         <v-expansion-panel-header>オプション</v-expansion-panel-header>
+                         <v-expansion-panel-content>
+diff --git a/client/src/model/state/rule/IRuleState.ts b/client/src/model/state/rule/IRuleState.ts
+index 1aba726d..aedaa58e 100644
+--- a/client/src/model/state/rule/IRuleState.ts
++++ b/client/src/model/state/rule/IRuleState.ts
+@@ -6,6 +6,8 @@ export interface RuleFetchOption extends apid.GetRuleOption {
+ 
+ export interface RuleStateDisplayData {
+     id: apid.RuleId;
++    title: string;
++    comment: string;
+     isEnable: boolean;
+     keyword: string;
+     ignoreKeyword: string;
+diff --git a/client/src/model/state/rule/RuleState.ts b/client/src/model/state/rule/RuleState.ts
+index 0adb17ab..62d9c819 100644
+--- a/client/src/model/state/rule/RuleState.ts
++++ b/client/src/model/state/rule/RuleState.ts
+@@ -60,7 +60,21 @@ export default class RuleState implements IRuleState {
+     private convertRuleItemToStateData(r: apid.Rule, isHalfWidth: boolean, isSelectedIndex: SelectedIndex): RuleStateData {
+         let channelStr = '';
+         if (typeof r.searchOption.channelIds === 'undefined' || r.searchOption.channelIds.length === 0) {
+-            channelStr = '-';
++            const channelTypes = [];
++            if (r.searchOption.GR) {
++                channelTypes.push('GR');
++            }
++            if (r.searchOption.BS) {
++                channelTypes.push('BS');
++            }
++            if (r.searchOption.CS) {
++                channelTypes.push('CS');
++            }
++            if (r.searchOption.SKY) {
++                channelTypes.push('SKY');
++            }
++
++            channelStr = channelTypes.length > 0 ? channelTypes.join(', ') : '-';
+         } else {
+             const channel = this.channelModel.findChannel(r.searchOption.channelIds[0], isHalfWidth);
+             channelStr = channel === null ? r.searchOption.channelIds[0].toString(10) : channel.name;
+@@ -89,9 +103,59 @@ export default class RuleState implements IRuleState {
+             }
+         }
+ 
++        function truncate(text: string, n: number): string {
++            if (text.length > n) {
++                return `${text.substring(0, n)}…`;
++            } else {
++                return text;
++            }
++        }
++
++        let comment = r.comment ?? '';
++        if (typeof r.comment === 'undefined') {
++            const conditions: {
++                text: string;
++                continuous_phrase: string;
++                terminus_phrase: string;
++            }[] = [];
++
++            if (typeof r.searchOption.keyword !== 'undefined') {
++                conditions.push({
++                    text: `「${truncate(r.searchOption.keyword, 15)}」を`,
++                    continuous_phrase: '含み',
++                    terminus_phrase: '含む',
++                });
++            }
++            if (typeof r.searchOption.ignoreKeyword !== 'undefined') {
++                conditions.push({
++                    text: `「${truncate(r.searchOption.ignoreKeyword, 15)}」を`,
++                    continuous_phrase: '含まない',
++                    terminus_phrase: '含まない',
++                });
++            }
++            if (genreStr !== '-') {
++                conditions.push({
++                    text: `「${genreStr}」ジャンル`,
++                    continuous_phrase: 'であり',
++                    terminus_phrase: 'の',
++                });
++            }
++
++            for (let i = 0; i < conditions.length - 1; i++) {
++                const confition = conditions[i];
++                comment += `${confition.text}${confition.continuous_phrase}、`;
++            }
++            if (conditions.length > 0) {
++                const condition = conditions[conditions.length - 1];
++                comment += `${condition.text}${condition.terminus_phrase}番組。`;
++            }
++        }
++
+         return {
+             display: {
+                 id: r.id,
++                title: r.title ?? `-`,
++                comment: comment,
+                 isEnable: r.reserveOption.enable,
+                 keyword: typeof r.searchOption.keyword === 'undefined' ? '-' : r.searchOption.keyword,
+                 ignoreKeyword: typeof r.searchOption.ignoreKeyword === 'undefined' ? '-' : r.searchOption.ignoreKeyword,
+diff --git a/client/src/model/state/search/SearchState.ts b/client/src/model/state/search/SearchState.ts
+index 1ae2758f..e4fb336a 100644
+--- a/client/src/model/state/search/SearchState.ts
++++ b/client/src/model/state/search/SearchState.ts
+@@ -32,6 +32,8 @@ import ISearchState, {
+ @injectable()
+ export default class SearchState implements ISearchState {
+     public isTimeSpecification: boolean = false;
++    public title: string | null = null;
++    public comment: string | null = null;
+     public searchOption: SearchOption | null = null;
+     public timeReserveOption: TimeReserveOption | null = null;
+     public reserveOption: ReserveOption | null = null;
+@@ -132,6 +134,8 @@ export default class SearchState implements ISearchState {
+     public async init(ruleId: apid.RuleId | null = null): Promise<void> {
+         this.ruleId = ruleId;
+         this.isTimeSpecification = false;
++        this.title = null;
++        this.comment = null;
+         this.initSearchOption();
+         this.initTimeReserveOption();
+         this.initReserveOption();
+@@ -338,6 +342,9 @@ export default class SearchState implements ISearchState {
+      */
+     private setRuleOption(rule: apid.Rule): void {
+         this.isTimeSpecification = rule.isTimeSpecification;
++        this.title = rule.title ?? null;
++        this.comment = rule.comment ?? null;
++
+         if (this.isTimeSpecification === true) {
+             this.setTimeReserveRuleSearchOption(rule.searchOption);
+         } else {
+@@ -1222,6 +1229,8 @@ export default class SearchState implements ISearchState {
+             }
+ 
+             rule = {
++                title: this.title ?? undefined,
++                comment: this.comment ?? undefined,
+                 isTimeSpecification: false,
+                 searchOption: this.createRuleSearchOption(this.searchOption),
+                 reserveOption: this.createRuleReserveOption(this.reserveOption),
+@@ -1235,6 +1244,8 @@ export default class SearchState implements ISearchState {
+             }
+ 
+             rule = {
++                title: this.title ?? undefined,
++                comment: this.comment ?? undefined,
+                 isTimeSpecification: true,
+                 searchOption: this.createTimeSpecificationRuleSearchOption(this.timeReserveOption),
+                 reserveOption: this.createRuleReserveOption(this.reserveOption),
+diff --git a/src/db/entities/Rule.ts b/src/db/entities/Rule.ts
+index 44f22f96..347d426e 100644
+--- a/src/db/entities/Rule.ts
++++ b/src/db/entities/Rule.ts
+@@ -10,6 +10,18 @@ export default class Rule extends BaseEntity {
+     })
+     public id!: number;
+ 
++    @Column({
++        type: 'text',
++        nullable: true,
++    })
++    public title: string | null = null;
++
++    @Column({
++        type: 'text',
++        nullable: true,
++    })
++    public comment: string | null = null;
++
+     @Column({
+         type: 'integer',
+         default: 0,
+diff --git a/src/model/db/RuleDB.ts b/src/model/db/RuleDB.ts
+index 3712a439..08838c71 100644
+--- a/src/model/db/RuleDB.ts
++++ b/src/model/db/RuleDB.ts
+@@ -205,6 +205,8 @@ export default class RuleDB implements IRuleDB {
+      */
+     private convertRuleToDBRule(rule: RuleWithCnt | apid.Rule | apid.AddRuleOption): Rule {
+         const convertedRule: Rule = <any>{
++            title: rule.title ?? null,
++            comment: rule.comment ?? null,
+             updateCnt: typeof rule === 'undefined' ? 0 : (<RuleWithCnt>rule).updateCnt,
+             isTimeSpecification: rule.isTimeSpecification,
+             keyword: typeof rule.searchOption.keyword === 'undefined' ? null : rule.searchOption.keyword,
+@@ -315,6 +317,8 @@ export default class RuleDB implements IRuleDB {
+     private convertDBRuleToRule(rule: Rule): RuleWithCnt {
+         const convertedRule: RuleWithCnt = {
+             id: rule.id,
++            title: rule.title ?? undefined,
++            comment: rule.comment ?? undefined,
+             updateCnt: rule.updateCnt,
+             isTimeSpecification: rule.isTimeSpecification,
+             searchOption: {

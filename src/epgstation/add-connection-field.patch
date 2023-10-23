@@ -1,0 +1,477 @@
+diff --git a/.eslintrc.json b/.eslintrc.json
+index 1b657918..80c4db36 100644
+--- a/.eslintrc.json
++++ b/.eslintrc.json
+@@ -28,6 +28,7 @@
+             "ignoreUrls": true,
+             "ignoreStrings": true,
+             "ignoreRegExpLiterals": true
+-        }]
++        }],
++        "prettier/prettier": 0
+     }
+ }
+diff --git a/api.d.ts b/api.d.ts
+index 412e9b5c..93c3d796 100644
+--- a/api.d.ts
++++ b/api.d.ts
+@@ -679,6 +679,7 @@ export interface LiveStreamInfoItem {
+     description?: string;
+     extended?: string;
+     rawExtended?: RawExtended;
++    connection?: string;
+ }
+ 
+ /**
+diff --git a/src/model/api/stream/IStreamApiModel.ts b/src/model/api/stream/IStreamApiModel.ts
+index e7156e08..ccc222a0 100644
+--- a/src/model/api/stream/IStreamApiModel.ts
++++ b/src/model/api/stream/IStreamApiModel.ts
+@@ -8,14 +8,35 @@ export interface StreamResponse {
+ }
+ 
+ export default interface IStreamApiModel {
+-    startLiveM2TsStream(option: apid.LiveStreamOption): Promise<StreamResponse>;
+-    startLiveM2TsLLStream(option: apid.LiveStreamOption): Promise<StreamResponse>;
+-    startLiveWebmStream(option: apid.LiveStreamOption): Promise<StreamResponse>;
+-    startMp4Stream(option: apid.LiveStreamOption): Promise<StreamResponse>;
+-    startLiveHLSStream(option: apid.LiveStreamOption): Promise<apid.StreamId>;
+-    startRecordedWebMStream(option: apid.RecordedStreanOption): Promise<StreamResponse>;
+-    startRecordedMp4Stream(option: apid.RecordedStreanOption): Promise<StreamResponse>;
+-    startRecordedHLSStream(option: apid.RecordedStreanOption): Promise<apid.StreamId>;
++    startLiveM2TsStream(
++        option: apid.LiveStreamOption,
++        connection: string | string[] | undefined,
++    ): Promise<StreamResponse>;
++    startLiveM2TsLLStream(
++        option: apid.LiveStreamOption,
++        connection: string | string[] | undefined,
++    ): Promise<StreamResponse>;
++    startLiveWebmStream(
++        option: apid.LiveStreamOption,
++        connection: string | string[] | undefined,
++    ): Promise<StreamResponse>;
++    startMp4Stream(option: apid.LiveStreamOption, connection: string | string[] | undefined): Promise<StreamResponse>;
++    startLiveHLSStream(
++        option: apid.LiveStreamOption,
++        connection: string | string[] | undefined,
++    ): Promise<apid.StreamId>;
++    startRecordedWebMStream(
++        option: apid.RecordedStreanOption,
++        connection: string | string[] | undefined,
++    ): Promise<StreamResponse>;
++    startRecordedMp4Stream(
++        option: apid.RecordedStreanOption,
++        connection: string | string[] | undefined,
++    ): Promise<StreamResponse>;
++    startRecordedHLSStream(
++        option: apid.RecordedStreanOption,
++        connection: string | string[] | undefined,
++    ): Promise<apid.StreamId>;
+     getLiveM2TsStreamM3u8(host: string, isSecure: boolean, option: apid.LiveStreamOption): Promise<IPlayList | null>;
+     stop(streamId: apid.StreamId, isForce?: boolean): Promise<void>;
+     stopAll(): Promise<void>;
+diff --git a/src/model/api/stream/StreamApiModel.ts b/src/model/api/stream/StreamApiModel.ts
+index 86fb6c56..b0db8d6a 100644
+--- a/src/model/api/stream/StreamApiModel.ts
++++ b/src/model/api/stream/StreamApiModel.ts
+@@ -68,7 +68,7 @@ export default class StreamApiModel implements IStreamApiModel {
+      * @param option: apid.LiveStreamOption
+      * @return Promise<StreamResponse>
+      */
+-    public async startLiveM2TsStream(option: apid.LiveStreamOption): Promise<StreamResponse> {
++    public async startLiveM2TsStream(option: apid.LiveStreamOption, connection: string | string[] | undefined | string[] | undefined): Promise<StreamResponse> {
+         const conf = this.getTsLiveConfig('m2ts', option.mode);
+ 
+         // stream 生成
+@@ -77,6 +77,7 @@ export default class StreamApiModel implements IStreamApiModel {
+             {
+                 channelId: option.channelId,
+                 cmd: conf.cmd,
++                connection: Array.isArray(connection) ? connection[0] : connection,
+             },
+             option.mode,
+         );
+@@ -95,7 +96,7 @@ export default class StreamApiModel implements IStreamApiModel {
+      * @param option: apid.LiveStreamOption
+      * @return Promise<StreamResponse>
+      */
+-    public async startLiveM2TsLLStream(option: apid.LiveStreamOption): Promise<StreamResponse> {
++    public async startLiveM2TsLLStream(option: apid.LiveStreamOption, connection: string | string[] | undefined): Promise<StreamResponse> {
+         const conf = this.getTsLiveConfig('m2tsll', option.mode);
+ 
+         // stream 生成
+@@ -104,6 +105,7 @@ export default class StreamApiModel implements IStreamApiModel {
+             {
+                 channelId: option.channelId,
+                 cmd: conf.cmd,
++                connection: Array.isArray(connection) ? connection[0] : connection,
+             },
+             option.mode,
+         );
+@@ -122,7 +124,7 @@ export default class StreamApiModel implements IStreamApiModel {
+      * @param option: apid.LiveStreamOption
+      * @return Promise<StreamResponse>
+      */
+-    public async startLiveWebmStream(option: apid.LiveStreamOption): Promise<StreamResponse> {
++    public async startLiveWebmStream(option: apid.LiveStreamOption, connection: string | string[] | undefined): Promise<StreamResponse> {
+         const conf = this.getTsLiveConfig('webm', option.mode);
+ 
+         // stream 生成
+@@ -131,6 +133,7 @@ export default class StreamApiModel implements IStreamApiModel {
+             {
+                 channelId: option.channelId,
+                 cmd: conf.cmd,
++                connection: Array.isArray(connection) ? connection[0] : connection,
+             },
+             option.mode,
+         );
+@@ -149,7 +152,7 @@ export default class StreamApiModel implements IStreamApiModel {
+      * @param option: apid.LiveStreamOption
+      * @return Promise<StreamResponse>
+      */
+-    public async startMp4Stream(option: apid.LiveStreamOption): Promise<StreamResponse> {
++    public async startMp4Stream(option: apid.LiveStreamOption, connection: string | string[] | undefined): Promise<StreamResponse> {
+         const conf = this.getTsLiveConfig('mp4', option.mode);
+ 
+         // stream 生成
+@@ -158,6 +161,7 @@ export default class StreamApiModel implements IStreamApiModel {
+             {
+                 channelId: option.channelId,
+                 cmd: conf.cmd,
++                connection: Array.isArray(connection) ? connection[0] : connection,
+             },
+             option.mode,
+         );
+@@ -176,7 +180,7 @@ export default class StreamApiModel implements IStreamApiModel {
+      * @param option: apid.LiveStreamOption
+      * @return Promise<apid.StreamId>
+      */
+-    public async startLiveHLSStream(option: apid.LiveStreamOption): Promise<apid.StreamId> {
++    public async startLiveHLSStream(option: apid.LiveStreamOption, connection: string | string[] | undefined): Promise<apid.StreamId> {
+         const conf = this.getTsLiveConfig('hls', option.mode);
+ 
+         // stream 生成
+@@ -185,6 +189,7 @@ export default class StreamApiModel implements IStreamApiModel {
+             {
+                 channelId: option.channelId,
+                 cmd: conf.cmd,
++                connection: Array.isArray(connection) ? connection[0] : connection,
+             },
+             option.mode,
+         );
+@@ -222,7 +227,10 @@ export default class StreamApiModel implements IStreamApiModel {
+      * @param option: apid.LiveStreamOption
+      * @return Promise<StreamResponse>
+      */
+-    public async startRecordedWebMStream(option: apid.RecordedStreanOption): Promise<StreamResponse> {
++    public async startRecordedWebMStream(
++        option: apid.RecordedStreanOption,
++        connection: string | string[] | undefined,
++    ): Promise<StreamResponse> {
+         const conf = await this.getRecordedVideoConfig('webm', option);
+ 
+         // stream 生成
+@@ -232,6 +240,7 @@ export default class StreamApiModel implements IStreamApiModel {
+                 videoFileId: option.videoFileId,
+                 playPosition: option.playPosition,
+                 cmd: conf.cmd,
++                connection: Array.isArray(connection) ? connection[0] : connection,
+             },
+             option.mode,
+         );
+@@ -250,7 +259,10 @@ export default class StreamApiModel implements IStreamApiModel {
+      * @param option: apid.LiveStreamOption
+      * @return Promise<StreamResponse>
+      */
+-    public async startRecordedMp4Stream(option: apid.RecordedStreanOption): Promise<StreamResponse> {
++    public async startRecordedMp4Stream(
++        option: apid.RecordedStreanOption,
++        connection: string | string[] | undefined,
++    ): Promise<StreamResponse> {
+         const conf = await this.getRecordedVideoConfig('mp4', option);
+ 
+         // stream 生成
+@@ -260,6 +272,7 @@ export default class StreamApiModel implements IStreamApiModel {
+                 videoFileId: option.videoFileId,
+                 playPosition: option.playPosition,
+                 cmd: conf.cmd,
++                connection: Array.isArray(connection) ? connection[0] : connection,
+             },
+             option.mode,
+         );
+@@ -278,7 +291,7 @@ export default class StreamApiModel implements IStreamApiModel {
+      * @param option: apid.LiveStreamOption
+      * @return Promise<apid.StreamId>
+      */
+-    public async startRecordedHLSStream(option: apid.RecordedStreanOption): Promise<apid.StreamId> {
++    public async startRecordedHLSStream(option: apid.RecordedStreanOption, connection: string | string[] | undefined): Promise<apid.StreamId> {
+         const conf = await this.getRecordedVideoConfig('hls', option);
+ 
+         // stream 生成
+@@ -288,6 +301,7 @@ export default class StreamApiModel implements IStreamApiModel {
+                 videoFileId: option.videoFileId,
+                 playPosition: option.playPosition,
+                 cmd: conf.cmd,
++                connection: Array.isArray(connection) ? connection[0] : connection,
+             },
+             option.mode,
+         );
+@@ -437,6 +451,7 @@ export default class StreamApiModel implements IStreamApiModel {
+                     name: '',
+                     startAt: 0,
+                     endAt: 0,
++                    connection: info.info.connection,
+                 };
+                 const program = await this.programDB.findChannelIdAndTime(info.info.channelId, now);
+                 if (program !== null) {
+@@ -471,6 +486,7 @@ export default class StreamApiModel implements IStreamApiModel {
+                     endAt: 0,
+                     viodeFileId: info.info.videoFileId,
+                     recordedId: 0,
++                    connection: info.info.connection,
+                 };
+ 
+                 const videoFile = await this.videoFileDB.findId(info.info.videoFileId);
+diff --git a/src/model/service/api/streams/live/{channelId}/hls.ts b/src/model/service/api/streams/live/{channelId}/hls.ts
+index 1e3dd35f..d12dec5e 100644
+--- a/src/model/service/api/streams/live/{channelId}/hls.ts
++++ b/src/model/service/api/streams/live/{channelId}/hls.ts
+@@ -7,10 +7,13 @@ export const get: Operation = async (req, res) => {
+     const streamApiModel = container.get<IStreamApiModel>('IStreamApiModel');
+ 
+     try {
+-        const streamId = await streamApiModel.startLiveHLSStream({
+-            channelId: parseInt(req.params.channelId, 10),
+-            mode: parseInt(req.query.mode as string, 10),
+-        });
++        const streamId = await streamApiModel.startLiveHLSStream(
++            {
++                channelId: parseInt(req.params.channelId, 10),
++                mode: parseInt(req.query.mode as string, 10),
++            },
++            req.headers['x-forwarded-for'] || req.socket.remoteAddress,
++        );
+         api.responseJSON(res, 200, {
+             streamId: streamId,
+         });
+diff --git a/src/model/service/api/streams/live/{channelId}/m2ts.ts b/src/model/service/api/streams/live/{channelId}/m2ts.ts
+index 614cf13f..91df9372 100644
+--- a/src/model/service/api/streams/live/{channelId}/m2ts.ts
++++ b/src/model/service/api/streams/live/{channelId}/m2ts.ts
+@@ -26,10 +26,13 @@ export const get: Operation = async (req, res) => {
+     });
+ 
+     try {
+-        result = await streamApiModel.startLiveM2TsStream({
+-            channelId: parseInt(req.params.channelId, 10),
+-            mode: parseInt(req.query.mode as string, 10),
+-        });
++        result = await streamApiModel.startLiveM2TsStream(
++            {
++                channelId: parseInt(req.params.channelId, 10),
++                mode: parseInt(req.query.mode as string, 10),
++            },
++            req.headers['x-forwarded-for'] || req.socket.remoteAddress,
++        );
+         keepTimer = setInterval(() => {
+             streamApiModel.keep(result.streamId);
+         }, 10 * 1000);
+diff --git a/src/model/service/api/streams/live/{channelId}/m2tsll.ts b/src/model/service/api/streams/live/{channelId}/m2tsll.ts
+index e73b61c7..7d25102a 100644
+--- a/src/model/service/api/streams/live/{channelId}/m2tsll.ts
++++ b/src/model/service/api/streams/live/{channelId}/m2tsll.ts
+@@ -26,10 +26,13 @@ export const get: Operation = async (req, res) => {
+     });
+ 
+     try {
+-        result = await streamApiModel.startLiveM2TsLLStream({
+-            channelId: parseInt(req.params.channelId, 10),
+-            mode: parseInt(req.query.mode as string, 10),
+-        });
++        result = await streamApiModel.startLiveM2TsLLStream(
++            {
++                channelId: parseInt(req.params.channelId, 10),
++                mode: parseInt(req.query.mode as string, 10),
++            },
++            req.headers['x-forwarded-for'] || req.socket.remoteAddress,
++        );
+         keepTimer = setInterval(() => {
+             streamApiModel.keep(result.streamId);
+         }, 10 * 1000);
+diff --git a/src/model/service/api/streams/live/{channelId}/mp4.ts b/src/model/service/api/streams/live/{channelId}/mp4.ts
+index 2467e35e..54b6f0c8 100644
+--- a/src/model/service/api/streams/live/{channelId}/mp4.ts
++++ b/src/model/service/api/streams/live/{channelId}/mp4.ts
+@@ -26,10 +26,13 @@ export const get: Operation = async (req, res) => {
+     });
+ 
+     try {
+-        result = await streamApiModel.startMp4Stream({
+-            channelId: parseInt(req.params.channelId, 10),
+-            mode: parseInt(req.query.mode as string, 10),
+-        });
++        result = await streamApiModel.startMp4Stream(
++            {
++                channelId: parseInt(req.params.channelId, 10),
++                mode: parseInt(req.query.mode as string, 10),
++            },
++            req.headers['x-forwarded-for'] || req.socket.remoteAddress,
++        );
+         keepTimer = setInterval(() => {
+             streamApiModel.keep(result.streamId);
+         }, 10 * 1000);
+diff --git a/src/model/service/api/streams/live/{channelId}/webm.ts b/src/model/service/api/streams/live/{channelId}/webm.ts
+index 3749f60c..7b2f2052 100644
+--- a/src/model/service/api/streams/live/{channelId}/webm.ts
++++ b/src/model/service/api/streams/live/{channelId}/webm.ts
+@@ -26,10 +26,13 @@ export const get: Operation = async (req, res) => {
+     });
+ 
+     try {
+-        result = await streamApiModel.startLiveWebmStream({
+-            channelId: parseInt(req.params.channelId, 10),
+-            mode: parseInt(req.query.mode as string, 10),
+-        });
++        result = await streamApiModel.startLiveWebmStream(
++            {
++                channelId: parseInt(req.params.channelId, 10),
++                mode: parseInt(req.query.mode as string, 10),
++            },
++            req.headers['x-forwarded-for'] || req.socket.remoteAddress,
++        );
+         keepTimer = setInterval(() => {
+             streamApiModel.keep(result.streamId);
+         }, 10 * 1000);
+diff --git a/src/model/service/api/streams/recorded/{videoFileId}/hls.ts b/src/model/service/api/streams/recorded/{videoFileId}/hls.ts
+index 037336ce..a7873ad8 100644
+--- a/src/model/service/api/streams/recorded/{videoFileId}/hls.ts
++++ b/src/model/service/api/streams/recorded/{videoFileId}/hls.ts
+@@ -7,11 +7,14 @@ export const get: Operation = async (req, res) => {
+     const streamApiModel = container.get<IStreamApiModel>('IStreamApiModel');
+ 
+     try {
+-        const streamId = await streamApiModel.startRecordedHLSStream({
+-            videoFileId: parseInt(req.params.videoFileId, 10),
+-            playPosition: parseInt(req.query.ss as string, 10),
+-            mode: parseInt(req.query.mode as string, 10),
+-        });
++        const streamId = await streamApiModel.startRecordedHLSStream(
++            {
++                videoFileId: parseInt(req.params.videoFileId, 10),
++                playPosition: parseInt(req.query.ss as string, 10),
++                mode: parseInt(req.query.mode as string, 10),
++            },
++            req.headers['x-forwarded-for'] || req.socket.remoteAddress,
++        );
+         api.responseJSON(res, 200, {
+             streamId: streamId,
+         });
+diff --git a/src/model/service/api/streams/recorded/{videoFileId}/mp4.ts b/src/model/service/api/streams/recorded/{videoFileId}/mp4.ts
+index d2b67210..42ccb1d8 100644
+--- a/src/model/service/api/streams/recorded/{videoFileId}/mp4.ts
++++ b/src/model/service/api/streams/recorded/{videoFileId}/mp4.ts
+@@ -26,11 +26,14 @@ export const get: Operation = async (req, res) => {
+     });
+ 
+     try {
+-        result = await streamApiModel.startRecordedMp4Stream({
+-            videoFileId: parseInt(req.params.videoFileId, 10),
+-            playPosition: parseInt(req.query.ss as string, 10),
+-            mode: parseInt(req.query.mode as string, 10),
+-        });
++        result = await streamApiModel.startRecordedMp4Stream(
++            {
++                videoFileId: parseInt(req.params.videoFileId, 10),
++                playPosition: parseInt(req.query.ss as string, 10),
++                mode: parseInt(req.query.mode as string, 10),
++            },
++            req.headers['x-forwarded-for'] || req.socket.remoteAddress,
++        );
+         keepTimer = setInterval(() => {
+             streamApiModel.keep(result.streamId);
+         }, 10 * 1000);
+diff --git a/src/model/service/api/streams/recorded/{videoFileId}/webm.ts b/src/model/service/api/streams/recorded/{videoFileId}/webm.ts
+index 058b10a4..8f926816 100644
+--- a/src/model/service/api/streams/recorded/{videoFileId}/webm.ts
++++ b/src/model/service/api/streams/recorded/{videoFileId}/webm.ts
+@@ -26,11 +26,14 @@ export const get: Operation = async (req, res) => {
+     });
+ 
+     try {
+-        result = await streamApiModel.startRecordedWebMStream({
+-            videoFileId: parseInt(req.params.videoFileId, 10),
+-            playPosition: parseInt(req.query.ss as string, 10),
+-            mode: parseInt(req.query.mode as string, 10),
+-        });
++        result = await streamApiModel.startRecordedWebMStream(
++            {
++                videoFileId: parseInt(req.params.videoFileId, 10),
++                playPosition: parseInt(req.query.ss as string, 10),
++                mode: parseInt(req.query.mode as string, 10),
++            },
++            req.headers['x-forwarded-for'] || req.socket.remoteAddress,
++        );
+         keepTimer = setInterval(() => {
+             streamApiModel.keep(result.streamId);
+         }, 10 * 1000);
+diff --git a/src/model/service/stream/base/ILiveStreamBaseModel.ts b/src/model/service/stream/base/ILiveStreamBaseModel.ts
+index 6e4005d2..5d36bfdc 100644
+--- a/src/model/service/stream/base/ILiveStreamBaseModel.ts
++++ b/src/model/service/stream/base/ILiveStreamBaseModel.ts
+@@ -7,6 +7,7 @@ export type LiveHLSStreamModelProvider = () => Promise<ILiveStreamBaseModel>;
+ export interface LiveStreamOption {
+     channelId: apid.ChannelId;
+     cmd?: string;
++    connection?: string;
+ }
+ 
+ export default interface ILiveStreamBaseModel extends IStreamBaseModel<LiveStreamOption> {
+diff --git a/src/model/service/stream/base/IRecordedStreamBaseModel.ts b/src/model/service/stream/base/IRecordedStreamBaseModel.ts
+index 13cfddcf..81291d78 100644
+--- a/src/model/service/stream/base/IRecordedStreamBaseModel.ts
++++ b/src/model/service/stream/base/IRecordedStreamBaseModel.ts
+@@ -8,6 +8,7 @@ export interface RecordedStreamOption {
+     videoFileId: apid.VideoFileId;
+     playPosition: number; // 再生位置(秒)
+     cmd: string;
++    connection?: string;
+ }
+ 
+ export interface VideoFileInfo {
+diff --git a/src/model/service/stream/base/IStreamBaseModel.ts b/src/model/service/stream/base/IStreamBaseModel.ts
+index 2165507c..037a4b96 100644
+--- a/src/model/service/stream/base/IStreamBaseModel.ts
++++ b/src/model/service/stream/base/IStreamBaseModel.ts
+@@ -8,6 +8,7 @@ export interface BaseStreamInfo {
+     type: apid.StreamType;
+     mode: number;
+     isEnable: boolean;
++    connection?: string;
+ }
+ 
+ /**
+diff --git a/src/model/service/stream/base/LiveStreamBaseModel.ts b/src/model/service/stream/base/LiveStreamBaseModel.ts
+index 3b894987..5acfdf12 100644
+--- a/src/model/service/stream/base/LiveStreamBaseModel.ts
++++ b/src/model/service/stream/base/LiveStreamBaseModel.ts
+@@ -249,6 +249,7 @@ export default abstract class LiveStreamBaseModel
+             mode: this.configMode,
+             channelId: this.processOption.channelId,
+             isEnable: this.isEnable(),
++            connection: this.processOption.connection,
+         };
+     }
+ 
+diff --git a/src/model/service/stream/base/RecordedStreamBaseModel.ts b/src/model/service/stream/base/RecordedStreamBaseModel.ts
+index 89e11b39..876add51 100644
+--- a/src/model/service/stream/base/RecordedStreamBaseModel.ts
++++ b/src/model/service/stream/base/RecordedStreamBaseModel.ts
+@@ -321,6 +321,7 @@ export default abstract class RecordedStreamBaseModel
+             mode: this.configMode,
+             videoFileId: this.processOption.videoFileId,
+             isEnable: this.isEnable(),
++            connection: this.processOption.connection,
+         };
+     }
+ 
