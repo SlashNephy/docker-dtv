@@ -23,6 +23,6 @@ RUN <<EOF
 EOF
 
 FROM --platform=$TARGETPLATFORM public.ecr.aws/debian/debian:stable-slim@sha256:4f5d8d928d9398c9eae7b6512848b9ae6022006a74f816c2fe2cbf8e598ae242
-COPY --from=build /app/src/tsselect /usr/local/bin/
+COPY --from=builder /app/src/tsselect /usr/local/bin/
 
 ENTRYPOINT [ "/usr/local/bin/tsselect" ]
