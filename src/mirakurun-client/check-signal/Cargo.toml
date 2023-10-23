@@ -1,0 +1,9 @@
+[package]
+name = "mirakurun-check-signal"
+version = "1.0.0"
+authors = ["StarryBlueSky <letter@starry.blue>"]
+edition = "2018"
+publish = false
+
+[dependencies]
+mirakurun-client-common = { path = "../common" }

@@ -1,0 +1,46 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema#",
+    "title": "external.json Schema",
+    "type": "object",
+    "required": [
+        "user_agent",
+        "services"
+    ],
+    "properties": {
+        "user_agent": {
+            "type": "string"
+        },
+        "services": {
+            "type": "object",
+            "patternProperties": {
+                "^.+$": {
+                    "type": "object",
+                    "required": [
+                        "base_uri",
+                        "basic"
+                    ],
+                    "properties": {
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "http",
+                                "https"
+                            ]
+                        },
+                        "base_uri": {
+                            "type": "string"
+                        },
+                        "basic": {
+                            "type": "string"
+                        },
+                        "maintainer": {
+                            "type": "string"
+                        }
+                    },
+                    "additionalProperties": false
+                }
+            }
+        }
+    },
+    "additionalProperties": false
+}

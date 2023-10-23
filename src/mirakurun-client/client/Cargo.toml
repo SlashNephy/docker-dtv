@@ -1,0 +1,11 @@
+[package]
+name = "mirakurun-client"
+version = "1.0.0"
+authors = ["StarryBlueSky <letter@starry.blue>"]
+edition = "2018"
+publish = false
+
+[dependencies]
+reqwest = { version = "0.11", features = ["blocking"] }
+clap = { version = "3.2.25", features = ["derive", "env", "cargo"] }
+mirakurun-client-common = { path = "../common" }
