@@ -1,0 +1,21 @@
+name: tsreadex
+
+on:
+  push:
+    paths:
+      - 'src/tsreadex/**'
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+  actions: read
+  security-events: write
+
+jobs:
+  build:
+    uses: SlashNephy/.github/.github/workflows/docker-build.yml@master
+    with:
+      image-name: ghcr.io/slashnephy/tsreadex
+      context: src/tsreadex
