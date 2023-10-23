@@ -1,0 +1,21 @@
+name: tsselect
+
+on:
+  push:
+    paths:
+      - 'src/tsselect/**'
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+  actions: read
+  security-events: write
+
+jobs:
+  build:
+    uses: SlashNephy/.github/.github/workflows/docker-build.yml@master
+    with:
+      image-name: ghcr.io/slashnephy/tsselect
+      context: src/tsselect
