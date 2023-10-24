@@ -20,8 +20,8 @@ SHELL ["/bin/bash", "-c"]
 RUN apt update \
     && apt install -y --no-install-recommends jq \
     && cp /usr/share/zoneinfo/Asia/Tokyo /etc/localtime \
-    && jq ".version=\"`jq -r .version /app/package.json`-`date '+%Y%m%d-%H%M%S'`-${COMMIT_ID:0:7}\"" /app/package.json > /tmp/server.package.json \
-    && jq ".version=\"`jq -r .version /app/client/package.json`-`date '+%Y%m%d-%H%M%S'`-${COMMIT_ID:0:7}\"" /app/client/package.json > /tmp/client.package.json \
+    && jq ".version=\"$(jq -r .version /app/package.json)-$(date '+%Y%m%d-%H%M%S')-${COMMIT_ID:0:7}\"" /app/package.json > /tmp/server.package.json \
+    && jq ".version=\"$(jq -r .version /app/client/package.json)-$(date '+%Y%m%d-%H%M%S')-${COMMIT_ID:0:7}\"" /app/client/package.json > /tmp/client.package.json \
     && mv -f /tmp/server.package.json /app/package.json \
     && mv -f /tmp/client.package.json /app/client/package.json
 
