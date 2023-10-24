@@ -96,7 +96,7 @@ services:
       MYSQL_USER: epgstation
       MYSQL_PASSWORD: epgstation
       MYSQL_ROOT_PASSWORD: epgstation
-      MYSQL_DATABASE: epgstation 
+      MYSQL_DATABASE: epgstation
 
   epgstation:
     container_name: EPGStation
