@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
-ARG EPGSTATION_TAG="master"
-ARG FFMPEG_TAG="master"
+ARG EPGSTATION_TAG="master@sha256:fd942190343e8ea2adbd9b13bb34a168a7790ccc3fb2868abc829426e1c69f54"
+ARG FFMPEG_TAG="master@sha256:6d55cc571a43a58600e347c5b7502a00945db4ca65093615e1ba0beb623e8ff4"
 ARG NODE_VERSION="20"
 
 ARG DEPENDENCIES="ca-certificates curl gnupg"
