@@ -1,0 +1,23 @@
+name: epgstation-custom-hwaccel
+
+on:
+  push:
+    paths:
+      - 'src/epgstation-custom-hwaccel/**'
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+  actions: read
+  security-events: write
+
+jobs:
+  build:
+    uses: SlashNephy/.github/.github/workflows/docker-build.yml@master
+    with:
+      image-name: ghcr.io/slashnephy/epgstation-custom-hwaccel
+      context: src/epgstation-custom-hwaccel
+    secrets:
+      registry-password: ${{ secrets.GHCR_TOKEN }}

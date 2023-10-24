@@ -1,0 +1,23 @@
+name: epgstation-custom
+
+on:
+  push:
+    paths:
+      - 'src/epgstation-custom/**'
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+  actions: read
+  security-events: write
+
+jobs:
+  build:
+    uses: SlashNephy/.github/.github/workflows/docker-build.yml@master
+    with:
+      image-name: ghcr.io/slashnephy/epgstation-custom
+      context: src/epgstation-custom
+    secrets:
+      registry-password: ${{ secrets.GHCR_TOKEN }}
