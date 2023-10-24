@@ -1,0 +1,115 @@
+diff --git a/src/arib_std_b25.c b/src/arib_std_b25.c
+index 30827f6..10bbf35 100644
+--- a/src/arib_std_b25.c
++++ b/src/arib_std_b25.c
+@@ -487,10 +487,12 @@ static int set_b_cas_card_arib_std_b25(void *std_b25, B_CAS_CARD *bcas)
+ 			return ARIB_STD_B25_ERROR_INVALID_B_CAS_STATUS;
+ 		}
+ 		prv->ca_system_id = is.ca_system_id;
++#ifdef ORIGINAL
+ 		n = prv->bcas->get_id(prv->bcas, &(prv->casid));
+ 		if(n < 0){
+ 			return ARIB_STD_B25_ERROR_INVALID_B_CAS_STATUS;
+ 		}
++#endif
+ 	}
+ 
+ 	return 0;
+diff --git a/src/b_cas_card.c b/src/b_cas_card.c
+index ebde4e6..63e1ab1 100644
+--- a/src/b_cas_card.c
++++ b/src/b_cas_card.c
+@@ -45,7 +45,11 @@ typedef struct {
+  constant values
+  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+ static const uint8_t INITIAL_SETTING_CONDITIONS_CMD[] = {
++#ifndef ORIGINAL
++	0x80, 0x5e, 0x00, 0x00, 0x00,
++#else
+ 	0x90, 0x30, 0x00, 0x00, 0x00,
++#endif
+ };
+ 
+ static const uint8_t CARD_ID_INFORMATION_ACQUIRE_CMD[] = {
+@@ -57,7 +61,11 @@ static const uint8_t POWER_ON_CONTROL_INFORMATION_REQUEST_CMD[] = {
+ };
+ 
+ static const uint8_t ECM_RECEIVE_CMD_HEADER[] = {
++#ifndef ORIGINAL
++	0x80, 0x34, 0x00, 0x00,
++#else
+ 	0x90, 0x34, 0x00, 0x00,
++#endif
+ };
+ 
+ static const uint8_t EMM_RECEIVE_CMD_HEADER[] = {
+@@ -381,7 +389,11 @@ static int proc_ecm_b_cas_card(void *bcas, B_CAS_ECM_RESULT *dst, uint8_t *src,
+ 
+ 	retry_count = 0;
+ 	ret = SCardTransmit(prv->card, SCARD_PCI_T1, prv->sbuf, slen, &sir, prv->rbuf, &rlen);
++#ifndef ORIGINAL
++	while( ((ret != SCARD_S_SUCCESS) || (rlen < 22)) && (retry_count < 10) ){
++#else
+ 	while( ((ret != SCARD_S_SUCCESS) || (rlen < 25)) && (retry_count < 10) ){
++#endif
+ 		retry_count += 1;
+ 		if(!connect_card(prv, prv->reader)){
+ 			continue;
+@@ -393,12 +405,21 @@ static int proc_ecm_b_cas_card(void *bcas, B_CAS_ECM_RESULT *dst, uint8_t *src,
+ 		ret = SCardTransmit(prv->card, SCARD_PCI_T1, prv->sbuf, slen, &sir, prv->rbuf, &rlen);
+ 	}
+ 
++#ifndef ORIGINAL
++	if( (ret != SCARD_S_SUCCESS) || (rlen < 22) ){
++#else
+ 	if( (ret != SCARD_S_SUCCESS) || (rlen < 25) ){
++#endif
+ 		return B_CAS_CARD_ERROR_TRANSMIT_FAILED;
+ 	}
+ 
++#ifndef ORIGINAL
++	memcpy(dst->scramble_key, prv->rbuf, 16);
++	dst->return_code = 0x0800;
++#else
+ 	memcpy(dst->scramble_key, prv->rbuf+6, 16);
+ 	dst->return_code = load_be_uint16(prv->rbuf+4);
++#endif
+ 
+ 	return 0;
+ }
+@@ -608,22 +629,35 @@ static int connect_card(B_CAS_CARD_PRIVATE_DATA *prv, LPCTSTR reader_name)
+ 		return 0;
+ 	}
+ 
++#ifndef ORIGINAL
++	if(rlen < 46){
++#else
+ 	if(rlen < 57){
++#endif
+ 		return 0;
+ 	}
+ 	
+ 	p = prv->rbuf;
+ 
++#ifdef ORIGINAL
+ 	n = load_be_uint16(p+4);
+ 	if(n != 0x2100){ // return code missmatch
+ 		return 0;
+ 	}
++#endif
+ 
++#ifndef ORIGINAL
++	memcpy(prv->stat.system_key, p+8, 32);
++	memcpy(prv->stat.init_cbc, p+8, 8);
++	prv->stat.ca_system_id = load_be_uint16(p);
++	prv->stat.card_status = 0;
++#else
+ 	memcpy(prv->stat.system_key, p+16, 32);
+ 	memcpy(prv->stat.init_cbc, p+48, 8);
+ 	prv->stat.bcas_card_id = load_be_uint48(p+8);
+ 	prv->stat.card_status = load_be_uint16(p+2);
+ 	prv->stat.ca_system_id = load_be_uint16(p+6);
++#endif
+ 
+ 	return 1;
+ }
