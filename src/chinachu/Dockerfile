@@ -3,7 +3,7 @@
 ARG REF="gamma"
 
 ARG RUNTIMES="curl"
-ARG DEPENDENCIES="build-essential git sudo ca-certificates python wget xz-utils"
+ARG DEPENDENCIES="build-essential git sudo ca-certificates python3 wget xz-utils"
 
 FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.42.0 AS download
 ARG REF
