@@ -18,13 +18,21 @@ FROM ghcr.io/slashnephy/qsvencc:${QSVENCC_TAG} AS qsvencc
 FROM ghcr.io/slashnephy/vceencc:${VCEENCC_TAG} AS vceencc
 
 FROM ghcr.io/slashnephy/ffmpeg-ubuntu:${FFMPEG_TAG}
+WORKDIR /app
 ARG NODE_VERSION
 ARG DEPENDENCIES
 ARG RUNTIMES
+ARG USERNAME="app"
+ARG GROUPNAME="app"
+ARG UID=1000
+ARG GID=1000
+ENV TZ="Asia/Tokyo"
 
-ENV DEBIAN_FRONTEND="noninteractive"
 RUN <<EOF
   set -eux
+
+  groupadd -g "${GID}" "${GROUPNAME}"
+  useradd -u "${UID}" -g "${GID}" "${USERNAME}"
 
   apt-get update
   apt-get install -y --no-install-recommends ${DEPENDENCIES}
@@ -46,23 +54,11 @@ RUN <<EOF
   rm -rf /var/lib/apt/lists/*
 EOF
 
-ARG USERNAME="app"
-ARG GROUPNAME="app"
-ARG UID=1000
-ARG GID=1000
-RUN <<EOF
-  groupadd -g "${GID}" "${GROUPNAME}"
-  useradd -u "${UID}" -g "${GID}" "${USERNAME}"
-EOF
-
-WORKDIR /app
 COPY --from=epgstation --chown=$UID:$GID /app/ ./
 COPY --from=epgstation --chown=$UID:$GID /app/client/ ./client/
 COPY --from=nvencc /usr/bin/nvencc /usr/local/bin/
 COPY --from=qsvencc /usr/bin/qsvencc /usr/local/bin/
 COPY --from=vceencc /usr/bin/vceencc /usr/local/bin/
-
-ENV TZ="Asia/Tokyo"
 
 USER $USERNAME
 ENTRYPOINT [ "node", "dist/index.js" ]

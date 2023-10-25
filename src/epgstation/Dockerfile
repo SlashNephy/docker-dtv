@@ -1,54 +1,74 @@
-FROM --platform=$BUILDPLATFORM debian:11.8-slim@sha256:9bec46ecd98ce4bf8305840b021dda9b3e1f8494a0768c407e2b233180fa1466 AS git
-ADD https://api.github.com/repos/l3tnun/EPGStation/git/refs/heads/v2 /tmp/EPGStation.json
-RUN apt update \
-    && apt install -y --no-install-recommends git ca-certificates \
-    && git clone -b v2 https://github.com/l3tnun/EPGStation /app
+# syntax=docker/dockerfile:1
 
-FROM --platform=$BUILDPLATFORM debian:11.8-slim@sha256:9bec46ecd98ce4bf8305840b021dda9b3e1f8494a0768c407e2b233180fa1466 AS source
+# renovate: datasource=github-releases depName=l3tnun/EPGStation
+ARG EPGSTATION_VERSION="v2.7.2"
+
+ARG COMMIT_ID="unknown"
+
+ARG DEPENDENCIES="build-essential python3"
+
+FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.42.0 AS source
+ARG EPGSTATION_VERSION
+
+RUN git clone https://github.com/l3tnun/EPGStation -b "${EPGSTATION_VERSION}" /app
+
+FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.42.0 AS patch-source
 WORKDIR /app
-COPY --from=git /app/ /app/
+
+COPY --from=source /app/ ./
 COPY ./*.patch /tmp/
-RUN apt update \
-    && apt install -y --no-install-recommends git ca-certificates \
-    && git apply --numstat --summary --check --apply --ignore-whitespace -v /tmp/*.patch
 
-FROM --platform=$BUILDPLATFORM debian:11.8-slim@sha256:9bec46ecd98ce4bf8305840b021dda9b3e1f8494a0768c407e2b233180fa1466 AS version
-ARG COMMIT_ID=unknown
-COPY --from=git /app/package.json /app/package.json
-COPY --from=git /app/client/package.json /app/client/package.json
-SHELL ["/bin/bash", "-c"]
-RUN apt update \
-    && apt install -y --no-install-recommends jq \
-    && cp /usr/share/zoneinfo/Asia/Tokyo /etc/localtime \
-    && jq ".version=\"$(jq -r .version /app/package.json)-$(date '+%Y%m%d-%H%M%S')-${COMMIT_ID:0:7}\"" /app/package.json > /tmp/server.package.json \
-    && jq ".version=\"$(jq -r .version /app/client/package.json)-$(date '+%Y%m%d-%H%M%S')-${COMMIT_ID:0:7}\"" /app/client/package.json > /tmp/client.package.json \
-    && mv -f /tmp/server.package.json /app/package.json \
-    && mv -f /tmp/client.package.json /app/client/package.json
+RUN git apply --numstat --summary --check --apply --ignore-whitespace -v /tmp/*.patch
 
-FROM --platform=$BUILDPLATFORM node:20.8.1-bullseye-slim@sha256:682c1557c5a8cd6f8a78db3bd315ed968b3a854de2a16c2b8ce713cc92152062 AS build-client
-COPY --from=git /app/client/package*.json /app/client/
+FROM --platform=$BUILDPLATFORM public.ecr.aws/debian/debian:stable-slim@sha256:4f5d8d928d9398c9eae7b6512848b9ae6022006a74f816c2fe2cbf8e598ae242 AS jq
+
+RUN apt-get update && apt-get install -y --no-install-recommends jq
+
+FROM --platform=$BUILDPLATFORM jq AS patch-version
+WORKDIR /app
+ARG COMMIT_ID
+
+COPY --from=source /app/package.json ./package.json
+COPY --from=source /app/client/package.json ./client/package.json
+
+SHELL ["/bin/bash", "-euxc"]
+RUN <<EOF
+  cp /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
+
+  jq ".version=\"$(jq -r .version ./package.json)-$(date '+%Y%m%d-%H%M%S')-${COMMIT_ID:0:7}\"" ./package.json > /tmp/server.package.json
+  jq ".version=\"$(jq -r .version ./client/package.json)-$(date '+%Y%m%d-%H%M%S')-${COMMIT_ID:0:7}\"" ./client/package.json > /tmp/client.package.json
+
+  mv -f /tmp/server.package.json ./package.json
+  mv -f /tmp/client.package.json ./client/package.json
+EOF
+
+FROM --platform=$BUILDPLATFORM public.ecr.aws/docker/library/node:20.8.1-bookworm-slim AS build-client
 WORKDIR /app/client
+
+COPY --from=source /app/client/package*.json ./
 RUN npm install
-COPY --from=source /app /app/
+
+COPY --from=patch-source /app/ ../
 RUN npm run build
 
-FROM --platform=$TARGETPLATFORM node:20.8.1-bullseye-slim@sha256:682c1557c5a8cd6f8a78db3bd315ed968b3a854de2a16c2b8ce713cc92152062 AS build-server
-ENV DEBIAN_FRONTEND=noninteractive
-RUN apt update \
-    && apt install -y build-essential python
+FROM --platform=$TARGETPLATFORM public.ecr.aws/docker/library/node:20.8.1-bookworm-slim AS build-server
 WORKDIR /app
-COPY --from=git /app/package*.json /app/
-ENV DOCKER="YES"
+ARG DEPENDENCIES
+
+RUN apt-get update && apt-get install -y --no-install-recommends ${DEPENDENCIES}
+
+COPY --from=source /app/package*.json ./
 RUN npm install --no-save
-COPY --from=source /app .
-RUN rm -rf client
-RUN npm run build-server
 
-FROM --platform=$TARGETPLATFORM node:20.8.1-bullseye-slim@sha256:682c1557c5a8cd6f8a78db3bd315ed968b3a854de2a16c2b8ce713cc92152062 AS runtime
-COPY --from=build-server /app/ /app/
-COPY --from=build-client /app/client/ /app/client/
-COPY --from=version /app/package.json /app/package.json
-COPY --from=version /app/client/package.json /app/client/package.json
+COPY --from=patch-source /app/ ./
+RUN rm -rf client && npm run build-server
 
+FROM --platform=$TARGETPLATFORM public.ecr.aws/docker/library/node:20.8.1-bookworm-slim
 WORKDIR /app
-ENTRYPOINT [ "node", "dist/index.js" ]
+
+COPY --from=build-server /app/ ./
+COPY --from=build-client /app/client/ ./client/
+COPY --from=patch-version /app/package.json ./package.json
+COPY --from=patch-version /app/client/package.json ./client/package.json
+
+ENTRYPOINT ["node", "dist/index.js"]

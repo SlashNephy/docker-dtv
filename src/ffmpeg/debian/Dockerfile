@@ -22,37 +22,23 @@ ARG RUNTIMES="${X264_RUNTIMES} ${X265_RUNTIMES} ${FDK_AAC_RUNTIMES} ${WEBM_RUNTI
 ARG ADDITIONAL_DEPENDENCIES="build-essential software-properties-common"
 ARG DEPENDENCIES="${ADDITIONAL_DEPENDENCIES} ${X264_DEPENDENCIES} ${X265_DEPENDENCIES} ${FDK_AAC_DEPENDENCIES} ${WEBM_DEPENDENCIES} ${ASS_DEPENDENCIES} ${ARIBB24_DEPENDENCIES} ${VA_API_DEPENDENCIES}"
 
-FROM --platform=$BUILDPLATFORM debian:stable@sha256:fd865da5f887f2fdb7af19c3a33fe9c98cb00a26859df66508cadadc35cb8676 AS downloader
-
-RUN <<EOF
-  set -eux
-
-  apt-get update
-  apt-get install -y --no-install-recommends git ca-certificates
-EOF
-
-FROM --platform=$BUILDPLATFORM downloader AS download-ffmpeg
+FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.42.0 AS download
 ARG FFMPEG_VERSION
 
 RUN git clone https://github.com/FFmpeg/FFmpeg -b "${FFMPEG_VERSION}" --recursive
 
-FROM --platform=$TARGETPLATFORM debian:11.8-slim@sha256:9bec46ecd98ce4bf8305840b021dda9b3e1f8494a0768c407e2b233180fa1466
+FROM --platform=$TARGETPLATFORM public.ecr.aws/debian/debian:stable-slim@sha256:4f5d8d928d9398c9eae7b6512848b9ae6022006a74f816c2fe2cbf8e598ae242
 ARG CPUS
 ARG RUNTIMES
 ARG DEPENDENCIES
 
-# copy ffmpeg
-COPY --from=download-ffmpeg /FFmpeg/ /tmp/ffmpeg/
+COPY --from=download /FFmpeg/ /tmp/ffmpeg/
 
-ENV DEBIAN_FRONTEND="noninteractive"
 RUN <<EOF
   set -eux
 
   # add non-free repository
-  # TODO: software-properties-common broken on Debian 12
-  apt-get update
-  apt-get install -y software-properties-common
-  apt-add-repository non-free
+  echo 'deb http://deb.debian.org/debian/ stable contrib non-free non-free-firmware' | tee /etc/apt/sources.list
   apt-get update
 
   # install build dependencies and runtimes

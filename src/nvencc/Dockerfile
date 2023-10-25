@@ -8,14 +8,12 @@ ARG NVENCC_VERSION
 
 ADD https://github.com/rigaya/NVEnc/releases/download/${NVENCC_VERSION}/nvencc_${NVENCC_VERSION}_Ubuntu22.04_amd64.deb /tmp/package.deb
 
-ENV DEBIAN_FRONTEND=noninteractive
 RUN <<EOF
   set -eux
 
   apt-get update
   apt-get install -y --no-install-recommends /tmp/package.deb
 
-  # clean up
   apt-get clean
   rm -rf \
     /tmp/* \

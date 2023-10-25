@@ -1,40 +1,48 @@
-FROM --platform=$BUILDPLATFORM debian:11.7-slim@sha256:3460d74bec6b88496cd183d7731930be55234c094f581f7dbdd96f56c1fc34d8 AS git
-ADD https://api.github.com/repos/stz2012/libarib25/git/refs/heads/master /tmp/git.json
-RUN apt update \
-    && apt install -y --no-install-recommends git ca-certificates \
-    && git clone https://github.com/stz2012/libarib25 /app
+# syntax=docker/dockerfile:1
 
-FROM --platform=$BUILDPLATFORM debian:11.7-slim@sha256:3460d74bec6b88496cd183d7731930be55234c094f581f7dbdd96f56c1fc34d8 AS source
+# renovate: datasource=github-tags depName=stz2012/libarib25
+ARG LIBARIB25_VERSION="v0.2.5-20220902"
+
+ARG DEPENDENCIES="build-essential ca-certificates cmake pkg-config libpcsclite-dev"
+
+FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.42.0 AS source
+ARG LIBARIB25_VERSION
+
+RUN git clone https://github.com/stz2012/libarib25 -b "${LIBARIB25_VERSION}" /app
+
+FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.42.0 AS patch-source
 WORKDIR /app
-COPY --from=git /app/ /app/
+
+COPY --from=source /app/ ./
 COPY ./*.patch /tmp/
-RUN apt update \
-    && apt install -y --no-install-recommends git ca-certificates \
-    && git apply --numstat --summary --check --apply --ignore-whitespace -v /tmp/*.patch
 
-# Build libaribb1
-FROM --platform=$TARGETPLATFORM debian:11.7-slim@sha256:3460d74bec6b88496cd183d7731930be55234c094f581f7dbdd96f56c1fc34d8 AS build
+RUN git apply --numstat --summary --check --apply --ignore-whitespace -v /tmp/*.patch
+
+FROM --platform=$TARGETPLATFORM public.ecr.aws/debian/debian:stable-slim@sha256:4f5d8d928d9398c9eae7b6512848b9ae6022006a74f816c2fe2cbf8e598ae242 AS build
 WORKDIR /app
-COPY --from=source /app/ /app/
-RUN apt update \
-    && apt install -y --no-install-recommends \
-        build-essential \
-        ca-certificates \
-        cmake \
-        pkg-config \
-        libpcsclite-dev \
-    && cmake -DCMAKE_VERBOSE_MAKEFILE=TRUE . \
-    && make \
-    && make install \
-    && mv /usr/local/bin/b25 /usr/local/bin/b1 \
-    && mv /usr/local/lib/libarib25.a /usr/local/lib/libarib1.a \
-    && mv /usr/local/lib/libarib25.so /usr/local/lib/libarib1.so \
-    && mv /usr/local/lib/libarib25.so.0 /usr/local/lib/libarib1.so.0 \
-    && mv /usr/local/lib/libarib25.so.0.2.5 /usr/local/lib/libarib1.so.0.2.5 \
-    && mv /usr/local/include/arib25 /usr/local/include/arib1 \
-    && mv /usr/local/lib/pkgconfig/libarib25.pc /usr/local/lib/pkgconfig/libarib1.pc
+ARG DEPENDENCIES
 
-FROM --platform=$TARGETPLATFORM debian:11.7-slim@sha256:3460d74bec6b88496cd183d7731930be55234c094f581f7dbdd96f56c1fc34d8 AS runtime
+RUN apt-get update && apt-get install -y --no-install-recommends ${DEPENDENCIES}
+
+COPY --from=patch-source /app/ ./
+RUN <<EOF
+  set -eux
+
+  cmake -DCMAKE_VERBOSE_MAKEFILE=TRUE .
+  make
+  make install
+
+  mv /usr/local/bin/b25 /usr/local/bin/b1
+  mv /usr/local/lib/libarib25.a /usr/local/lib/libarib1.a
+  mv /usr/local/lib/libarib25.so /usr/local/lib/libarib1.so
+  mv /usr/local/lib/libarib25.so.0 /usr/local/lib/libarib1.so.0
+  mv /usr/local/lib/libarib25.so.0.2.5 /usr/local/lib/libarib1.so.0.2.5
+  mv /usr/local/include/arib25 /usr/local/include/arib1
+  mv /usr/local/lib/pkgconfig/libarib25.pc /usr/local/lib/pkgconfig/libarib1.pc
+EOF
+
+FROM --platform=$TARGETPLATFORM public.ecr.aws/debian/debian:stable-slim@sha256:4f5d8d928d9398c9eae7b6512848b9ae6022006a74f816c2fe2cbf8e598ae242
+ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/usr/local/lib"
 
 COPY ./b1-stream /usr/local/bin/
 RUN chmod +x /usr/local/bin/b1-stream
@@ -43,5 +51,4 @@ COPY --from=build /usr/local/include/ /usr/local/include/
 COPY --from=build /usr/local/bin/ /usr/local/bin/
 COPY --from=build /usr/local/lib/ /usr/local/lib/
 
-ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
 ENTRYPOINT [ "/usr/local/bin/b1" ]

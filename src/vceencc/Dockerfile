@@ -15,7 +15,6 @@ ARG DEPENDENCIES
 
 ADD https://github.com/rigaya/VCEEnc/releases/download/${VCEENCC_VERSION}/vceencc_${VCEENCC_VERSION}_Ubuntu22.04_amd64.deb /tmp/package.deb
 
-ENV DEBIAN_FRONTEND=noninteractive
 ENV SUDO_FORCE_REMOVE=yes
 RUN <<EOF
   set -eux
@@ -32,8 +31,8 @@ RUN <<EOF
   apt-get install -y --no-install-recommends /tmp/package.deb
 
   # clean up
-  apt remove -y ${DEPENDENCIES}
-  apt autoremove -y
+  apt-get remove -y ${DEPENDENCIES}
+  apt-get autoremove -y
   apt-get clean
   rm -rf \
     /tmp/* \

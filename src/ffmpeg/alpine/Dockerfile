@@ -20,16 +20,7 @@ ARG RUNTIMES="${X264_RUNTIMES} ${X265_RUNTIMES} ${FDK_AAC_RUNTIMES} ${WEBM_RUNTI
 ARG ADDITIONAL_DEPENDENCIES="build-base"
 ARG DEPENDENCIES="${ADDITIONAL_DEPENDENCIES} ${X264_DEPENDENCIES} ${X265_DEPENDENCIES} ${FDK_AAC_DEPENDENCIES} ${WEBM_DEPENDENCIES} ${ASS_DEPENDENCIES} ${VA_API_DEPENDENCIES}"
 
-FROM --platform=$BUILDPLATFORM debian:stable@sha256:fd865da5f887f2fdb7af19c3a33fe9c98cb00a26859df66508cadadc35cb8676 AS downloader
-
-RUN <<EOF
-  set -eux
-
-  apt-get update
-  apt-get install -y --no-install-recommends git ca-certificates
-EOF
-
-FROM --platform=$BUILDPLATFORM downloader AS download-ffmpeg
+FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.42.0 AS download
 ARG FFMPEG_VERSION
 
 RUN git clone https://github.com/FFmpeg/FFmpeg -b "${FFMPEG_VERSION}" --recursive
@@ -39,8 +30,7 @@ ARG CPUS
 ARG RUNTIMES
 ARG DEPENDENCIES
 
-# copy ffmpeg
-COPY --from=download-ffmpeg /FFmpeg/ /tmp/ffmpeg/
+COPY --from=download /FFmpeg/ /tmp/ffmpeg/
 
 RUN <<EOF
   set -eux

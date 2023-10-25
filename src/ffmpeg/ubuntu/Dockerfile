@@ -33,29 +33,20 @@ ARG RUNTIMES="${X264_RUNTIMES} ${X265_RUNTIMES} ${FDK_AAC_RUNTIMES} ${WEBM_RUNTI
 ARG ADDITIONAL_DEPENDENCIES="build-essential"
 ARG DEPENDENCIES="${ADDITIONAL_DEPENDENCIES} ${X264_DEPENDENCIES} ${X265_DEPENDENCIES} ${FDK_AAC_DEPENDENCIES} ${WEBM_DEPENDENCIES} ${ASS_DEPENDENCIES} ${ARIBB24_DEPENDENCIES} ${VA_API_DEPENDENCIES} ${NVIDIA_NVENC_DEPENDENCIES} ${INTEL_QSV_DEPENDENCIES} ${AMD_AMF_DEPENDENCIES}"
 
-FROM --platform=$BUILDPLATFORM debian:stable@sha256:fd865da5f887f2fdb7af19c3a33fe9c98cb00a26859df66508cadadc35cb8676 AS downloader
-
-RUN <<EOF
-  set -eux
-
-  apt-get update
-  apt-get install -y --no-install-recommends git ca-certificates
-EOF
-
 # download nv-codec-headers
-FROM --platform=$BUILDPLATFORM downloader AS download-nv-codec-headers
+FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.42.0 AS download-nv-codec-headers
 ARG NV_CODEC_HEADERS_VERSION
 
 RUN git clone https://github.com/FFmpeg/nv-codec-headers -b "${NV_CODEC_HEADERS_VERSION}" --recursive
 
 # download AMF
-FROM --platform=$BUILDPLATFORM downloader AS download-amf
+FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.42.0 AS download-amf
 ARG AMF_VERSION
 
 RUN git clone https://github.com/GPUOpen-LibrariesAndSDKs/AMF -b "${AMF_VERSION}" --recursive
 
 # download ffmpeg
-FROM --platform=$BUILDPLATFORM downloader AS download-ffmpeg
+FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.42.0 AS download-ffmpeg
 ARG FFMPEG_VERSION
 
 RUN git clone https://github.com/FFmpeg/FFmpeg -b "${FFMPEG_VERSION}" --recursive
@@ -65,32 +56,22 @@ ARG CPUS
 ARG RUNTIMES
 ARG DEPENDENCIES
 
+RUN apt-get update && apt-get install -y --no-install-recommends ${RUNTIMES} ${DEPENDENCIES}
+
 # copy nv-codec-headers
 COPY --from=download-nv-codec-headers /nv-codec-headers/ /tmp/nv-codec-headers/
-RUN <<EOF
-  set -eux
-
-  cd /tmp/nv-codec-headers
-  make install
-  rm -rf /tmp/nv-codec-headers
-EOF
+WORKDIR /tmp/nv-codec-headers
+RUN make install && rm -rf /tmp/nv-codec-headers
 
 # copy AMF
 COPY --from=download-amf /AMF/amf/public/include/ /usr/local/include/AMF/
 
 # copy ffmpeg
 COPY --from=download-ffmpeg /FFmpeg/ /tmp/ffmpeg/
-
-ENV DEBIAN_FRONTEND="noninteractive"
+WORKDIR /tmp/ffmpeg
 RUN <<EOF
   set -eux
 
-  # install build dependencies and runtimes
-  apt-get update
-  apt-get install -y --no-install-recommends ${RUNTIMES} ${DEPENDENCIES}
-
-  # build ffmpeg
-  cd /tmp/ffmpeg
   ./configure \
     --extra-libs="-lpthread -lm -lz" \
     --enable-small \
@@ -136,7 +117,6 @@ ENV LANG="C.UTF-8"
 ENV NVIDIA_VISIBLE_DEVICES="all"
 ENV NVIDIA_DRIVER_CAPABILITIES="video,compute,utility"
 
-ENV DEBIAN_FRONTEND="noninteractive"
 RUN <<EOF
   set -eux
 

@@ -11,7 +11,6 @@ ARG DEPENDENCIES
 
 ADD https://github.com/rigaya/QSVEnc/releases/download/${QSVENCC_VERSION}/qsvencc_${QSVENCC_VERSION}_Ubuntu22.04_amd64.deb /tmp/package.deb
 
-ENV DEBIAN_FRONTEND=noninteractive
 RUN <<EOF
   set -eux
 
@@ -25,7 +24,6 @@ RUN <<EOF
 
   apt-get install -y --no-install-recommends /tmp/package.deb
 
-  # clean up
   apt-get remove -y ${DEPENDENCIES}
   apt-get autoremove -y
   apt-get clean

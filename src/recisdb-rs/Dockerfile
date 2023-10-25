@@ -3,26 +3,16 @@ ARG REF="master"
 ARG RUNTIMES="libpcsclite1"
 ARG DEPENDENCIES="build-essential cmake clang pkg-config libpcsclite-dev"
 
-FROM --platform=$BUILDPLATFORM debian:stable@sha256:fd865da5f887f2fdb7af19c3a33fe9c98cb00a26859df66508cadadc35cb8676 AS downloader
-
-RUN <<EOF
-  set -eux
-
-  apt-get update
-  apt-get install -y --no-install-recommends git ca-certificates
-EOF
-
-FROM --platform=$BUILDPLATFORM downloader AS download
+FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.42.0 AS download
 ARG REF
 
-ENV DEBIAN_FRONTEND="noninteractive"
 ADD https://api.github.com/repos/kazuki0824/recisdb-rs/git/refs/heads/${REF} /tmp/git.json
 RUN git clone https://github.com/kazuki0824/recisdb-rs -b "${REF}" --recursive /app
 
 FROM --platform=$TARGETPLATFORM rust:1.73.0-slim-bookworm@sha256:89e1efffc83a631bced1bf86135f4f671223cc5dc32ebf26ef8b3efd1b97ffff AS chef
+WORKDIR /app
 
 RUN cargo install cargo-chef
-WORKDIR /app
 
 FROM --platform=$TARGETPLATFORM chef AS plan
 
@@ -33,23 +23,16 @@ FROM --platform=$TARGETPLATFORM chef AS build
 ARG RUNTIMES
 ARG DEPENDENCIES
 
+RUN apt-get update && apt-get install -y --no-install-recommends ${RUNTIMES} ${DEPENDENCIES}
+
 COPY --from=plan /app/recipe.json ./
 RUN cargo chef cook --release --recipe-path recipe.json
 
-ENV DEBIAN_FRONTEND="noninteractive"
 COPY --from=download /app/ ./
-RUN <<EOF
-  set -eux
+RUN cargo build --release --workspace --verbose
 
-  apt-get update
-  apt-get install -y --no-install-recommends ${RUNTIMES} ${DEPENDENCIES}
-
-  cargo build --release --workspace --verbose
-EOF
-
-FROM --platform=$TARGETPLATFORM debian:12.1-slim@sha256:24c92a69df28b21676d721fe18c0bf64138bfc69b486746ad935b49cc31b0b91 AS runtime
+FROM --platform=$TARGETPLATFORM public.ecr.aws/debian/debian:stable-slim@sha256:4f5d8d928d9398c9eae7b6512848b9ae6022006a74f816c2fe2cbf8e598ae242
 ARG RUNTIMES
-ENV DEBIAN_FRONTEND="noninteractive"
 
 RUN <<EOF
   set -eux
@@ -58,7 +41,6 @@ RUN <<EOF
   apt-get update
   apt-get install -y --no-install-recommends ${RUNTIMES}
 
-  # clean up
   apt-get clean
   rm -rf /var/lib/apt/lists/*
 EOF
