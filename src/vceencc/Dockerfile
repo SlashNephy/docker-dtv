@@ -5,7 +5,7 @@ ARG VCEENCC_VERSION="8.16"
 
 ARG AMDGPU_VERSION="23.20.00.48"
 ARG AMDGPU_INSTALL_VERSION="5.7.00.48.50700-1"
-ARG DEPENDENCIES="initramfs-tools"
+ARG DEPENDENCIES="ca-certificates initramfs-tools"
 
 FROM public.ecr.aws/ubuntu/ubuntu:22.04
 ARG VCEENCC_VERSION
