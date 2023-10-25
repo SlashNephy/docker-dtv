@@ -3,13 +3,13 @@ ARG REF="master"
 ARG RUNTIMES="libpcsclite1"
 ARG DEPENDENCIES="build-essential cmake clang pkg-config libpcsclite-dev"
 
-FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.42.0 AS download
+FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.42.0@sha256:2f4cc0850fe005ffb3e91a48f92bd941acb2888dff910d1f21bb98fdbe3e0876 AS download
 ARG REF
 
 ADD https://api.github.com/repos/kazuki0824/recisdb-rs/git/refs/heads/${REF} /tmp/git.json
 RUN git clone https://github.com/kazuki0824/recisdb-rs -b "${REF}" --recursive /app
 
-FROM --platform=$TARGETPLATFORM public.ecr.aws/docker/library/rust:1.73.0-slim-bookworm AS chef
+FROM --platform=$TARGETPLATFORM public.ecr.aws/docker/library/rust:1.73.0-slim-bookworm@sha256:89e1efffc83a631bced1bf86135f4f671223cc5dc32ebf26ef8b3efd1b97ffff AS chef
 WORKDIR /app
 
 RUN cargo install cargo-chef

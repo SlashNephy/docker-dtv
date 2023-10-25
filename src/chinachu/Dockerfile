@@ -5,13 +5,13 @@ ARG REF="gamma"
 ARG RUNTIMES="curl"
 ARG DEPENDENCIES="build-essential git sudo ca-certificates python3 wget xz-utils"
 
-FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.42.0 AS download
+FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.42.0@sha256:2f4cc0850fe005ffb3e91a48f92bd941acb2888dff910d1f21bb98fdbe3e0876 AS download
 ARG REF
 
 ADD https://api.github.com/repos/Chinachu/Chinachu/git/refs/heads/${REF} /tmp/git.json
 RUN git clone https://github.com/Chinachu/Chinachu -b "${REF}" --recursive /app
 
-FROM --platform=$TARGETPLATFORM public.ecr.aws/docker/library/node:16.20.2-bookworm-slim
+FROM --platform=$TARGETPLATFORM public.ecr.aws/docker/library/node:16.20.2-bookworm-slim@sha256:89061680359f5d9103d24f0066e2c96a8018c24d5c4fe8eb8d59d16dd4ab64ba
 WORKDIR /app
 ARG RUNTIMES
 ARG DEPENDENCIES
