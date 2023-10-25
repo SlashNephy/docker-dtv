@@ -32,20 +32,25 @@ ARG CPUS
 ARG RUNTIMES
 ARG DEPENDENCIES
 
-COPY --from=download /FFmpeg/ /tmp/ffmpeg/
-
 RUN <<EOF
   set -eux
 
-  # add non-free repository
   echo 'deb http://deb.debian.org/debian/ stable contrib non-free non-free-firmware' | tee /etc/apt/sources.list
   apt-get update
-
-  # install build dependencies and runtimes
   apt-get install -y --no-install-recommends ${RUNTIMES} ${DEPENDENCIES}
 
-  # build ffmpeg
-  cd /tmp/ffmpeg
+  apt-get clean
+  rm -rf \
+    /var/lib/apt/lists/* \
+    /tmp/ffmpeg
+EOF
+
+COPY --from=download /FFmpeg/ /tmp/ffmpeg/
+
+WORKDIR /tmp/ffmpeg
+RUN <<EOF
+  set -eux
+
   ./configure \
     --extra-libs="-lpthread -lm -lz" \
     --enable-small \
@@ -75,13 +80,9 @@ RUN <<EOF
   make -j${CPUS}
   make install
 
-  # clean up
   apt-get remove -y ${DEPENDENCIES}
   apt-get autoremove -y
-  apt-get clean
-  rm -rf \
-    /var/lib/apt/lists/* \
-    /tmp/ffmpeg
 EOF
 
+WORKDIR /
 ENTRYPOINT [ "/usr/local/bin/ffmpeg" ]

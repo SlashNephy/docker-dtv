@@ -32,7 +32,7 @@ RUN <<EOF
   set -eux
 
   groupadd -g "${GID}" "${GROUPNAME}"
-  useradd -u "${UID}" -g "${GID}" "${USERNAME}"
+  useradd -l -u "${UID}" -g "${GID}" "${USERNAME}"
 
   apt-get update
   apt-get install -y --no-install-recommends ${DEPENDENCIES}

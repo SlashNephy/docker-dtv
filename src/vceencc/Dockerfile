@@ -13,16 +13,21 @@ ARG AMDGPU_VERSION
 ARG AMDGPU_INSTALL_VERSION
 ARG DEPENDENCIES
 
-ADD https://github.com/rigaya/VCEEnc/releases/download/${VCEENCC_VERSION}/vceencc_${VCEENCC_VERSION}_Ubuntu22.04_amd64.deb /tmp/package.deb
-
-ENV SUDO_FORCE_REMOVE=yes
+# hadolint ignore=DL3009
 RUN <<EOF
   set -eux
 
   apt-get update
+  apt-get install -y --no-install-recommends ${DEPENDENCIES}
+EOF
 
-  cd /tmp
-  apt-get install -y ${DEPENDENCIES}
+ADD https://github.com/rigaya/VCEEnc/releases/download/${VCEENCC_VERSION}/vceencc_${VCEENCC_VERSION}_Ubuntu22.04_amd64.deb /tmp/package.deb
+
+WORKDIR /tmp
+ENV SUDO_FORCE_REMOVE=yes
+RUN <<EOF
+  set -eux
+
   aria2c -x10 https://repo.radeon.com/amdgpu-install/${AMDGPU_VERSION}/ubuntu/jammy/amdgpu-install_${AMDGPU_INSTALL_VERSION}_all.deb --referer=www.amd.com
   apt-get install -y --no-install-recommends /tmp/amdgpu-install_${AMDGPU_INSTALL_VERSION}_all.deb
   amdgpu-install -y --accept-eula --usecase=graphics,amf,opencl --opencl=rocr,legacy --no-32
@@ -39,4 +44,5 @@ RUN <<EOF
     /var/lib/apt/lists/*
 EOF
 
+WORKDIR /
 ENTRYPOINT [ "/usr/bin/vceencc" ]

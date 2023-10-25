@@ -30,22 +30,20 @@ ARG CPUS
 ARG RUNTIMES
 ARG DEPENDENCIES
 
-COPY --from=download /FFmpeg/ /tmp/ffmpeg/
-
 RUN <<EOF
   set -eux
 
-  # add community repository
   echo https://dl-cdn.alpinelinux.org/alpine/edge/community >> /etc/apk/repositories
-
-  # install build dependencies
   apk add --no-cache --virtual .build-dependencies ${DEPENDENCIES}
-
-  # install runtime
   apk add --no-cache ${RUNTIMES}
+EOF
 
-  # build ffmpeg
-  cd /tmp/ffmpeg/
+COPY --from=download /FFmpeg/ /tmp/ffmpeg/
+
+WORKDIR /tmp/ffmpeg
+RUN <<EOF
+  set -eux
+
   ./configure \
     --extra-libs="-lpthread -lm -lz" \
     --enable-small \
@@ -72,9 +70,9 @@ RUN <<EOF
   make -j${CPUS}
   make install
 
-  # clean up
   apk del --purge .build-dependencies
   rm -rf /tmp/ffmpeg
 EOF
 
+WORKDIR /
 ENTRYPOINT [ "/usr/local/bin/ffmpeg" ]

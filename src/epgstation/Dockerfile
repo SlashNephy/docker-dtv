@@ -22,6 +22,7 @@ RUN git apply --numstat --summary --check --apply --ignore-whitespace -v /tmp/*.
 
 FROM --platform=$BUILDPLATFORM public.ecr.aws/debian/debian:stable-slim@sha256:4f5d8d928d9398c9eae7b6512848b9ae6022006a74f816c2fe2cbf8e598ae242 AS jq
 
+# hadolint ignore=DL3009
 RUN apt-get update && apt-get install -y --no-install-recommends jq
 
 FROM --platform=$BUILDPLATFORM jq AS patch-version
