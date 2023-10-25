@@ -3,8 +3,8 @@
 # renovate: datasource=github-releases depName=rigaya/VCEEnc
 ARG VCEENCC_VERSION="8.16"
 
-ARG AMDGPU_VERSION="23.10.3"
-ARG AMDGPU_INSTALL_VERSION="5.5.50503-1"
+ARG AMDGPU_VERSION="23.20.00.48"
+ARG AMDGPU_INSTALL_VERSION="5.7.00.48.50700-1"
 ARG DEPENDENCIES="aria2 initramfs-tools"
 
 FROM ubuntu:jammy@sha256:2b7412e6465c3c7fc5bb21d3e6f1917c167358449fecac8176c6e496e5c1f05f
@@ -35,7 +35,6 @@ RUN <<EOF
   apt-get update
   apt-get install -y --no-install-recommends /tmp/package.deb
 
-  # clean up
   apt-get remove -y ${DEPENDENCIES}
   apt-get autoremove -y
   apt-get clean
