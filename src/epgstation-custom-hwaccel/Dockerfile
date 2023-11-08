@@ -7,10 +7,10 @@ ARG VCEENCC_TAG="master@sha256:a2f2becdfc5482b5809a05810b6f041f6e65c53f4955ec605
 ARG FFMPEG_TAG="master@sha256:47ceba00ada9927ee3793b47d6e9940bec0c5a10b8e70b522a0aff413f646830"
 ARG NODE_VERSION="20"
 
-ARG DEPENDENCIES="ca-certificates curl gnupg"
+ARG DEPENDENCIES="curl gnupg"
 ARG NVENCC_RUNTIMES="libcuda1-340 libswresample3 libavcodec58 libavformat58 libavfilter7"
 ARG QSVENCC_RUNTIMES="intel-media-va-driver-non-free intel-opencl-icd intel-level-zero-gpu level-zero"
-ARG RUNTIMES="nodejs ${NVENCC_RUNTIMES} ${QSVENCC_RUNTIMES}"
+ARG RUNTIMES="nodejs ca-certificates ${NVENCC_RUNTIMES} ${QSVENCC_RUNTIMES}"
 
 FROM ghcr.io/slashnephy/epgstation:${EPGSTATION_TAG} AS epgstation
 FROM ghcr.io/slashnephy/nvencc:${NVENCC_TAG} AS nvencc
