@@ -49,7 +49,6 @@ RUN <<EOF
   apt-get install -y --no-install-recommends ${RUNTIMES}
 
   apt-get remove -y ${DEPENDENCIES}
-  apt-get autoremove -y
   apt-get clean
   rm -rf /var/lib/apt/lists/*
 EOF
