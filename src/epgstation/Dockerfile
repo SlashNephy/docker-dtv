@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # renovate: datasource=github-releases depName=l3tnun/EPGStation
-ARG EPGSTATION_VERSION="v2.7.2"
+ARG EPGSTATION_VERSION="v2.7.3"
 
 ARG COMMIT_ID="unknown"
 
