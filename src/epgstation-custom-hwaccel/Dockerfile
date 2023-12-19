@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-ARG EPGSTATION_TAG="master@sha256:6edfa14f494466f98a60ad1a5595c5d846ace3c3b0d460bfb928d90cd1833279"
+ARG EPGSTATION_TAG="master@sha256:7d204fa1bd4877b6c7d1098e966ca62774ad5fae8fddfee7e00064b1b097a79e"
 ARG NVENCC_TAG="master@sha256:10dda26e0cdd74f1021c4cd22307cfe215e9debbcdfd3d875e75cfd5c9ec6771"
 ARG QSVENCC_TAG="master@sha256:5d30a7cf112cfdd2aea6034b34eaa1eaf3be950ba3675fd0fbb2e7342aaedb84"
 ARG VCEENCC_TAG="master@sha256:a2f2becdfc5482b5809a05810b6f041f6e65c53f4955ec6053026c7efdb8a8d2"
