@@ -9,6 +9,6 @@ publish = false
 reqwest = { version = "0.11", features = ["blocking", "json"] }
 clap = { version = "3.2.25", features = ["derive", "env", "cargo"] }
 mirakurun-client-common = { path = "../common" }
-tokio = { version = "1.35.0", features = ["full"] }
+tokio = { version = "1.35.1", features = ["full"] }
 chrono = "0.4"
 serde = { version = "1.0", features = ["derive"] }
