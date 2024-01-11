@@ -23,7 +23,7 @@ RUN cargo chef cook --release --recipe-path recipe.json
 COPY ./ /app/
 RUN cargo build --release --workspace --verbose
 
-FROM --platform=$TARGETPLATFORM public.ecr.aws/debian/debian:stable-slim@sha256:0e215c8d2daffb411d383f26ee0bd460c7743dce5d1b2d7f597b4e41a5d2dd09
+FROM --platform=$TARGETPLATFORM public.ecr.aws/debian/debian:stable-slim@sha256:3388f67c09a508e26754196dfbd7db9e391b3642e13f45518d15473014599245
 
 COPY --from=build /app/target/release/ /usr/local/bin/
 

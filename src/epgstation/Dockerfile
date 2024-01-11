@@ -20,7 +20,7 @@ COPY ./*.patch /tmp/
 
 RUN git apply --numstat --summary --check --apply --ignore-whitespace -v /tmp/*.patch
 
-FROM --platform=$BUILDPLATFORM public.ecr.aws/debian/debian:stable-slim@sha256:0e215c8d2daffb411d383f26ee0bd460c7743dce5d1b2d7f597b4e41a5d2dd09 AS jq
+FROM --platform=$BUILDPLATFORM public.ecr.aws/debian/debian:stable-slim@sha256:3388f67c09a508e26754196dfbd7db9e391b3642e13f45518d15473014599245 AS jq
 
 # hadolint ignore=DL3009
 RUN apt-get update && apt-get install -y --no-install-recommends jq
