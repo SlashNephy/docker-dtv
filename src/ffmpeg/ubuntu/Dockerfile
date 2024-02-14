@@ -5,7 +5,7 @@ ARG FFMPEG_VERSION="n6.0"
 # renovate: datasource=github-tags depName=FFmpeg/nv-codec-headers
 ARG NV_CODEC_HEADERS_VERSION="n12.1.14.0"
 # renovate: datasource=github-tags depName=GPUOpen-LibrariesAndSDKs/AMF
-ARG AMF_VERSION="v1.4.30"
+ARG AMF_VERSION="v1.4.33"
 
 ARG CPUS=4
 ARG X264_RUNTIMES="libx264-163"
