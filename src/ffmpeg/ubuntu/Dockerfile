@@ -34,19 +34,19 @@ ARG ADDITIONAL_DEPENDENCIES="build-essential"
 ARG DEPENDENCIES="${ADDITIONAL_DEPENDENCIES} ${X264_DEPENDENCIES} ${X265_DEPENDENCIES} ${FDK_AAC_DEPENDENCIES} ${WEBM_DEPENDENCIES} ${ASS_DEPENDENCIES} ${ARIBB24_DEPENDENCIES} ${VA_API_DEPENDENCIES} ${NVIDIA_NVENC_DEPENDENCIES} ${INTEL_QSV_DEPENDENCIES} ${AMD_AMF_DEPENDENCIES}"
 
 # download nv-codec-headers
-FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.42.0@sha256:2f4cc0850fe005ffb3e91a48f92bd941acb2888dff910d1f21bb98fdbe3e0876 AS download-nv-codec-headers
+FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.43.1@sha256:784bb2130daaa3b9a360a98b662f670d1cf0178861b6368d644c48ca8fde21da AS download-nv-codec-headers
 ARG NV_CODEC_HEADERS_VERSION
 
 RUN git clone https://github.com/FFmpeg/nv-codec-headers -b "${NV_CODEC_HEADERS_VERSION}" --recursive
 
 # download AMF
-FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.42.0@sha256:2f4cc0850fe005ffb3e91a48f92bd941acb2888dff910d1f21bb98fdbe3e0876 AS download-amf
+FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.43.1@sha256:784bb2130daaa3b9a360a98b662f670d1cf0178861b6368d644c48ca8fde21da AS download-amf
 ARG AMF_VERSION
 
 RUN git clone https://github.com/GPUOpen-LibrariesAndSDKs/AMF -b "${AMF_VERSION}" --recursive
 
 # download ffmpeg
-FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.42.0@sha256:2f4cc0850fe005ffb3e91a48f92bd941acb2888dff910d1f21bb98fdbe3e0876 AS download-ffmpeg
+FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.43.1@sha256:784bb2130daaa3b9a360a98b662f670d1cf0178861b6368d644c48ca8fde21da AS download-ffmpeg
 ARG FFMPEG_VERSION
 
 RUN git clone https://github.com/FFmpeg/FFmpeg -b "${FFMPEG_VERSION}" --recursive
