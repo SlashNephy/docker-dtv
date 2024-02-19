@@ -5,12 +5,12 @@ ARG LIBARIB25_VERSION="v0.2.5-20220902"
 
 ARG DEPENDENCIES="build-essential ca-certificates cmake pkg-config libpcsclite-dev"
 
-FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.43.1@sha256:cb0207f94dc780daf7921cf90d3cdf535881dd1a62186898d5a1cfab1eed682c AS source
+FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.43.2@sha256:678d6f8f4c1fb9b6bffa683edc4cccb884a37f55b3a4619b00e34874c2c5a442 AS source
 ARG LIBARIB25_VERSION
 
 RUN git clone https://github.com/stz2012/libarib25 -b "${LIBARIB25_VERSION}" /app
 
-FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.43.1@sha256:cb0207f94dc780daf7921cf90d3cdf535881dd1a62186898d5a1cfab1eed682c AS patch-source
+FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.43.2@sha256:678d6f8f4c1fb9b6bffa683edc4cccb884a37f55b3a4619b00e34874c2c5a442 AS patch-source
 WORKDIR /app
 
 COPY --from=source /app/ ./
