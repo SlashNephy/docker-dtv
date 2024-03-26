@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1
+# syntax=docker/dockerfile:1@sha256:ac85f380a63b13dfcefa89046420e1781752bab202122f8f50032edf31be0021
 
 # renovate: datasource=github-tags depName=FFmpeg/FFmpeg
 ARG FFMPEG_VERSION="n6.0"
