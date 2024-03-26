@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1
+# syntax=docker/dockerfile:1@sha256:ac85f380a63b13dfcefa89046420e1781752bab202122f8f50032edf31be0021
 
 ARG EPGSTATION_TAG="master@sha256:552d746bc6d73b15b8e26178d87e08da8819da59af2caa347b9cf903ab709354"
 ARG FFMPEG_TAG="master@sha256:5fa73a42f9e99ca8b51e914e1696bcac4de00b89e39febed88d1893613b7827b"
