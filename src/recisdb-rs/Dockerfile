@@ -9,7 +9,7 @@ ARG REF
 ADD https://api.github.com/repos/kazuki0824/recisdb-rs/git/refs/heads/${REF} /tmp/git.json
 RUN git clone https://github.com/kazuki0824/recisdb-rs -b "${REF}" --recursive /app
 
-FROM --platform=$TARGETPLATFORM public.ecr.aws/docker/library/rust:1.77.2-slim-bookworm@sha256:5e63309845493f77cba08c09f04c8c5e5aa53e87f567b69a89c4f2a3f168e99b AS chef
+FROM --platform=$TARGETPLATFORM public.ecr.aws/docker/library/rust:1.77.2-slim-bookworm@sha256:a8f04112cc1892451320b241b0fe7c074d506de026ad7d96162c8482f9b8ce1e AS chef
 WORKDIR /app
 
 RUN cargo install cargo-chef
