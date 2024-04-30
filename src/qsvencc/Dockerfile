@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # renovate: datasource=github-releases depName=rigaya/QSVEnc
-ARG QSVENCC_VERSION="7.62"
+ARG QSVENCC_VERSION="7.63"
 
 ARG DEPENDENCIES="curl ca-certificates gnupg2"
 
