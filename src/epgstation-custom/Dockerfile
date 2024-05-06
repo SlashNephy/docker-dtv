@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-ARG EPGSTATION_TAG="master@sha256:cd1183875bc75bb2d8c3a495fadf6eb8112eb76d48ccd483fcbd8dfecca894e1"
+ARG EPGSTATION_TAG="master@sha256:ffba451dd11f13d3ab7cf400e66174aed99e8b322cd7b0860efda1534cc44bf6"
 ARG FFMPEG_TAG="master@sha256:cd29c8c1b15b8961bb6ee28a56ea735f5a82cbbf42c6d792b298bcb563a0d682"
 ARG NODE_VERSION="20"
 
