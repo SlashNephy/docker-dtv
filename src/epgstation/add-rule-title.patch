@@ -28,8 +28,8 @@ index c5c8654a..baaf5d4b 100644
                      type: boolean
 diff --git a/client/src/components/rules/RuleListItens.vue b/client/src/components/rules/RuleListItens.vue
 index 893c459a..039c2ae1 100644
---- a/client/src/components/rules/RuleListItens.vue
-+++ b/client/src/components/rules/RuleListItens.vue
+--- a/client/src/components/rules/RuleListItems.vue
++++ b/client/src/components/rules/RuleListItems.vue
 @@ -9,7 +9,7 @@
                              <!--
                              {{ item.keyword }}
