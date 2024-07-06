@@ -18,7 +18,7 @@ COPY ./*.patch /tmp/
 
 RUN git apply --numstat --summary --check --apply --ignore-whitespace -v /tmp/*.patch
 
-FROM --platform=$TARGETPLATFORM public.ecr.aws/debian/debian:stable-slim@sha256:3e4eca28384ad0218923b9f802c3cbba00cb77f9d745f5d9086c235ff95abcf2 AS build
+FROM --platform=$TARGETPLATFORM public.ecr.aws/debian/debian:stable-slim@sha256:229473387fee04335e0252359719e6ac1ec80efb08f1e95647458e2a5a58e1ca AS build
 WORKDIR /app
 ARG DEPENDENCIES
 
@@ -41,7 +41,7 @@ RUN <<EOF
   mv /usr/local/lib/pkgconfig/libarib25.pc /usr/local/lib/pkgconfig/libarib1.pc
 EOF
 
-FROM --platform=$TARGETPLATFORM public.ecr.aws/debian/debian:stable-slim@sha256:3e4eca28384ad0218923b9f802c3cbba00cb77f9d745f5d9086c235ff95abcf2
+FROM --platform=$TARGETPLATFORM public.ecr.aws/debian/debian:stable-slim@sha256:229473387fee04335e0252359719e6ac1ec80efb08f1e95647458e2a5a58e1ca
 ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/usr/local/lib"
 
 COPY ./b1-stream /usr/local/bin/
