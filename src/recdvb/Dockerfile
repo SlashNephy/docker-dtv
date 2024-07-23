@@ -10,7 +10,7 @@ ARG RECDVB_VERSION
 
 RUN git clone https://github.com/k-pi/recdvb -b "${RECDVB_VERSION}" /app
 
-FROM --platform=$TARGETPLATFORM public.ecr.aws/debian/debian:stable-slim@sha256:229473387fee04335e0252359719e6ac1ec80efb08f1e95647458e2a5a58e1ca AS build
+FROM --platform=$TARGETPLATFORM public.ecr.aws/debian/debian:stable-slim@sha256:290bfbe90b75918a9e324c172573810c1e877f581c4cfa6fb758366251908623 AS build
 ARG DEPENDENCIES
 
 WORKDIR /app
@@ -29,7 +29,7 @@ RUN <<EOF
   make install
 EOF
 
-FROM --platform=$TARGETPLATFORM public.ecr.aws/debian/debian:stable-slim@sha256:229473387fee04335e0252359719e6ac1ec80efb08f1e95647458e2a5a58e1ca
+FROM --platform=$TARGETPLATFORM public.ecr.aws/debian/debian:stable-slim@sha256:290bfbe90b75918a9e324c172573810c1e877f581c4cfa6fb758366251908623
 
 COPY --from=build /usr/local/bin/ /usr/local/bin/
 
