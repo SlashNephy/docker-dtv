@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1
+# syntax=docker/dockerfile:1@sha256:fe40cf4e92cd0c467be2cfc30657a680ae2398318afd50b0c80585784c604f28
 
 # renovate: datasource=github-releases depName=l3tnun/EPGStation
 ARG EPGSTATION_VERSION="v2.9.0"
