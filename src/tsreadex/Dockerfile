@@ -10,7 +10,7 @@ ARG TSREADEX_VERSION
 
 RUN git clone https://github.com/xtne6f/tsreadex -b "${TSREADEX_VERSION}" /app
 
-FROM --platform=$TARGETPLATFORM public.ecr.aws/debian/debian:stable-slim@sha256:dcf7318b55ff446622951f631b69fbee828d922e67223bd2ddbf8f692b1bcf83 AS build
+FROM --platform=$TARGETPLATFORM public.ecr.aws/debian/debian:stable-slim@sha256:ee3155cc6925ecec79157a9bb346b6f3558eba31727493b454949a2adab52ae7 AS build
 WORKDIR /app
 ARG DEPENDENCIES
 
@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends ${DEPENDENCIES}
 COPY --from=download /app/ ./
 RUN cmake . && make
 
-FROM --platform=$TARGETPLATFORM public.ecr.aws/debian/debian:stable-slim@sha256:dcf7318b55ff446622951f631b69fbee828d922e67223bd2ddbf8f692b1bcf83
+FROM --platform=$TARGETPLATFORM public.ecr.aws/debian/debian:stable-slim@sha256:ee3155cc6925ecec79157a9bb346b6f3558eba31727493b454949a2adab52ae7
 
 COPY --from=build /app/tsreadex /usr/local/bin/
 

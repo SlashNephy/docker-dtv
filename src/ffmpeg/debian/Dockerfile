@@ -27,7 +27,7 @@ ARG FFMPEG_VERSION
 
 RUN git clone https://github.com/FFmpeg/FFmpeg -b "${FFMPEG_VERSION}" --recursive
 
-FROM --platform=$TARGETPLATFORM public.ecr.aws/debian/debian:stable-slim@sha256:dcf7318b55ff446622951f631b69fbee828d922e67223bd2ddbf8f692b1bcf83
+FROM --platform=$TARGETPLATFORM public.ecr.aws/debian/debian:stable-slim@sha256:ee3155cc6925ecec79157a9bb346b6f3558eba31727493b454949a2adab52ae7
 ARG CPUS
 ARG RUNTIMES
 ARG DEPENDENCIES
