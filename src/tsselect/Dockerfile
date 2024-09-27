@@ -10,7 +10,7 @@ ARG TSSELECT_VERSION
 
 RUN git clone https://github.com/xtne6f/tsselect_gcc -b "${TSSELECT_VERSION}" /app
 
-FROM --platform=$TARGETPLATFORM public.ecr.aws/debian/debian:stable-slim@sha256:ee3155cc6925ecec79157a9bb346b6f3558eba31727493b454949a2adab52ae7 AS build
+FROM --platform=$TARGETPLATFORM public.ecr.aws/debian/debian:stable-slim@sha256:632461e0707aee91d4da2bcdde53909f61da06946e249e9b933b2365f193dd64 AS build
 WORKDIR /app/src
 ARG DEPENDENCIES
 
@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends ${DEPENDENCIES}
 COPY --from=download /app/ /app/
 RUN make
 
-FROM --platform=$TARGETPLATFORM public.ecr.aws/debian/debian:stable-slim@sha256:ee3155cc6925ecec79157a9bb346b6f3558eba31727493b454949a2adab52ae7
+FROM --platform=$TARGETPLATFORM public.ecr.aws/debian/debian:stable-slim@sha256:632461e0707aee91d4da2bcdde53909f61da06946e249e9b933b2365f193dd64
 
 COPY --from=build /app/src/tsselect /usr/local/bin/
 
