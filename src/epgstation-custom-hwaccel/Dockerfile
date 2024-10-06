@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1
+# syntax=docker/dockerfile:1@sha256:865e5dd094beca432e8c0a1d5e1c465db5f998dca4e439981029b3b81fb39ed5
 
 ARG EPGSTATION_TAG="master@sha256:584f3ee7150de6fc86bef2379668a446a32223f1e0032f0370086c75afda5de7"
 ARG NVENCC_TAG="master@sha256:f159fef7a82a7678ed9960b583f9add0ba1348e663fc7d9e098bb873a0a8e1b0"
