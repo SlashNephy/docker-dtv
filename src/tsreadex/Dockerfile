@@ -5,7 +5,7 @@ ARG TSREADEX_VERSION="master-230809"
 
 ARG DEPENDENCIES="build-essential cmake"
 
-FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.44.0@sha256:b91c3ac4915cbf6ba813175a0387bca69a70b52e1b57a22e212322036c47da23 AS download
+FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.47.0@sha256:4ee352aad68b84a10fb153e259c1f9911362334471608c37f9ceb8312a749d89 AS download
 ARG TSREADEX_VERSION
 
 RUN git clone https://github.com/xtne6f/tsreadex -b "${TSREADEX_VERSION}" /app
