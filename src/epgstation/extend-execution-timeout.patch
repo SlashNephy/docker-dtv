@@ -5,9 +5,22 @@ index 32f994ee..1b6419c6 100644
 @@ -21,7 +21,7 @@ class ExecutionManagementModel implements IExecutionManagementModel {
          this.log = logger.getLogger();
      }
- 
+
 -    public getExecution(priority: number, timeout: number = 1000 * 60): Promise<ExecutionId> {
 +    public getExecution(priority: number, timeout: number = 1000 * 180): Promise<ExecutionId> {
          const exeQueueData: ExeQueueData = {
              id: new Date().getTime().toString(16) + Math.floor(1000 * Math.random()).toString(16),
              priority: priority,
+diff --git a/src/model/ipc/IPCClient.ts b/src/model/ipc/IPCClient.ts
+index 0a78e2d0..d8bfcdaa 100644
+--- a/src/model/ipc/IPCClient.ts
++++ b/src/model/ipc/IPCClient.ts
+@@ -93,7 +93,7 @@ export default class IPCClient implements IIPCClient {
+      * @param option: ClientMessageOption
+      * @return MessageId
+      */
+-    private send<T>(option: ClientMessageOption, timeout: number = 5000): Promise<T> {
++    private send<T>(option: ClientMessageOption, timeout: number = 30000): Promise<T> {
+         const msg: SendMessage = {
+             id: new Date().getTime(),
+             model: option.model,
