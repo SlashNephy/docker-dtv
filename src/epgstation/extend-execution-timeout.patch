@@ -7,7 +7,7 @@ index 32f994ee..1b6419c6 100644
      }
 
 -    public getExecution(priority: number, timeout: number = 1000 * 60): Promise<ExecutionId> {
-+    public getExecution(priority: number, timeout: number = 1000 * 180): Promise<ExecutionId> {
++    public getExecution(priority: number, timeout: number = 1000 * 300): Promise<ExecutionId> {
          const exeQueueData: ExeQueueData = {
              id: new Date().getTime().toString(16) + Math.floor(1000 * Math.random()).toString(16),
              priority: priority,
@@ -20,7 +20,7 @@ index 0a78e2d0..d8bfcdaa 100644
       * @return MessageId
       */
 -    private send<T>(option: ClientMessageOption, timeout: number = 5000): Promise<T> {
-+    private send<T>(option: ClientMessageOption, timeout: number = 30000): Promise<T> {
++    private send<T>(option: ClientMessageOption, timeout: number = 300000): Promise<T> {
          const msg: SendMessage = {
              id: new Date().getTime(),
              model: option.model,
