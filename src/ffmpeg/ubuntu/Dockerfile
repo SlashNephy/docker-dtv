@@ -56,7 +56,17 @@ ARG CPUS
 ARG RUNTIMES
 ARG DEPENDENCIES
 
-RUN apt-get update && apt-get install -y --no-install-recommends ${RUNTIMES} ${DEPENDENCIES}
+RUN <<EOF
+  set -eux
+
+  apt-get update
+  apt-get install -y --no-install-recommends curl gpg-agent software-properties-common
+  curl -o - https://repositories.intel.com/graphics/intel-graphics.key | apt-key add -
+  apt-add-repository 'deb [arch=amd64] https://repositories.intel.com/graphics/ubuntu focal main'
+
+  apt-get update
+  apt-get install -y --no-install-recommends ${RUNTIMES} ${DEPENDENCIES}
+EOF
 
 # copy nv-codec-headers
 COPY --from=download-nv-codec-headers /nv-codec-headers/ /tmp/nv-codec-headers/
