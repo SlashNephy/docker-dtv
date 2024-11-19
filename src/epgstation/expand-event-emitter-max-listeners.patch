@@ -1,0 +1,221 @@
+diff --git a/src/model/ExecutionManagementModel.ts b/src/model/ExecutionManagementModel.ts
+index 32f994ee..1c076c08 100644
+--- a/src/model/ExecutionManagementModel.ts
++++ b/src/model/ExecutionManagementModel.ts
+@@ -15,7 +15,7 @@ class ExecutionManagementModel implements IExecutionManagementModel {
+ 
+     private lockId: string | null = null;
+     private exeQueue: ExeQueueData[] = [];
+-    private exeEventEmitter: events.EventEmitter = new events.EventEmitter();
++    private exeEventEmitter: events.EventEmitter = new events.EventEmitter().setMaxListeners(50);
+ 
+     constructor(@inject('ILoggerModel') logger: ILoggerModel) {
+         this.log = logger.getLogger();
+diff --git a/src/model/event/EPGUpdateEvent.ts b/src/model/event/EPGUpdateEvent.ts
+index 5f6d1782..fcc18dcd 100644
+--- a/src/model/event/EPGUpdateEvent.ts
++++ b/src/model/event/EPGUpdateEvent.ts
+@@ -7,7 +7,7 @@ import IEPGUpdateEvent from './IEPGUpdateEvent';
+ @injectable()
+ class EPGUpdateEvent implements IEPGUpdateEvent {
+     private log: ILogger;
+-    private emitter: events.EventEmitter = new events.EventEmitter();
++    private emitter: events.EventEmitter = new events.EventEmitter().setMaxListeners(50);
+ 
+     constructor(@inject('ILoggerModel') logger: ILoggerModel) {
+         this.log = logger.getLogger();
+diff --git a/src/model/event/EncodeEvent.ts b/src/model/event/EncodeEvent.ts
+index f95f20e5..2e26d311 100644
+--- a/src/model/event/EncodeEvent.ts
++++ b/src/model/event/EncodeEvent.ts
+@@ -8,7 +8,7 @@ import IEncodeEvent, { FinishEncodeInfo } from './IEncodeEvent';
+ @injectable()
+ class EncodeEvent implements IEncodeEvent {
+     private log: ILogger;
+-    private emitter: events.EventEmitter = new events.EventEmitter();
++    private emitter: events.EventEmitter = new events.EventEmitter().setMaxListeners(50);
+ 
+     constructor(@inject('ILoggerModel') logger: ILoggerModel) {
+         this.log = logger.getLogger();
+diff --git a/src/model/event/OperatorEncodeEvent.ts b/src/model/event/OperatorEncodeEvent.ts
+index b3e29415..b2b6852c 100644
+--- a/src/model/event/OperatorEncodeEvent.ts
++++ b/src/model/event/OperatorEncodeEvent.ts
+@@ -7,7 +7,7 @@ import IOperatorEncodeEvent, { OperatorFinishEncodeInfo } from './IOperatorEncod
+ @injectable()
+ class OperatorEncodeEvent implements IOperatorEncodeEvent {
+     private log: ILogger;
+-    private emitter: events.EventEmitter = new events.EventEmitter();
++    private emitter: events.EventEmitter = new events.EventEmitter().setMaxListeners(50);
+ 
+     constructor(@inject('ILoggerModel') logger: ILoggerModel) {
+         this.log = logger.getLogger();
+diff --git a/src/model/event/RecordedEvent.ts b/src/model/event/RecordedEvent.ts
+index d25cc175..e1841ed8 100644
+--- a/src/model/event/RecordedEvent.ts
++++ b/src/model/event/RecordedEvent.ts
+@@ -9,7 +9,7 @@ import IRecordedEvent from './IRecordedEvent';
+ @injectable()
+ class RecordedEvent implements IRecordedEvent {
+     private log: ILogger;
+-    private emitter: events.EventEmitter = new events.EventEmitter();
++    private emitter: events.EventEmitter = new events.EventEmitter().setMaxListeners(50);
+ 
+     constructor(@inject('ILoggerModel') logger: ILoggerModel) {
+         this.log = logger.getLogger();
+diff --git a/src/model/event/RecordedTagEvent.ts b/src/model/event/RecordedTagEvent.ts
+index a8b618b0..80ee5b8e 100644
+--- a/src/model/event/RecordedTagEvent.ts
++++ b/src/model/event/RecordedTagEvent.ts
+@@ -9,7 +9,7 @@ import IRecordedTagEvent from './IRecordedTagEvent';
+ @injectable()
+ class RecordedTagEvent implements IRecordedTagEvent {
+     private log: ILogger;
+-    private emitter: events.EventEmitter = new events.EventEmitter();
++    private emitter: events.EventEmitter = new events.EventEmitter().setMaxListeners(50);
+ 
+     constructor(@inject('ILoggerModel') logger: ILoggerModel) {
+         this.log = logger.getLogger();
+diff --git a/src/model/event/RecordingEvent.ts b/src/model/event/RecordingEvent.ts
+index de718ab7..0a80ffb2 100644
+--- a/src/model/event/RecordingEvent.ts
++++ b/src/model/event/RecordingEvent.ts
+@@ -10,7 +10,7 @@ import IRecordingEvent from './IRecordingEvent';
+ @injectable()
+ class RecordingEvent implements IRecordingEvent {
+     private log: ILogger;
+-    private emitter: events.EventEmitter = new events.EventEmitter();
++    private emitter: events.EventEmitter = new events.EventEmitter().setMaxListeners(50);
+ 
+     constructor(@inject('ILoggerModel') logger: ILoggerModel) {
+         this.log = logger.getLogger();
+diff --git a/src/model/event/ReserveEvent.ts b/src/model/event/ReserveEvent.ts
+index 1e70217c..13161af9 100644
+--- a/src/model/event/ReserveEvent.ts
++++ b/src/model/event/ReserveEvent.ts
+@@ -7,7 +7,7 @@ import IReserveEvent, { IReserveUpdateValues } from './IReserveEvent';
+ @injectable()
+ class ReserveEvent implements IReserveEvent {
+     private log: ILogger;
+-    private emitter: events.EventEmitter = new events.EventEmitter();
++    private emitter: events.EventEmitter = new events.EventEmitter().setMaxListeners(50);
+ 
+     constructor(@inject('ILoggerModel') logger: ILoggerModel) {
+         this.log = logger.getLogger();
+diff --git a/src/model/event/RuleEvent.ts b/src/model/event/RuleEvent.ts
+index 7a16485f..ca389017 100644
+--- a/src/model/event/RuleEvent.ts
++++ b/src/model/event/RuleEvent.ts
+@@ -8,7 +8,7 @@ import IRuleEvent from './IRuleEvent';
+ @injectable()
+ class RuleEvent implements IRuleEvent {
+     private log: ILogger;
+-    private emitter: events.EventEmitter = new events.EventEmitter();
++    private emitter: events.EventEmitter = new events.EventEmitter().setMaxListeners(50);
+ 
+     constructor(@inject('ILoggerModel') logger: ILoggerModel) {
+         this.log = logger.getLogger();
+diff --git a/src/model/event/ThumbnailEvent.ts b/src/model/event/ThumbnailEvent.ts
+index 92cccee9..c8b77121 100644
+--- a/src/model/event/ThumbnailEvent.ts
++++ b/src/model/event/ThumbnailEvent.ts
+@@ -8,7 +8,7 @@ import IThumbnailEvent from './IThumbnailEvent';
+ @injectable()
+ class ThumbnailEvent implements IThumbnailEvent {
+     private log: ILogger;
+-    private emitter: events.EventEmitter = new events.EventEmitter();
++    private emitter: events.EventEmitter = new events.EventEmitter().setMaxListeners(50);
+ 
+     constructor(@inject('ILoggerModel') logger: ILoggerModel) {
+         this.log = logger.getLogger();
+diff --git a/src/model/ipc/IPCClient.ts b/src/model/ipc/IPCClient.ts
+index 0a78e2d0..2ce1c448 100644
+--- a/src/model/ipc/IPCClient.ts
++++ b/src/model/ipc/IPCClient.ts
+@@ -45,7 +45,7 @@ export default class IPCClient implements IIPCClient {
+     public encodeEvent!: IPCOperatorEncodeEvent;
+ 
+     private log: ILogger;
+-    private listener: events.EventEmitter = new events.EventEmitter();
++    private listener: events.EventEmitter = new events.EventEmitter().setMaxListeners(50);
+ 
+     constructor(
+         @inject('ILoggerModel') logger: ILoggerModel,
+diff --git a/src/model/operator/recording/DropCheckerModel.ts b/src/model/operator/recording/DropCheckerModel.ts
+index c9a5c4a8..33a327a8 100644
+--- a/src/model/operator/recording/DropCheckerModel.ts
++++ b/src/model/operator/recording/DropCheckerModel.ts
+@@ -13,7 +13,7 @@ import IDropCheckerModel from './IDropCheckerModel';
+ @injectable()
+ class DropCheckerModel implements IDropCheckerModel {
+     private log: ILogger;
+-    private listener: events.EventEmitter = new events.EventEmitter();
++    private listener: events.EventEmitter = new events.EventEmitter().setMaxListeners(50);
+     private dest: string | null = null;
+     private result: aribts.Result | null = null;
+     private pidIndex: { [key: number]: string } = {};
+diff --git a/src/model/operator/recording/RecorderModel.ts b/src/model/operator/recording/RecorderModel.ts
+index a2a4b096..631daa77 100644
+--- a/src/model/operator/recording/RecorderModel.ts
++++ b/src/model/operator/recording/RecorderModel.ts
+@@ -62,7 +62,7 @@ class RecorderModel implements IRecorderModel {
+     private isRecording: boolean = false;
+     private isPlanToDelete: boolean = false;
+     private isCanceledCallingFinished: boolean = false; // mirakurun の stream の終了検知をキャンセルするか
+-    private eventEmitter = new events.EventEmitter();
++    private eventEmitter = new events.EventEmitter().setMaxListeners(50);
+ 
+     private dropLogFileId: apid.DropLogFileId | null = null;
+ 
+diff --git a/src/model/service/encode/EncodeManageModel.ts b/src/model/service/encode/EncodeManageModel.ts
+index 06f5deee..bd1ea70f 100644
+--- a/src/model/service/encode/EncodeManageModel.ts
++++ b/src/model/service/encode/EncodeManageModel.ts
+@@ -22,7 +22,7 @@ class EncodeManageModel implements IEncodeManageModel {
+     private runningQueue: IEncoderModel[] = [];
+     private idCnt: number = 1;
+ 
+-    private listener: events.EventEmitter = new events.EventEmitter();
++    private listener: events.EventEmitter = new events.EventEmitter().setMaxListeners(50);
+ 
+     constructor(
+         @inject('ILoggerModel') logger: ILoggerModel,
+diff --git a/src/model/service/encode/EncodeProcessManageModel.ts b/src/model/service/encode/EncodeProcessManageModel.ts
+index b25bb710..40195844 100644
+--- a/src/model/service/encode/EncodeProcessManageModel.ts
++++ b/src/model/service/encode/EncodeProcessManageModel.ts
+@@ -18,7 +18,7 @@ class EncodeProcessManageModel implements IEncodeProcessManageModel {
+     private log: ILogger;
+     private maxEncode: number;
+     private childs: ChildProcessInfo[] = [];
+-    private listener: events.EventEmitter = new events.EventEmitter();
++    private listener: events.EventEmitter = new events.EventEmitter().setMaxListeners(50);
+ 
+     constructor(@inject('ILoggerModel') logeer: ILoggerModel, @inject('IConfiguration') configure: IConfiguration) {
+         this.log = logeer.getLogger();
+diff --git a/src/model/service/encode/EncoderModel.ts b/src/model/service/encode/EncoderModel.ts
+index c793dfff..3ad3d63f 100644
+--- a/src/model/service/encode/EncoderModel.ts
++++ b/src/model/service/encode/EncoderModel.ts
+@@ -32,7 +32,7 @@ class EncoderModel implements IEncoderModel {
+     private encodeEvent: IEncodeEvent;
+     private recodingUtil: IRecordingUtilModel;
+ 
+-    private listener: events.EventEmitter = new events.EventEmitter();
++    private listener: events.EventEmitter = new events.EventEmitter().setMaxListeners(50);
+ 
+     private encodeOption: EncodeOption | null = null; // エンコード情報
+     private childProcess: ChildProcess | null = null; // エンコードプロセス
+diff --git a/src/model/service/stream/base/StreamBaseModel.ts b/src/model/service/stream/base/StreamBaseModel.ts
+index 00135a1f..a455f2a0 100644
+--- a/src/model/service/stream/base/StreamBaseModel.ts
++++ b/src/model/service/stream/base/StreamBaseModel.ts
+@@ -24,7 +24,7 @@ abstract class StreamBaseModel<T> implements IStreamBaseModel<T> {
+     protected configMode: number | null = null;
+ 
+     private socketIO: ISocketIOManageModel;
+-    private emitter: events.EventEmitter = new events.EventEmitter();
++    private emitter: events.EventEmitter = new events.EventEmitter().setMaxListeners(50);
+     private isEnableStream: boolean = false;
+     private streamCheckTimer: NodeJS.Timeout | null = null;
+     private streamStopTimer: NodeJS.Timeout | null = null;
