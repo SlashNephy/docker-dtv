@@ -18,7 +18,7 @@ RUN <<EOF
   set -eux
 
   apt-get update
-  apt-get install -y --no-install-recommends ${DEPENDENCIES}
+  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ${DEPENDENCIES}
 EOF
 
 ADD https://github.com/rigaya/VCEEnc/releases/download/${VCEENCC_VERSION}/vceencc_${VCEENCC_VERSION}_Ubuntu22.04_amd64.deb /tmp/package.deb
