@@ -3,7 +3,7 @@
 # renovate: datasource=github-releases depName=rigaya/NVEnc
 ARG NVENCC_VERSION="7.82"
 
-FROM nvidia/cuda:12.2.0-base-ubuntu22.04@sha256:ecdf8549dd5f12609e365217a64dedde26ecda26da8f3ff3f82def6749f53051
+FROM nvidia/cuda:12.8.0-base-ubuntu22.04@sha256:12242992c121f6cab0ca11bccbaaf757db893b3065d7db74b933e59f321b2cf4
 ARG NVENCC_VERSION
 
 ADD https://github.com/rigaya/NVEnc/releases/download/${NVENCC_VERSION}/nvencc_${NVENCC_VERSION}_Ubuntu22.04_amd64.deb /tmp/package.deb
