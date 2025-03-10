@@ -7,12 +7,12 @@ ARG COMMIT_ID="unknown"
 
 ARG DEPENDENCIES="build-essential python3"
 
-FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.44.0@sha256:b91c3ac4915cbf6ba813175a0387bca69a70b52e1b57a22e212322036c47da23 AS source
+FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.48.1@sha256:7e25800426c871e7eded42755870e3168722cf572804a0723c9f8f753c3b0309 AS source
 ARG EPGSTATION_VERSION
 
 RUN git clone https://github.com/l3tnun/EPGStation -b "${EPGSTATION_VERSION}" /app
 
-FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.44.0@sha256:b91c3ac4915cbf6ba813175a0387bca69a70b52e1b57a22e212322036c47da23 AS patch-source
+FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.48.1@sha256:7e25800426c871e7eded42755870e3168722cf572804a0723c9f8f753c3b0309 AS patch-source
 WORKDIR /app
 
 COPY --from=source /app/ ./
