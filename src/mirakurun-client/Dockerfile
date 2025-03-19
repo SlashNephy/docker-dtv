@@ -2,7 +2,7 @@
 
 ARG DEPENDENCIES="libssl-dev pkg-config"
 
-FROM --platform=$TARGETPLATFORM public.ecr.aws/docker/library/rust:1.85.0-slim-bookworm@sha256:1829c432be4a592f3021501334d3fcca24f238432b13306a4e62669dec538e52 AS chef
+FROM --platform=$TARGETPLATFORM public.ecr.aws/docker/library/rust:1.85.1-slim-bookworm@sha256:7fb4a57de57f2656b6ccc5e1f9b099bccfc3520f5daaf114c7d501794bdcf280 AS chef
 WORKDIR /app
 
 RUN cargo install cargo-chef
