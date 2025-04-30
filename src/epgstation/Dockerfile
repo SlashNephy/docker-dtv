@@ -43,7 +43,7 @@ RUN <<EOF
   mv -f /tmp/client.package.json ./client/package.json
 EOF
 
-FROM --platform=$BUILDPLATFORM public.ecr.aws/docker/library/node:20.19.1-bookworm-slim@sha256:c56f54869dea72a1e4c358733b41a3c64e16633b84ba9d4e9d62c3875446abab AS build-client
+FROM --platform=$BUILDPLATFORM public.ecr.aws/docker/library/node:20.19.1-bookworm-slim@sha256:83e53269616ca1b22cf7533e5db4e2f1a0c24a8e818b21691d6d4a69ec9e2c6d AS build-client
 WORKDIR /app/client
 
 COPY --from=source /app/client/package*.json ./
@@ -52,7 +52,7 @@ RUN npm install
 COPY --from=patch-source /app/ ../
 RUN npm run build
 
-FROM --platform=$TARGETPLATFORM public.ecr.aws/docker/library/node:20.19.1-bookworm-slim@sha256:c56f54869dea72a1e4c358733b41a3c64e16633b84ba9d4e9d62c3875446abab AS build-server
+FROM --platform=$TARGETPLATFORM public.ecr.aws/docker/library/node:20.19.1-bookworm-slim@sha256:83e53269616ca1b22cf7533e5db4e2f1a0c24a8e818b21691d6d4a69ec9e2c6d AS build-server
 WORKDIR /app
 ARG DEPENDENCIES
 
@@ -64,7 +64,7 @@ RUN npm install --no-save
 COPY --from=patch-source /app/ ./
 RUN rm -rf client && npm run build-server
 
-FROM --platform=$TARGETPLATFORM public.ecr.aws/docker/library/node:20.19.1-bookworm-slim@sha256:c56f54869dea72a1e4c358733b41a3c64e16633b84ba9d4e9d62c3875446abab
+FROM --platform=$TARGETPLATFORM public.ecr.aws/docker/library/node:20.19.1-bookworm-slim@sha256:83e53269616ca1b22cf7533e5db4e2f1a0c24a8e818b21691d6d4a69ec9e2c6d
 WORKDIR /app
 
 COPY --from=build-server /app/ ./
