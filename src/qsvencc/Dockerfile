@@ -5,7 +5,7 @@ ARG QSVENCC_VERSION="7.89"
 
 ARG DEPENDENCIES="curl ca-certificates gnupg2"
 
-FROM public.ecr.aws/ubuntu/ubuntu:22.04@sha256:c6871ae8b54fb3ed0ba4df4eb98527e9a6692088fe0c2f2260a9334853092b47
+FROM public.ecr.aws/ubuntu/ubuntu:24.04@sha256:a658d4be9ef8f95742fa7ff630226d0754ece827c6de984b7ac406866f56d653
 ARG QSVENCC_VERSION
 ARG DEPENDENCIES
 
