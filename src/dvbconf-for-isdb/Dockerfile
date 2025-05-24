@@ -2,7 +2,7 @@
 
 ARG REF="master"
 
-FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.44.0@sha256:b91c3ac4915cbf6ba813175a0387bca69a70b52e1b57a22e212322036c47da23 AS download
+FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.49.0@sha256:66b9742684f5445031def89b0d9f05ec8a66b667a7fa8870a8af3e72255f9633 AS download
 ARG REF
 
 ADD https://api.github.com/repos/Chinachu/dvbconf-for-isdb/git/refs/heads/${REF} /tmp/git.json
