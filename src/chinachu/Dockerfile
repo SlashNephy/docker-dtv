@@ -5,7 +5,7 @@ ARG REF="gamma"
 ARG RUNTIMES="curl"
 ARG DEPENDENCIES="build-essential git sudo ca-certificates python3 wget xz-utils"
 
-FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.44.0@sha256:b91c3ac4915cbf6ba813175a0387bca69a70b52e1b57a22e212322036c47da23 AS download
+FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.49.0@sha256:7084776e6388614b2919779a7612d284804da1c63ea54b1f378446b8a2a2a4b9 AS download
 ARG REF
 
 ADD https://api.github.com/repos/Chinachu/Chinachu/git/refs/heads/${REF} /tmp/git.json
