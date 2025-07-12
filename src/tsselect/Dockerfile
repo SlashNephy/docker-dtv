@@ -5,7 +5,7 @@ ARG TSSELECT_VERSION="r3"
 
 ARG DEPENDENCIES="build-essential"
 
-FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.44.0@sha256:b91c3ac4915cbf6ba813175a0387bca69a70b52e1b57a22e212322036c47da23 AS download
+FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.50.1@sha256:8ae9149c06a80003db852a318262f6f64dd6763303d4fda9e9544b6c5f4b32af AS download
 ARG TSSELECT_VERSION
 
 RUN git clone https://github.com/xtne6f/tsselect_gcc -b "${TSSELECT_VERSION}" /app
