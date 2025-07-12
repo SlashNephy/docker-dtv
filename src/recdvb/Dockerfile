@@ -5,7 +5,7 @@ ARG RECDVB_VERSION="v1.3.3"
 
 ARG DEPENDENCIES="build-essential autoconf automake"
 
-FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.44.0@sha256:b91c3ac4915cbf6ba813175a0387bca69a70b52e1b57a22e212322036c47da23 AS download
+FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.50.1@sha256:8ae9149c06a80003db852a318262f6f64dd6763303d4fda9e9544b6c5f4b32af AS download
 ARG RECDVB_VERSION
 
 RUN git clone https://github.com/k-pi/recdvb -b "${RECDVB_VERSION}" /app
