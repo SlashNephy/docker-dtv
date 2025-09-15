@@ -51,7 +51,7 @@ ARG FFMPEG_VERSION
 
 RUN git clone https://github.com/FFmpeg/FFmpeg -b "${FFMPEG_VERSION}" --recursive
 
-FROM --platform=$TARGETPLATFORM nvidia/cuda:12.2.0-devel-ubuntu22.04@sha256:c4e81887e4aa9f13b1119337323cba89601319ecb282383b879c4ba50510fd17 AS build
+FROM --platform=$TARGETPLATFORM nvidia/cuda:13.0.1-devel-ubuntu22.04@sha256:93a8d207db5aaa6384f834a6bf70d417433f709e61b57a91e7cc99c16172f49c AS build
 ARG CPUS
 ARG RUNTIMES
 ARG DEPENDENCIES
@@ -121,7 +121,7 @@ RUN <<EOF
   make install
 EOF
 
-FROM --platform=$TARGETPLATFORM nvidia/cuda:12.2.0-base-ubuntu22.04@sha256:4551c60a8fedb6bceda92d581f491b66c883164a94bc6ce736d73d80c10b36a3
+FROM --platform=$TARGETPLATFORM nvidia/cuda:13.0.1-base-ubuntu22.04@sha256:5543ce69b0d2d65b0c4ad978bd26f4cd67e4fccc629c262902ced0502e23cd7f
 ARG RUNTIMES
 ENV LANG="C.UTF-8"
 ENV NVIDIA_VISIBLE_DEVICES="all"
