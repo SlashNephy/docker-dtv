@@ -11,7 +11,7 @@ ARG REF
 ADD https://api.github.com/repos/Chinachu/Chinachu/git/refs/heads/${REF} /tmp/git.json
 RUN git clone https://github.com/Chinachu/Chinachu -b "${REF}" --recursive /app
 
-FROM --platform=$TARGETPLATFORM public.ecr.aws/docker/library/node:16.20.2-bookworm-slim@sha256:89061680359f5d9103d24f0066e2c96a8018c24d5c4fe8eb8d59d16dd4ab64ba
+FROM --platform=$TARGETPLATFORM public.ecr.aws/docker/library/node:22.20.0-bookworm-slim@sha256:c407baf6e71f4127777b0b660b162e3c88c1974067b1be9f1f962709ea817d59
 WORKDIR /app
 ARG RUNTIMES
 ARG DEPENDENCIES
