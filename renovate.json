@@ -1,16 +1,1 @@
-{
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "github>SlashNephy/.github:renovate-config"
-  ],
-  "packageRules": [
-    {
-      "matchPackagePrefixes": ["ghcr.io/slashnephy"],
-      "stabilityDays": 0,
-      "automergeSchedule": [
-        "at any time"
-      ],
-      "ignoreTests": true
-    }
-  ]
-}
+{"$schema":"https://docs.renovatebot.com/renovate-schema.json","extends":["github>SlashNephy/renovate-config"]}
