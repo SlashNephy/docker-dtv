@@ -5,13 +5,13 @@
   ],
   "packageRules": [
     {
-      "matchPackagePrefixes": [
-        "ghcr.io/slashnephy"
-      ],
-      "minimumReleaseAge": null
+      "minimumReleaseAge": null,
+      "matchPackageNames": [
+        "ghcr.io/slashnephy{/,}**"
+      ]
     },
     {
-      "matchFiles": [
+      "matchFileNames": [
         "src/chinachu/Dockerfile"
       ],
       "matchPackageNames": [
