@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # renovate: datasource=github-tags depName=FFmpeg/FFmpeg
-ARG FFMPEG_VERSION="n6.0"
+ARG FFMPEG_VERSION="n6.1.4"
 
 ARG CPUS=4
 ARG X264_RUNTIMES="libx264-164"
