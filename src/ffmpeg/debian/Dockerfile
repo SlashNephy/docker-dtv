@@ -1,16 +1,16 @@
 # syntax=docker/dockerfile:1
 
 # renovate: datasource=github-tags depName=FFmpeg/FFmpeg
-ARG FFMPEG_VERSION="n6.0"
+ARG FFMPEG_VERSION="n6.1.4"
 
 ARG CPUS=4
 ARG X264_RUNTIMES="libx264-164"
 ARG X264_DEPENDENCIES="libx264-dev"
-ARG X265_RUNTIMES="libx265-199 libnuma1"
+ARG X265_RUNTIMES="libx265-215 libnuma1"
 ARG X265_DEPENDENCIES="libx265-dev libnuma-dev"
 ARG FDK_AAC_RUNTIMES="libfdk-aac2"
 ARG FDK_AAC_DEPENDENCIES="libfdk-aac-dev"
-ARG WEBM_RUNTIMES="libvpx7 libvorbisenc2"
+ARG WEBM_RUNTIMES="libvpx9 libvorbisenc2"
 ARG WEBM_DEPENDENCIES="libvpx-dev libvorbis-dev"
 ARG ASS_RUNTIMES="libass9"
 ARG ASS_DEPENDENCIES="libass-dev"
@@ -19,15 +19,15 @@ ARG ARIBB24_DEPENDENCIES="libaribb24-dev"
 ARG VA_API_RUNTIMES="libva2 libva-drm2"
 ARG VA_API_DEPENDENCIES="libva-dev"
 ARG RUNTIMES="${X264_RUNTIMES} ${X265_RUNTIMES} ${FDK_AAC_RUNTIMES} ${WEBM_RUNTIMES} ${ASS_RUNTIMES} ${ARIBB24_RUNTIMES} ${VA_API_RUNTIMES}"
-ARG ADDITIONAL_DEPENDENCIES="build-essential software-properties-common"
+ARG ADDITIONAL_DEPENDENCIES="build-essential"
 ARG DEPENDENCIES="${ADDITIONAL_DEPENDENCIES} ${X264_DEPENDENCIES} ${X265_DEPENDENCIES} ${FDK_AAC_DEPENDENCIES} ${WEBM_DEPENDENCIES} ${ASS_DEPENDENCIES} ${ARIBB24_DEPENDENCIES} ${VA_API_DEPENDENCIES}"
 
-FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.44.0@sha256:b91c3ac4915cbf6ba813175a0387bca69a70b52e1b57a22e212322036c47da23 AS download
+FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.52.0@sha256:22ee857a29be6e98994fe50d9d9730de8ba2535caff6e4d3a1fef48dabaa3713 AS download
 ARG FFMPEG_VERSION
 
 RUN git clone https://github.com/FFmpeg/FFmpeg -b "${FFMPEG_VERSION}" --recursive
 
-FROM --platform=$TARGETPLATFORM public.ecr.aws/debian/debian:stable-slim@sha256:01d9267d7b0ca810310802fb08cb14579479928ae2e701de9205d829f10aeb94
+FROM --platform=$TARGETPLATFORM public.ecr.aws/debian/debian:13.2-slim@sha256:464a9d4addd3ab5a32118bed5c2d8e9b7e94da69ef4fe265ab2f48b0f324cced
 ARG CPUS
 ARG RUNTIMES
 ARG DEPENDENCIES

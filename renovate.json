@@ -1,1 +1,23 @@
-{"$schema":"https://docs.renovatebot.com/renovate-schema.json","extends":["github>SlashNephy/renovate-config"]}
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "local>SlashNephy/renovate-config"
+  ],
+  "packageRules": [
+    {
+      "matchPackagePrefixes": [
+        "ghcr.io/slashnephy"
+      ],
+      "minimumReleaseAge": null
+    },
+    {
+      "matchFiles": [
+        "src/chinachu/Dockerfile"
+      ],
+      "matchPackageNames": [
+        "node"
+      ],
+      "allowedVersions": "16.x"
+    }
+  ]
+}
