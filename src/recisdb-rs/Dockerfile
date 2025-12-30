@@ -3,7 +3,7 @@ ARG REF="master"
 ARG RUNTIMES="libpcsclite1"
 ARG DEPENDENCIES="build-essential cmake clang pkg-config libpcsclite-dev"
 
-FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.44.0@sha256:b91c3ac4915cbf6ba813175a0387bca69a70b52e1b57a22e212322036c47da23 AS download
+FROM --platform=$BUILDPLATFORM public.ecr.aws/bitnami/git:2.52.0@sha256:c50fc111995275381c5232e17e3917f6033a06da579c40a05d4199e32da86f03 AS download
 ARG REF
 
 ADD https://api.github.com/repos/kazuki0824/recisdb-rs/git/refs/heads/${REF} /tmp/git.json
