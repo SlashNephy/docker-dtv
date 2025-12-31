@@ -23,3 +23,4 @@ jobs:
       # no space left on device が発生するのでキャッシュを無効化
       cache-from: ""
       cache-to: ""
+      free-disk-space: true
