@@ -15,9 +15,9 @@
         "src/chinachu/Dockerfile"
       ],
       "matchPackageNames": [
-        "node"
+        "public.ecr.aws/docker/library/node"
       ],
-      "allowedVersions": "16.x"
+      "allowedVersions": "<= 16"
     }
   ]
 }
