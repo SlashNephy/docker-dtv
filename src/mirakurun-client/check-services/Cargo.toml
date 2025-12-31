@@ -6,7 +6,7 @@ edition = "2018"
 publish = false
 
 [dependencies]
-reqwest = { version = "0.12.4", features = ["blocking", "json"] }
+reqwest = { version = "0.13.0", features = ["blocking", "json"] }
 clap = { version = "3.2.25", features = ["derive", "env", "cargo"] }
 mirakurun-client-common = { path = "../common" }
 tokio = { version = "1.37.0", features = ["full"] }
