@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # renovate: datasource=github-releases depName=rigaya/VCEEnc
-ARG VCEENCC_VERSION="8.16"
+ARG VCEENCC_VERSION="8.38"
 
 ARG AMDGPU_VERSION="23.20.00.48"
 ARG AMDGPU_INSTALL_VERSION="5.7.00.48.50700-1"
