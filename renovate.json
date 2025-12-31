@@ -5,10 +5,11 @@
   ],
   "packageRules": [
     {
-      "minimumReleaseAge": null,
       "matchPackageNames": [
         "ghcr.io/slashnephy{/,}**"
-      ]
+      ],
+      "minimumReleaseAge": null,
+      "versioning": "loose"
     },
     {
       "matchFileNames": [
