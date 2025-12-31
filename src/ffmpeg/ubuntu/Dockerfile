@@ -60,9 +60,8 @@ RUN <<EOF
   set -eux
 
   apt-get update
-  apt-get install -y --no-install-recommends curl gpg-agent software-properties-common
-  curl -o - https://repositories.intel.com/graphics/intel-graphics.key | apt-key add -
-  apt-add-repository 'deb [arch=amd64] https://repositories.intel.com/graphics/ubuntu jammy main'
+  apt-get install -y --no-install-recommends software-properties-common
+  apt-add-repository universe
 
   apt-get update
   apt-get install -y --no-install-recommends ${RUNTIMES} ${DEPENDENCIES}
@@ -132,9 +131,8 @@ RUN <<EOF
 
   # install runtimes
   apt-get update
-  apt-get install -y --no-install-recommends curl gpg-agent software-properties-common
-  curl -o - https://repositories.intel.com/graphics/intel-graphics.key | apt-key add -
-  apt-add-repository 'deb [arch=amd64] https://repositories.intel.com/graphics/ubuntu jammy main'
+  apt-get install -y --no-install-recommends software-properties-common
+  apt-add-repository universe
   apt-get install -y --no-install-recommends ${RUNTIMES}
 
   # clean up
