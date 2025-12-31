@@ -12,13 +12,14 @@ ARG VCEENCC_VERSION
 ARG AMDGPU_VERSION
 ARG AMDGPU_INSTALL_VERSION
 ARG DEPENDENCIES
+ENV DEBIAN_FRONTEND="noninteractive"
 
 # hadolint ignore=DL3009
 RUN <<EOF
   set -eux
 
   apt-get update
-  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ${DEPENDENCIES}
+  apt-get install -y --no-install-recommends ${DEPENDENCIES}
 EOF
 
 ADD https://github.com/rigaya/VCEEnc/releases/download/${VCEENCC_VERSION}/vceencc_${VCEENCC_VERSION}_Ubuntu22.04_amd64.deb /tmp/package.deb
