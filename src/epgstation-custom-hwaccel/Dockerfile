@@ -1,10 +1,5 @@
 # syntax=docker/dockerfile:1
 
-ARG EPGSTATION_TAG="master@sha256:394cc4c91676c2054e19023f96480c3ba8797a693d980281cf419658ba87489b"
-ARG NVENCC_TAG="master@sha256:6d8a0e7a7d9129e2966a37d2ec98229007fc6f8e6a07536d917f01616f99bf0a"
-ARG QSVENCC_TAG="master@sha256:5e79f272221507854122648e50a5ccbd2fd67272f8b8a476f22c7128c89ee6f7"
-ARG VCEENCC_TAG="master@sha256:a2f2becdfc5482b5809a05810b6f041f6e65c53f4955ec6053026c7efdb8a8d2"
-ARG FFMPEG_TAG="master@sha256:47ceba00ada9927ee3793b47d6e9940bec0c5a10b8e70b522a0aff413f646830"
 ARG NODE_VERSION="20"
 
 ARG DEPENDENCIES="curl gnupg"
@@ -12,12 +7,12 @@ ARG NVENCC_RUNTIMES="libcuda1-340 libswresample3 libavcodec58 libavformat58 liba
 ARG QSVENCC_RUNTIMES="intel-media-va-driver-non-free intel-opencl-icd intel-level-zero-gpu level-zero"
 ARG RUNTIMES="nodejs ca-certificates ${NVENCC_RUNTIMES} ${QSVENCC_RUNTIMES}"
 
-FROM ghcr.io/slashnephy/epgstation:${EPGSTATION_TAG} AS epgstation
-FROM ghcr.io/slashnephy/nvencc:${NVENCC_TAG} AS nvencc
-FROM ghcr.io/slashnephy/qsvencc:${QSVENCC_TAG} AS qsvencc
-FROM ghcr.io/slashnephy/vceencc:${VCEENCC_TAG} AS vceencc
+FROM ghcr.io/slashnephy/epgstation:20251231162821 AS epgstation
+FROM ghcr.io/slashnephy/nvencc:20251231163544 AS nvencc
+FROM ghcr.io/slashnephy/qsvencc:20251231164915 AS qsvencc
+FROM ghcr.io/slashnephy/vceencc:20251231175402 AS vceencc
 
-FROM ghcr.io/slashnephy/ffmpeg-ubuntu:${FFMPEG_TAG}
+FROM ghcr.io/slashnephy/ffmpeg-ubuntu:20251231163719
 WORKDIR /app
 ARG NODE_VERSION
 ARG DEPENDENCIES

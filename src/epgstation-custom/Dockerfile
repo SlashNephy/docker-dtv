@@ -1,15 +1,13 @@
 # syntax=docker/dockerfile:1
 
-ARG EPGSTATION_TAG="master@sha256:394cc4c91676c2054e19023f96480c3ba8797a693d980281cf419658ba87489b"
-ARG FFMPEG_TAG="master@sha256:467132d11bc7cc09fca6f67b3ff543cbd415c5b0cf1c5e216119091d1d9cc069"
 ARG NODE_VERSION="20"
 
 ARG DEPENDENCIES="ca-certificates curl gnupg"
 ARG RUNTIMES="nodejs"
 
-FROM --platform=$TARGETPLATFORM ghcr.io/slashnephy/epgstation:${EPGSTATION_TAG} AS epgstation
+FROM --platform=$TARGETPLATFORM ghcr.io/slashnephy/epgstation:20251231162821 AS epgstation
 
-FROM --platform=$TARGETPLATFORM ghcr.io/slashnephy/ffmpeg-debian:${FFMPEG_TAG}
+FROM --platform=$TARGETPLATFORM ghcr.io/slashnephy/ffmpeg-debian:20251231163719
 WORKDIR /app
 ARG NODE_VERSION
 ARG DEPENDENCIES
