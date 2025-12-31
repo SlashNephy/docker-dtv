@@ -3,7 +3,7 @@ name: libaribb1
 on:
   push:
     paths:
-      - 'src/libaribb1/**'
+      - "src/libaribb1/**"
 
   workflow_dispatch:
 
@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   build:
-    uses: SlashNephy/.github/.github/workflows/docker-build.yml@master
+    uses: SlashNephy/actions/.github/workflows/build-docker-image.yml@main
     with:
       image-name: ghcr.io/slashnephy/libaribb1
       context: src/libaribb1

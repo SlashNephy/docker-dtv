@@ -3,7 +3,7 @@ name: chinachu
 on:
   push:
     paths:
-      - 'src/chinachu/**'
+      - "src/chinachu/**"
 
   workflow_dispatch:
 
@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   build:
-    uses: SlashNephy/.github/.github/workflows/docker-build.yml@master
+    uses: SlashNephy/actions/.github/workflows/build-docker-image.yml@main
     with:
       image-name: ghcr.io/slashnephy/chinachu
       context: src/chinachu

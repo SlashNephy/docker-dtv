@@ -3,7 +3,7 @@ name: ffmpeg-alpine
 on:
   push:
     paths:
-      - 'src/ffmpeg/alpine/**'
+      - "src/ffmpeg/alpine/**"
 
   workflow_dispatch:
 
@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   build:
-    uses: SlashNephy/.github/.github/workflows/docker-build.yml@master
+    uses: SlashNephy/actions/.github/workflows/build-docker-image.yml@main
     with:
       image-name: ghcr.io/slashnephy/ffmpeg-alpine
       context: src/ffmpeg/alpine

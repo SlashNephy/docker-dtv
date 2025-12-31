@@ -3,7 +3,7 @@ name: qsvencc
 on:
   push:
     paths:
-      - 'src/qsvencc/**'
+      - "src/qsvencc/**"
 
   workflow_dispatch:
 
@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   build:
-    uses: SlashNephy/.github/.github/workflows/docker-build.yml@master
+    uses: SlashNephy/actions/.github/workflows/build-docker-image.yml@main
     with:
       image-name: ghcr.io/slashnephy/qsvencc
       context: src/qsvencc

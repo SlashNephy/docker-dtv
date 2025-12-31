@@ -3,7 +3,7 @@ name: ffmpeg-debian
 on:
   push:
     paths:
-      - 'src/ffmpeg/debian/**'
+      - "src/ffmpeg/debian/**"
 
   workflow_dispatch:
 
@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   build:
-    uses: SlashNephy/.github/.github/workflows/docker-build.yml@master
+    uses: SlashNephy/actions/.github/workflows/build-docker-image.yml@main
     with:
       image-name: ghcr.io/slashnephy/ffmpeg-debian
       context: src/ffmpeg/debian
