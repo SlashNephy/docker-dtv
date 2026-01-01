@@ -1,13 +1,14 @@
 # syntax=docker/dockerfile:1
-ARG REF="master"
+
+# renovate: datasource=git-tags depName=kazuki0824/recisdb-rs
+ARG RECISDB_VERSION="1.2.3"
 ARG RUNTIMES="libpcsclite1"
 ARG DEPENDENCIES="build-essential cmake clang pkg-config libpcsclite-dev"
 
 FROM --platform=$BUILDPLATFORM alpine/git:2.52.0@sha256:d86f367afb53d022acc4377741e7334bc20add161bb10234272b91b459b4b7d8 AS download
-ARG REF
+ARG RECISDB_VERSION
 
-ADD https://api.github.com/repos/kazuki0824/recisdb-rs/git/refs/heads/${REF} /tmp/git.json
-RUN git clone https://github.com/kazuki0824/recisdb-rs -b "${REF}" --recursive /app
+RUN git clone https://github.com/kazuki0824/recisdb-rs -b "${RECISDB_VERSION}" --recursive /app
 
 FROM --platform=$TARGETPLATFORM rust:1.92.0-slim-bookworm@sha256:a8ce22642819f5f54d37e025f7020b51dcbac39e5d0ea907a63eda8b03458de5 AS chef
 WORKDIR /app
