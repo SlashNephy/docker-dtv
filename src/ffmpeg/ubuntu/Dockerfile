@@ -60,10 +60,6 @@ RUN <<EOF
   set -eux
 
   apt-get update
-  apt-get install -y --no-install-recommends software-properties-common
-  apt-add-repository universe
-
-  apt-get update
   apt-get install -y --no-install-recommends ${RUNTIMES} ${DEPENDENCIES}
 EOF
 
@@ -131,8 +127,6 @@ RUN <<EOF
 
   # install runtimes
   apt-get update
-  apt-get install -y --no-install-recommends software-properties-common
-  apt-add-repository universe
   apt-get install -y --no-install-recommends ${RUNTIMES}
 
   # clean up
