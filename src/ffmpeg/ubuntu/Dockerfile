@@ -8,13 +8,13 @@ ARG NV_CODEC_HEADERS_VERSION="n12.1.14.0"
 ARG AMF_VERSION="v1.5.0"
 
 ARG CPUS=4
-ARG X264_RUNTIMES="libx264-163"
+ARG X264_RUNTIMES="libx264-164"
 ARG X264_DEPENDENCIES="libx264-dev"
 ARG X265_RUNTIMES="libx265-199 libnuma1"
 ARG X265_DEPENDENCIES="libx265-dev libnuma-dev"
 ARG FDK_AAC_RUNTIMES="libfdk-aac2"
 ARG FDK_AAC_DEPENDENCIES="libfdk-aac-dev"
-ARG WEBM_RUNTIMES="libvpx7 libvorbisenc2"
+ARG WEBM_RUNTIMES="libvpx9 libvorbisenc2"
 ARG WEBM_DEPENDENCIES="libvpx-dev libvorbis-dev"
 ARG ASS_RUNTIMES="libass9"
 ARG ASS_DEPENDENCIES="libass-dev"
@@ -51,7 +51,7 @@ ARG FFMPEG_VERSION
 
 RUN git clone https://github.com/FFmpeg/FFmpeg -b "${FFMPEG_VERSION}" --recursive /app
 
-FROM --platform=$TARGETPLATFORM nvidia/cuda:13.1.0-devel-ubuntu22.04@sha256:eaded8d05ec577d25b882256d99da4270caf4787ec5c79408b0c1286c1efc0f1 AS build
+FROM --platform=$TARGETPLATFORM nvidia/cuda:13.1.0-devel-ubuntu24.04@sha256:7f32ae6e575abb29f2dacf6c75fe94a262bb48dcc5196ac833ced59d9fde8107 AS build
 ARG CPUS
 ARG RUNTIMES
 ARG DEPENDENCIES
