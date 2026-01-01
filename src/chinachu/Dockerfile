@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-# renovate: datasource=git-refs depName=Chinachu/Chinachu branch=gamma
+# renovate: datasource=git-refs depName=https://github.com/Chinachu/Chinachu branch=gamma
 ARG CHINACHU_REF="6b49bd77bb733c2843571cea1785719ca0819dae"
 
 ARG RUNTIMES="curl"
