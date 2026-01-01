@@ -8,13 +8,13 @@ ARG NV_CODEC_HEADERS_VERSION="n12.1.14.0"
 ARG AMF_VERSION="v1.5.0"
 
 ARG CPUS=4
-ARG X264_RUNTIMES="libx264-163"
+ARG X264_RUNTIMES="libx264-164"
 ARG X264_DEPENDENCIES="libx264-dev"
 ARG X265_RUNTIMES="libx265-199 libnuma1"
 ARG X265_DEPENDENCIES="libx265-dev libnuma-dev"
 ARG FDK_AAC_RUNTIMES="libfdk-aac2"
 ARG FDK_AAC_DEPENDENCIES="libfdk-aac-dev"
-ARG WEBM_RUNTIMES="libvpx7 libvorbisenc2"
+ARG WEBM_RUNTIMES="libvpx9 libvorbisenc2"
 ARG WEBM_DEPENDENCIES="libvpx-dev libvorbis-dev"
 ARG ASS_RUNTIMES="libass9"
 ARG ASS_DEPENDENCIES="libass-dev"
@@ -51,7 +51,7 @@ ARG FFMPEG_VERSION
 
 RUN git clone https://github.com/FFmpeg/FFmpeg -b "${FFMPEG_VERSION}" --recursive /app
 
-FROM --platform=$TARGETPLATFORM nvidia/cuda:12.9.1-devel-ubuntu22.04@sha256:bd4e2680a261c212f1e2fea241606f71497dc67a417f73175d794ec8212b5ba8 AS build
+FROM --platform=$TARGETPLATFORM nvidia/cuda:13.1.0-devel-ubuntu24.04@sha256:7f32ae6e575abb29f2dacf6c75fe94a262bb48dcc5196ac833ced59d9fde8107 AS build
 ARG CPUS
 ARG RUNTIMES
 ARG DEPENDENCIES
@@ -116,7 +116,7 @@ RUN <<EOF
   make install
 EOF
 
-FROM --platform=$TARGETPLATFORM nvidia/cuda:12.9.1-base-ubuntu22.04@sha256:cfab6d524036220368d0665013dd79ddc8cd3516298dc12f031de62c8481f87e
+FROM --platform=$TARGETPLATFORM nvidia/cuda:13.1.0-base-ubuntu24.04@sha256:ae7ce81a6af05a9a7ad3fe86115cb34db2d024e9c303959679e8889c45aeba73
 ARG RUNTIMES
 ENV LANG="C.UTF-8"
 ENV NVIDIA_VISIBLE_DEVICES="all"
