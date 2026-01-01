@@ -32,7 +32,7 @@ RUN <<EOF
   set -eux
 
   apt-get install -y --no-install-recommends /tmp/amdgpu-install.deb
-  amdgpu-install -y --accept-eula --usecase=graphics,amf,opencl --opencl=rocr,legacy --no-32
+  amdgpu-install -y --accept-eula --usecase=graphics,amf,rocm --no-32
 
   apt-get update
   apt-get install -y --no-install-recommends /tmp/package.deb
