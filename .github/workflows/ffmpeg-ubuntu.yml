@@ -19,7 +19,7 @@ jobs:
     with:
       image-name: ghcr.io/slashnephy/ffmpeg-ubuntu
       context: src/ffmpeg/ubuntu
-      image-platforms: linux/amd64,linux/arm64
+      image-platforms: linux/amd64
       # no space left on device が発生するのでキャッシュを無効化
       cache-from: ""
       cache-to: ""
