@@ -16,9 +16,20 @@
         "src/chinachu/Dockerfile"
       ],
       "matchPackageNames": [
-        "public.ecr.aws/docker/library/node"
+        "node"
       ],
       "allowedVersions": "<= 16"
+    }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/Dockerfile$/"
+      ],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>[a-z-]+?) depName=(?<depName>[^\\s]+?) branch=(?<currentValue>[^\\s]+?)\\s+ARG [A-Z_]+=\"(?<currentDigest>[a-f0-9]+)\""
+      ]
     }
   ]
 }
