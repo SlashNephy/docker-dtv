@@ -7,5 +7,5 @@ publish = false
 
 [dependencies]
 reqwest = { version = "0.13.0", features = ["blocking"] }
-clap = { version = "4.0.0", features = ["derive", "env", "cargo"] }
+clap = { version = "4.5.53", features = ["derive", "env", "cargo"] }
 mirakurun-client-common = { path = "../common" }
