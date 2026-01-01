@@ -12,7 +12,7 @@ FROM ghcr.io/slashnephy/nvencc:20251231163544 AS nvencc
 FROM ghcr.io/slashnephy/qsvencc:20251231164915 AS qsvencc
 FROM ghcr.io/slashnephy/vceencc:20251231175402 AS vceencc
 
-FROM ghcr.io/slashnephy/ffmpeg-ubuntu:20251231163719
+FROM ghcr.io/slashnephy/ffmpeg-ubuntu:20260101155658
 WORKDIR /app
 ARG NODE_VERSION
 ARG DEPENDENCIES
