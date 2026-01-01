@@ -1,9 +1,7 @@
 # syntax=docker/dockerfile:1
 
-ARG DEPENDENCIES="curl gnupg"
 ARG NVENCC_RUNTIMES="libcuda1-340 libswresample3 libavcodec58 libavformat58 libavfilter7"
-ARG QSVENCC_RUNTIMES="intel-media-va-driver-non-free intel-opencl-icd intel-level-zero-gpu level-zero"
-ARG RUNTIMES="ca-certificates ${NVENCC_RUNTIMES} ${QSVENCC_RUNTIMES}"
+ARG RUNTIMES="ca-certificates ${NVENCC_RUNTIMES}"
 
 FROM ghcr.io/slashnephy/epgstation:20251231162821@sha256:2ffff01cf0b13490b9a0813cb1afb206e8bbf90fc0292fb4ace804c22b13b18c AS epgstation
 FROM ghcr.io/slashnephy/nvencc:20251231163544@sha256:197e9ed7200ff91ad4f0eeee976cede81ef19f9ac4327c05bf2ccf27b674e6df AS nvencc
@@ -13,7 +11,6 @@ FROM node:20.19.6-bookworm-slim@sha256:a270640213033657548b7ed57852709a0d2ee3b27
 
 FROM ghcr.io/slashnephy/ffmpeg-ubuntu:20260101155658@sha256:9faad15dffdb215a549d8c2c122ca4951ba796fd107cbc8b13081f1161aa48d1
 WORKDIR /app
-ARG DEPENDENCIES
 ARG RUNTIMES
 ARG USERNAME="app"
 ARG GROUPNAME="app"
@@ -28,16 +25,8 @@ RUN <<EOF
   useradd -l -u "${UID}" -g "${GID}" "${USERNAME}"
 
   apt-get update
-  apt-get install -y --no-install-recommends ${DEPENDENCIES}
-
-  # QSVEncC
-  curl -fsSL https://repositories.intel.com/graphics/intel-graphics.key | gpg --dearmor -o /usr/share/keyrings/intel-graphics.gpg
-  echo 'deb [arch=amd64,i386 signed-by=/usr/share/keyrings/intel-graphics.gpg] https://repositories.intel.com/graphics/ubuntu jammy arc' | tee  /etc/apt/sources.list.d/intel.gpu.jammy.list
-
-  apt-get update
   apt-get install -y --no-install-recommends ${RUNTIMES}
 
-  apt-get remove -y ${DEPENDENCIES}
   apt-get clean
   rm -rf /var/lib/apt/lists/*
 EOF
