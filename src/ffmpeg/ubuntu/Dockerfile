@@ -37,19 +37,19 @@ ARG DEPENDENCIES="${ADDITIONAL_DEPENDENCIES} ${X264_DEPENDENCIES} ${X265_DEPENDE
 FROM --platform=$BUILDPLATFORM alpine/git:2.52.0@sha256:d86f367afb53d022acc4377741e7334bc20add161bb10234272b91b459b4b7d8 AS download-nv-codec-headers
 ARG NV_CODEC_HEADERS_VERSION
 
-RUN git clone https://github.com/FFmpeg/nv-codec-headers -b "${NV_CODEC_HEADERS_VERSION}" --recursive
+RUN git clone https://github.com/FFmpeg/nv-codec-headers -b "${NV_CODEC_HEADERS_VERSION}" --recursive /app
 
 # download AMF
 FROM --platform=$BUILDPLATFORM alpine/git:2.52.0@sha256:d86f367afb53d022acc4377741e7334bc20add161bb10234272b91b459b4b7d8 AS download-amf
 ARG AMF_VERSION
 
-RUN git clone https://github.com/GPUOpen-LibrariesAndSDKs/AMF -b "${AMF_VERSION}" --recursive
+RUN git clone https://github.com/GPUOpen-LibrariesAndSDKs/AMF -b "${AMF_VERSION}" --recursive /app
 
 # download ffmpeg
 FROM --platform=$BUILDPLATFORM alpine/git:2.52.0@sha256:d86f367afb53d022acc4377741e7334bc20add161bb10234272b91b459b4b7d8 AS download-ffmpeg
 ARG FFMPEG_VERSION
 
-RUN git clone https://github.com/FFmpeg/FFmpeg -b "${FFMPEG_VERSION}" --recursive
+RUN git clone https://github.com/FFmpeg/FFmpeg -b "${FFMPEG_VERSION}" --recursive /app
 
 FROM --platform=$TARGETPLATFORM nvidia/cuda:12.9.1-devel-ubuntu22.04@sha256:bd4e2680a261c212f1e2fea241606f71497dc67a417f73175d794ec8212b5ba8 AS build
 ARG CPUS
@@ -64,15 +64,15 @@ RUN <<EOF
 EOF
 
 # copy nv-codec-headers
-COPY --from=download-nv-codec-headers /nv-codec-headers/ /tmp/nv-codec-headers/
+COPY --from=download-nv-codec-headers /app/ /tmp/nv-codec-headers/
 WORKDIR /tmp/nv-codec-headers
 RUN make install && rm -rf /tmp/nv-codec-headers
 
 # copy AMF
-COPY --from=download-amf /AMF/amf/public/include/ /usr/local/include/AMF/
+COPY --from=download-amf /app/amf/public/include/ /usr/local/include/AMF/
 
 # copy ffmpeg
-COPY --from=download-ffmpeg /FFmpeg/ /tmp/ffmpeg/
+COPY --from=download-ffmpeg /app/ /tmp/ffmpeg/
 WORKDIR /tmp/ffmpeg
 RUN <<EOF
   set -eux

@@ -25,7 +25,7 @@ ARG DEPENDENCIES="${ADDITIONAL_DEPENDENCIES} ${X264_DEPENDENCIES} ${X265_DEPENDE
 FROM --platform=$BUILDPLATFORM alpine/git:2.52.0@sha256:d86f367afb53d022acc4377741e7334bc20add161bb10234272b91b459b4b7d8 AS download
 ARG FFMPEG_VERSION
 
-RUN git clone https://github.com/FFmpeg/FFmpeg -b "${FFMPEG_VERSION}" --recursive
+RUN git clone https://github.com/FFmpeg/FFmpeg -b "${FFMPEG_VERSION}" --recursive /app
 
 FROM --platform=$TARGETPLATFORM debian:trixie-20251229-slim@sha256:4bcb9db66237237d03b55b969271728dd3d955eaaa254b9db8a3db94550b1885
 ARG CPUS
@@ -45,7 +45,7 @@ RUN <<EOF
     /tmp/ffmpeg
 EOF
 
-COPY --from=download /FFmpeg/ /tmp/ffmpeg/
+COPY --from=download /app/ /tmp/ffmpeg/
 
 WORKDIR /tmp/ffmpeg
 RUN <<EOF

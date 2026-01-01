@@ -23,7 +23,7 @@ ARG DEPENDENCIES="${ADDITIONAL_DEPENDENCIES} ${X264_DEPENDENCIES} ${X265_DEPENDE
 FROM --platform=$BUILDPLATFORM alpine/git:2.52.0@sha256:d86f367afb53d022acc4377741e7334bc20add161bb10234272b91b459b4b7d8 AS download
 ARG FFMPEG_VERSION
 
-RUN git clone https://github.com/FFmpeg/FFmpeg -b "${FFMPEG_VERSION}" --recursive
+RUN git clone https://github.com/FFmpeg/FFmpeg -b "${FFMPEG_VERSION}" --recursive /app
 
 FROM --platform=$TARGETPLATFORM alpine:3.23.2@sha256:865b95f46d98cf867a156fe4a135ad3fe50d2056aa3f25ed31662dff6da4eb62
 ARG CPUS
@@ -38,7 +38,7 @@ RUN <<EOF
   apk add --no-cache ${RUNTIMES}
 EOF
 
-COPY --from=download /FFmpeg/ /tmp/ffmpeg/
+COPY --from=download /app/ /tmp/ffmpeg/
 
 WORKDIR /tmp/ffmpeg
 RUN <<EOF
