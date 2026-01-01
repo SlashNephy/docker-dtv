@@ -7,12 +7,12 @@ ARG NVENCC_RUNTIMES="libcuda1-340 libswresample3 libavcodec58 libavformat58 liba
 ARG QSVENCC_RUNTIMES="intel-media-va-driver-non-free intel-opencl-icd intel-level-zero-gpu level-zero"
 ARG RUNTIMES="nodejs ca-certificates ${NVENCC_RUNTIMES} ${QSVENCC_RUNTIMES}"
 
-FROM ghcr.io/slashnephy/epgstation:20251231162821 AS epgstation
-FROM ghcr.io/slashnephy/nvencc:20251231163544 AS nvencc
-FROM ghcr.io/slashnephy/qsvencc:20251231164915 AS qsvencc
-FROM ghcr.io/slashnephy/vceencc:20251231175402 AS vceencc
+FROM ghcr.io/slashnephy/epgstation:20251231162821@sha256:2ffff01cf0b13490b9a0813cb1afb206e8bbf90fc0292fb4ace804c22b13b18c AS epgstation
+FROM ghcr.io/slashnephy/nvencc:20251231163544@sha256:197e9ed7200ff91ad4f0eeee976cede81ef19f9ac4327c05bf2ccf27b674e6df AS nvencc
+FROM ghcr.io/slashnephy/qsvencc:20251231164915@sha256:0a93400effef7d73d4e6f1a14e135b318d48b3cf29bb4b8902c63c9f862a334f AS qsvencc
+FROM ghcr.io/slashnephy/vceencc:20251231175402@sha256:eaccea9f77bdf250bf33c4f301916c8adcd48cdf833ac9c059cf3e389ad4db63 AS vceencc
 
-FROM ghcr.io/slashnephy/ffmpeg-ubuntu:20260101155658
+FROM ghcr.io/slashnephy/ffmpeg-ubuntu:20260101155658@sha256:9faad15dffdb215a549d8c2c122ca4951ba796fd107cbc8b13081f1161aa48d1
 WORKDIR /app
 ARG NODE_VERSION
 ARG DEPENDENCIES
