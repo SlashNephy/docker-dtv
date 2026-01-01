@@ -20,5 +20,5 @@ RUN <<EOF
     /var/lib/apt/lists/*
 EOF
 
-ENV LD_LIBRARY_PATH="/usr/local/cuda-12.2/compat:${LD_LIBRARY_PATH}"
+ENV LD_LIBRARY_PATH="/usr/local/cuda-13/compat:${LD_LIBRARY_PATH}"
 ENTRYPOINT [ "/usr/bin/nvencc" ]
