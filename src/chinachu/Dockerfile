@@ -48,7 +48,7 @@ RUN <<EOF
   chmod u+x /usr/local/bin/chinachu-operator /usr/local/bin/chinachu-wui
 EOF
 
-RUN apt-get purge -y --auto-remove ${DEPENDENCIES}
+RUN SUDO_FORCE_REMOVE=yes apt-get purge -y --auto-remove ${DEPENDENCIES}
 
 COPY ./entrypoint.sh /
 
