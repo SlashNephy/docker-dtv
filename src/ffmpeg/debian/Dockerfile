@@ -77,8 +77,6 @@ EOF
 FROM --platform=$TARGETPLATFORM debian:trixie-20251229-slim@sha256:4bcb9db66237237d03b55b969271728dd3d955eaaa254b9db8a3db94550b1885
 ARG RUNTIMES
 
-COPY --from=download /app/ /tmp/ffmpeg/
-
 SHELL ["/usr/bin/bash", "-euxc"]
 RUN <<EOF
   echo 'deb http://deb.debian.org/debian/ stable contrib non-free non-free-firmware' | tee /etc/apt/sources.list
