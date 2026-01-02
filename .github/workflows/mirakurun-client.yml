@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - "src/mirakurun-client/**"
+      - mise.toml
 
   workflow_dispatch:
 
