@@ -22,9 +22,9 @@ RUN <<EOF
   rm -rf /var/lib/apt/lists/*
 EOF
 
+WORKDIR /app
 COPY --from=download /app/ ./
 
-WORKDIR /app
 SHELL ["/usr/bin/bash", "-euxc"]
 RUN <<EOF
   chmod +x ./autogen.sh
