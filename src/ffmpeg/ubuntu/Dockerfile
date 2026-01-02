@@ -56,10 +56,12 @@ ARG CPUS
 ARG DEPENDENCIES
 
 SHELL ["/usr/bin/bash", "-euxc"]
-# hadolint ignore=DL3009
 RUN <<EOF
   apt-get update
   apt-get install -y --no-install-recommends ${DEPENDENCIES}
+
+  apt-get clean
+  rm -rf /var/lib/apt/lists/*
 EOF
 
 COPY --from=download-nv-codec-headers /app/ /tmp/nv-codec-headers/

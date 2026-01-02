@@ -23,10 +23,12 @@ RUN git apply --numstat --summary --check --apply --ignore-whitespace -v /tmp/*.
 FROM --platform=$BUILDPLATFORM debian:trixie-20251229-slim@sha256:4bcb9db66237237d03b55b969271728dd3d955eaaa254b9db8a3db94550b1885 AS jq
 
 SHELL ["/usr/bin/bash", "-euxc"]
-# hadolint ignore=DL3009
 RUN <<EOF
   apt-get update
   apt-get install -y --no-install-recommends jq
+
+  apt-get clean
+  rm -rf /var/lib/apt/lists/*
 EOF
 
 FROM --platform=$BUILDPLATFORM jq AS patch-version
@@ -61,10 +63,12 @@ WORKDIR /app
 ARG DEPENDENCIES
 
 SHELL ["/usr/bin/bash", "-euxc"]
-# hadolint ignore=DL3009
 RUN <<EOF
   apt-get update
   apt-get install -y --no-install-recommends ${DEPENDENCIES}
+
+  apt-get clean
+  rm -rf /var/lib/apt/lists/*
 EOF
 
 COPY --from=source /app/package*.json ./

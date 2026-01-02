@@ -32,11 +32,13 @@ ARG CPUS
 ARG DEPENDENCIES
 
 SHELL ["/usr/bin/bash", "-euxc"]
-# hadolint ignore=DL3009
 RUN <<EOF
   echo 'deb http://deb.debian.org/debian/ stable contrib non-free non-free-firmware' | tee /etc/apt/sources.list
   apt-get update
   apt-get install -y --no-install-recommends ${DEPENDENCIES}
+
+  apt-get clean
+  rm -rf /var/lib/apt/lists/*
 EOF
 
 COPY --from=download /app/ /tmp/ffmpeg/
