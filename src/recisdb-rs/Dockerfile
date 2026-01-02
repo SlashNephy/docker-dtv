@@ -21,10 +21,13 @@ COPY --from=download /app/ ./
 RUN cargo chef prepare --recipe-path recipe.json
 
 FROM --platform=$TARGETPLATFORM chef AS build
-ARG RUNTIMES
 ARG DEPENDENCIES
 
-RUN apt-get update && apt-get install -y --no-install-recommends ${RUNTIMES} ${DEPENDENCIES}
+SHELL ["/usr/bin/bash", "-euxc"]
+RUN <<EOF
+  apt-get update
+  apt-get install -y --no-install-recommends ${DEPENDENCIES}
+EOF
 
 COPY --from=plan /app/recipe.json ./
 RUN cargo chef cook --release --recipe-path recipe.json

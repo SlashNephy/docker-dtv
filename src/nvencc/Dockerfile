@@ -16,7 +16,7 @@ RUN <<EOF
   apt-get clean
   rm -rf \
     /tmp/* \
-    /var/lib/apt/lists/*
+    /var/lib/apt/lists
 EOF
 
 ENV LD_LIBRARY_PATH="/usr/local/cuda-13/compat:${LD_LIBRARY_PATH}"

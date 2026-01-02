@@ -22,8 +22,11 @@ RUN git apply --numstat --summary --check --apply --ignore-whitespace -v /tmp/*.
 
 FROM --platform=$BUILDPLATFORM debian:trixie-20251229-slim@sha256:4bcb9db66237237d03b55b969271728dd3d955eaaa254b9db8a3db94550b1885 AS jq
 
-# hadolint ignore=DL3009
-RUN apt-get update && apt-get install -y --no-install-recommends jq
+SHELL ["/usr/bin/bash", "-euxc"]
+RUN <<EOF
+  apt-get update
+  apt-get install -y --no-install-recommends jq
+EOF
 
 FROM --platform=$BUILDPLATFORM jq AS patch-version
 WORKDIR /app
@@ -56,7 +59,11 @@ FROM --platform=$TARGETPLATFORM node:24.12.0-bookworm-slim@sha256:b83af04d005d8e
 WORKDIR /app
 ARG DEPENDENCIES
 
-RUN apt-get update && apt-get install -y --no-install-recommends ${DEPENDENCIES}
+SHELL ["/usr/bin/bash", "-euxc"]
+RUN <<EOF
+  apt-get update
+  apt-get install -y --no-install-recommends ${DEPENDENCIES}
+EOF
 
 COPY --from=source /app/package*.json ./
 RUN npm install --no-save

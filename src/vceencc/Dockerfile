@@ -14,34 +14,29 @@ ARG VCEENCC_VERSION
 ARG AMDGPU_VERSION
 ARG AMDGPU_INSTALL_VERSION
 ARG DEPENDENCIES
-ENV DEBIAN_FRONTEND="noninteractive"
-
-SHELL ["/usr/bin/bash", "-euxc"]
-RUN <<EOF
-  apt-get update
-  apt-get install -y --no-install-recommends ${DEPENDENCIES}
-EOF
 
 ADD https://github.com/rigaya/VCEEnc/releases/download/${VCEENCC_VERSION}/vceencc_${VCEENCC_VERSION}_Ubuntu22.04_amd64.deb /tmp/package.deb
 # TODO: Ubuntu 24.04 (noble) 用のドライバに更新する
 ADD https://repo.radeon.com/amdgpu-install/${AMDGPU_VERSION}/ubuntu/jammy/amdgpu-install_${AMDGPU_INSTALL_VERSION}_all.deb /tmp/amdgpu-install.deb
 
-WORKDIR /tmp
 SHELL ["/usr/bin/bash", "-euxc"]
 RUN <<EOF
+  export DEBIAN_FRONTEND="noninteractive"
   export SUDO_FORCE_REMOVE="yes"
+
+  apt-get update
+  apt-get install -y --no-install-recommends ${DEPENDENCIES}
 
   apt-get install -y --no-install-recommends /tmp/amdgpu-install.deb
   amdgpu-install -y --accept-eula --usecase=graphics,amf,opencl --opencl=rocr,legacy --no-32
 
-  apt-get update
   apt-get install -y --no-install-recommends /tmp/package.deb
 
   apt-get purge -y --auto-remove ${DEPENDENCIES}
   apt-get clean
   rm -rf \
     /tmp/* \
-    /var/lib/apt/lists/*
+    /var/lib/apt/lists
 EOF
 
 WORKDIR /

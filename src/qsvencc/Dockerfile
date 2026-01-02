@@ -16,7 +16,7 @@ RUN <<EOF
   apt-get clean
   rm -rf \
     /tmp/* \
-    /var/lib/apt/lists/*
+    /var/lib/apt/lists
 EOF
 
 ENTRYPOINT [ "/usr/bin/qsvencc" ]

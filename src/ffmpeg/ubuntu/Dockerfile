@@ -53,13 +53,12 @@ RUN git clone https://github.com/FFmpeg/FFmpeg -b "${FFMPEG_VERSION}" --recursiv
 
 FROM --platform=$TARGETPLATFORM nvidia/cuda:13.1.0-devel-ubuntu24.04@sha256:7f32ae6e575abb29f2dacf6c75fe94a262bb48dcc5196ac833ced59d9fde8107 AS build
 ARG CPUS
-ARG RUNTIMES
 ARG DEPENDENCIES
 
 SHELL ["/usr/bin/bash", "-euxc"]
 RUN <<EOF
   apt-get update
-  apt-get install -y --no-install-recommends ${RUNTIMES} ${DEPENDENCIES}
+  apt-get install -y --no-install-recommends ${DEPENDENCIES}
 EOF
 
 # copy nv-codec-headers
@@ -127,7 +126,7 @@ RUN <<EOF
   apt-get install -y --no-install-recommends ${RUNTIMES}
 
   apt-get clean
-  rm -rf /var/lib/apt/lists/*
+  rm -rf /var/lib/apt/lists
 EOF
 
 COPY --from=build /usr/local/bin/ffmpeg /usr/local/bin/ffmpeg

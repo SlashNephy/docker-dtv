@@ -14,7 +14,11 @@ FROM --platform=$TARGETPLATFORM debian:trixie-20251229-slim@sha256:4bcb9db662372
 WORKDIR /app/src
 ARG DEPENDENCIES
 
-RUN apt-get update && apt-get install -y --no-install-recommends ${DEPENDENCIES}
+SHELL ["/usr/bin/bash", "-euxc"]
+RUN <<EOF
+    apt-get update
+    apt-get install -y --no-install-recommends ${DEPENDENCIES}
+EOF
 
 COPY --from=download /app/ /app/
 RUN make
