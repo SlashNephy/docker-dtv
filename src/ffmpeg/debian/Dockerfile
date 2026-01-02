@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-# renovate: datasource=github-tags depName=FFmpeg/FFmpeg
+# renovate: datasource=github-tags depName=FFmpeg/FFmpeg versioning=regex:^n(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)$
 ARG FFMPEG_VERSION="n6.1.4"
 
 ARG CPUS=4
@@ -27,30 +27,25 @@ ARG FFMPEG_VERSION
 
 RUN git clone https://github.com/FFmpeg/FFmpeg -b "${FFMPEG_VERSION}" --recursive /app
 
-FROM --platform=$TARGETPLATFORM debian:trixie-20251229-slim@sha256:4bcb9db66237237d03b55b969271728dd3d955eaaa254b9db8a3db94550b1885
+FROM --platform=$TARGETPLATFORM debian:trixie-20251229-slim@sha256:4bcb9db66237237d03b55b969271728dd3d955eaaa254b9db8a3db94550b1885 AS build
 ARG CPUS
-ARG RUNTIMES
 ARG DEPENDENCIES
 
+SHELL ["/usr/bin/bash", "-euxc"]
 RUN <<EOF
-  set -eux
-
   echo 'deb http://deb.debian.org/debian/ stable contrib non-free non-free-firmware' | tee /etc/apt/sources.list
   apt-get update
-  apt-get install -y --no-install-recommends ${RUNTIMES} ${DEPENDENCIES}
+  apt-get install -y --no-install-recommends ${DEPENDENCIES}
 
   apt-get clean
-  rm -rf \
-    /var/lib/apt/lists/* \
-    /tmp/ffmpeg
+  rm -rf /var/lib/apt/lists/*
 EOF
 
 COPY --from=download /app/ /tmp/ffmpeg/
 
 WORKDIR /tmp/ffmpeg
+SHELL ["/usr/bin/bash", "-euxc"]
 RUN <<EOF
-  set -eux
-
   ./configure \
     --extra-libs="-lpthread -lm -lz" \
     --enable-small \
@@ -79,10 +74,23 @@ RUN <<EOF
     --enable-vaapi
   make -j${CPUS}
   make install
-
-  apt-get remove -y ${DEPENDENCIES}
-  apt-get autoremove -y
 EOF
+
+FROM --platform=$TARGETPLATFORM debian:trixie-20251229-slim@sha256:4bcb9db66237237d03b55b969271728dd3d955eaaa254b9db8a3db94550b1885
+ARG RUNTIMES
+
+SHELL ["/usr/bin/bash", "-euxc"]
+RUN <<EOF
+  echo 'deb http://deb.debian.org/debian/ stable contrib non-free non-free-firmware' | tee /etc/apt/sources.list
+  apt-get update
+  apt-get install -y --no-install-recommends ${RUNTIMES}
+
+  apt-get clean
+  rm -rf /var/lib/apt/lists/*
+EOF
+
+COPY --from=build /usr/local/bin/ffmpeg /usr/local/bin/ffmpeg
+COPY --from=build /usr/local/bin/ffprobe /usr/local/bin/ffprobe
 
 WORKDIR /
 ENTRYPOINT [ "/usr/local/bin/ffmpeg" ]

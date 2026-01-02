@@ -22,12 +22,19 @@ FROM --platform=$TARGETPLATFORM debian:trixie-20251229-slim@sha256:4bcb9db662372
 WORKDIR /app
 ARG DEPENDENCIES
 
-RUN apt-get update && apt-get install -y --no-install-recommends ${DEPENDENCIES}
+SHELL ["/usr/bin/bash", "-euxc"]
+RUN <<EOF
+  apt-get update
+  apt-get install -y --no-install-recommends ${DEPENDENCIES}
+
+  apt-get clean
+  rm -rf /var/lib/apt/lists/*
+EOF
 
 COPY --from=patch-source /app/ ./
-RUN <<EOF
-  set -eux
 
+SHELL ["/usr/bin/bash", "-euxc"]
+RUN <<EOF
   cmake -DCMAKE_VERBOSE_MAKEFILE=TRUE .
   make
   make install

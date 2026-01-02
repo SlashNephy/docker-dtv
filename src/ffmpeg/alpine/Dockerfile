@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-# renovate: datasource=github-tags depName=FFmpeg/FFmpeg
+# renovate: datasource=github-tags depName=FFmpeg/FFmpeg versioning=regex:^n(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)$
 ARG FFMPEG_VERSION="n6.1.4"
 
 ARG CPUS=4
@@ -30,9 +30,8 @@ ARG CPUS
 ARG RUNTIMES
 ARG DEPENDENCIES
 
+SHELL ["/bin/ash", "-euxc"]
 RUN <<EOF
-  set -eux
-
   echo https://dl-cdn.alpinelinux.org/alpine/edge/community >> /etc/apk/repositories
   apk add --no-cache --virtual .build-dependencies ${DEPENDENCIES}
   apk add --no-cache ${RUNTIMES}
@@ -41,9 +40,8 @@ EOF
 COPY --from=download /app/ /tmp/ffmpeg/
 
 WORKDIR /tmp/ffmpeg
+SHELL ["/bin/ash", "-euxc"]
 RUN <<EOF
-  set -eux
-
   ./configure \
     --extra-libs="-lpthread -lm -lz" \
     --enable-small \

@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-# renovate: datasource=github-tags depName=xtne6f/tsreadex
+# renovate: datasource=github-tags depName=xtne6f/tsreadex versioning=regex:^master-(?<patch>\d+)$
 ARG TSREADEX_VERSION="master-230809"
 
 ARG DEPENDENCIES="build-essential cmake"
@@ -14,7 +14,14 @@ FROM --platform=$TARGETPLATFORM debian:trixie-20251229-slim@sha256:4bcb9db662372
 WORKDIR /app
 ARG DEPENDENCIES
 
-RUN apt-get update && apt-get install -y --no-install-recommends ${DEPENDENCIES}
+SHELL ["/usr/bin/bash", "-euxc"]
+RUN <<EOF
+  apt-get update
+  apt-get install -y --no-install-recommends ${DEPENDENCIES}
+
+  apt-get clean
+  rm -rf /var/lib/apt/lists/*
+EOF
 
 COPY --from=download /app/ ./
 RUN cmake . && make

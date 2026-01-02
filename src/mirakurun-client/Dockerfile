@@ -15,7 +15,14 @@ RUN cargo chef prepare --recipe-path recipe.json
 FROM --platform=$TARGETPLATFORM chef AS build
 ARG DEPENDENCIES
 
-RUN apt-get update && apt-get install -y --no-install-recommends ${DEPENDENCIES}
+SHELL ["/usr/bin/bash", "-euxc"]
+RUN <<EOF
+  apt-get update
+  apt-get install -y --no-install-recommends ${DEPENDENCIES}
+
+  apt-get clean
+  rm -rf /var/lib/apt/lists/*
+EOF
 
 COPY --from=plan /app/recipe.json ./
 RUN cargo chef cook --release --recipe-path recipe.json

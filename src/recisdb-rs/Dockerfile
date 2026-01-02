@@ -21,10 +21,16 @@ COPY --from=download /app/ ./
 RUN cargo chef prepare --recipe-path recipe.json
 
 FROM --platform=$TARGETPLATFORM chef AS build
-ARG RUNTIMES
 ARG DEPENDENCIES
 
-RUN apt-get update && apt-get install -y --no-install-recommends ${RUNTIMES} ${DEPENDENCIES}
+SHELL ["/usr/bin/bash", "-euxc"]
+RUN <<EOF
+  apt-get update
+  apt-get install -y --no-install-recommends ${DEPENDENCIES}
+
+  apt-get clean
+  rm -rf /var/lib/apt/lists/*
+EOF
 
 COPY --from=plan /app/recipe.json ./
 RUN cargo chef cook --release --recipe-path recipe.json
@@ -35,10 +41,8 @@ RUN cargo build --release --workspace --verbose
 FROM --platform=$TARGETPLATFORM debian:trixie-20251229-slim@sha256:4bcb9db66237237d03b55b969271728dd3d955eaaa254b9db8a3db94550b1885
 ARG RUNTIMES
 
+SHELL ["/usr/bin/bash", "-euxc"]
 RUN <<EOF
-  set -eux
-
-  # install runtimes
   apt-get update
   apt-get install -y --no-install-recommends ${RUNTIMES}
 

@@ -1,8 +1,8 @@
 # syntax=docker/dockerfile:1
 
-# renovate: datasource=github-tags depName=FFmpeg/FFmpeg
+# renovate: datasource=github-tags depName=FFmpeg/FFmpeg versioning=regex:^n(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)$
 ARG FFMPEG_VERSION="n6.1.4"
-# renovate: datasource=github-tags depName=FFmpeg/nv-codec-headers
+# renovate: datasource=github-tags depName=FFmpeg/nv-codec-headers versioning=regex:^n(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)\.(?<build>\d+)$
 ARG NV_CODEC_HEADERS_VERSION="n12.1.14.0"
 # renovate: datasource=github-tags depName=GPUOpen-LibrariesAndSDKs/AMF
 ARG AMF_VERSION="v1.5.0"
@@ -53,30 +53,27 @@ RUN git clone https://github.com/FFmpeg/FFmpeg -b "${FFMPEG_VERSION}" --recursiv
 
 FROM --platform=$TARGETPLATFORM nvidia/cuda:13.1.0-devel-ubuntu24.04@sha256:7f32ae6e575abb29f2dacf6c75fe94a262bb48dcc5196ac833ced59d9fde8107 AS build
 ARG CPUS
-ARG RUNTIMES
 ARG DEPENDENCIES
 
+SHELL ["/usr/bin/bash", "-euxc"]
 RUN <<EOF
-  set -eux
-
   apt-get update
-  apt-get install -y --no-install-recommends ${RUNTIMES} ${DEPENDENCIES}
+  apt-get install -y --no-install-recommends ${DEPENDENCIES}
+
+  apt-get clean
+  rm -rf /var/lib/apt/lists/*
 EOF
 
-# copy nv-codec-headers
 COPY --from=download-nv-codec-headers /app/ /tmp/nv-codec-headers/
 WORKDIR /tmp/nv-codec-headers
-RUN make install && rm -rf /tmp/nv-codec-headers
+RUN make install
 
-# copy AMF
 COPY --from=download-amf /app/amf/public/include/ /usr/local/include/AMF/
 
-# copy ffmpeg
 COPY --from=download-ffmpeg /app/ /tmp/ffmpeg/
 WORKDIR /tmp/ffmpeg
+SHELL ["/usr/bin/bash", "-euxc"]
 RUN <<EOF
-  set -eux
-
   ./configure \
     --extra-libs="-lpthread -lm -lz" \
     --enable-small \
@@ -122,14 +119,11 @@ ENV LANG="C.UTF-8"
 ENV NVIDIA_VISIBLE_DEVICES="all"
 ENV NVIDIA_DRIVER_CAPABILITIES="video,compute,utility"
 
+SHELL ["/usr/bin/bash", "-euxc"]
 RUN <<EOF
-  set -eux
-
-  # install runtimes
   apt-get update
   apt-get install -y --no-install-recommends ${RUNTIMES}
 
-  # clean up
   apt-get clean
   rm -rf /var/lib/apt/lists/*
 EOF

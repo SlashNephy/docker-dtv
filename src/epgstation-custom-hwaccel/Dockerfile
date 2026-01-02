@@ -18,9 +18,8 @@ ARG UID=1000
 ARG GID=1000
 ENV TZ="Asia/Tokyo"
 
+SHELL ["/usr/bin/bash", "-euxc"]
 RUN <<EOF
-  set -eux
-
   groupadd -g "${GID}" "${GROUPNAME}"
   useradd -l -u "${UID}" -g "${GID}" "${USERNAME}"
 

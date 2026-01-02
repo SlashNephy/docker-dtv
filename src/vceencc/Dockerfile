@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-# renovate: datasource=github-releases depName=rigaya/VCEEnc
+# renovate: datasource=github-releases depName=rigaya/VCEEnc versioning=regex:^(?<major>\d+)\.(?<minor>\d+)$
 ARG VCEENCC_VERSION="9.02"
 
 # https://www.amd.com/en/support/download/linux-drivers.html
@@ -14,37 +14,29 @@ ARG VCEENCC_VERSION
 ARG AMDGPU_VERSION
 ARG AMDGPU_INSTALL_VERSION
 ARG DEPENDENCIES
-ENV DEBIAN_FRONTEND="noninteractive"
-
-# hadolint ignore=DL3009
-RUN <<EOF
-  set -eux
-
-  apt-get update
-  apt-get install -y --no-install-recommends ${DEPENDENCIES}
-EOF
 
 ADD https://github.com/rigaya/VCEEnc/releases/download/${VCEENCC_VERSION}/vceencc_${VCEENCC_VERSION}_Ubuntu22.04_amd64.deb /tmp/package.deb
 # TODO: Ubuntu 24.04 (noble) 用のドライバに更新する
 ADD https://repo.radeon.com/amdgpu-install/${AMDGPU_VERSION}/ubuntu/jammy/amdgpu-install_${AMDGPU_INSTALL_VERSION}_all.deb /tmp/amdgpu-install.deb
 
-WORKDIR /tmp
-ENV SUDO_FORCE_REMOVE=yes
+SHELL ["/usr/bin/bash", "-euxc"]
 RUN <<EOF
-  set -eux
+  export DEBIAN_FRONTEND="noninteractive"
+  export SUDO_FORCE_REMOVE="yes"
+
+  apt-get update
+  apt-get install -y --no-install-recommends ${DEPENDENCIES}
 
   apt-get install -y --no-install-recommends /tmp/amdgpu-install.deb
   amdgpu-install -y --accept-eula --usecase=graphics,amf,opencl --opencl=rocr,legacy --no-32
 
-  apt-get update
   apt-get install -y --no-install-recommends /tmp/package.deb
 
-  apt-get remove -y ${DEPENDENCIES}
-  apt-get autoremove -y
+  apt-get purge -y --auto-remove ${DEPENDENCIES}
   apt-get clean
   rm -rf \
     /tmp/* \
-    /var/lib/apt/lists/*
+    /var/lib/apt/lists
 EOF
 
 WORKDIR /

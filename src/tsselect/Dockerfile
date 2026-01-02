@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-# renovate: datasource=github-tags depName=xtne6f/tsselect_gcc
+# renovate: datasource=github-tags depName=xtne6f/tsselect_gcc versioning=regex:^r(?<major>\d+)$
 ARG TSSELECT_VERSION="r3"
 
 ARG DEPENDENCIES="build-essential"
@@ -14,7 +14,14 @@ FROM --platform=$TARGETPLATFORM debian:trixie-20251229-slim@sha256:4bcb9db662372
 WORKDIR /app/src
 ARG DEPENDENCIES
 
-RUN apt-get update && apt-get install -y --no-install-recommends ${DEPENDENCIES}
+SHELL ["/usr/bin/bash", "-euxc"]
+RUN <<EOF
+  apt-get update
+  apt-get install -y --no-install-recommends ${DEPENDENCIES}
+
+  apt-get clean
+  rm -rf /var/lib/apt/lists/*
+EOF
 
 COPY --from=download /app/ /app/
 RUN make
