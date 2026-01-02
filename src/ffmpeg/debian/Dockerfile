@@ -32,9 +32,8 @@ ARG CPUS
 ARG RUNTIMES
 ARG DEPENDENCIES
 
+SHELL ["/usr/bin/bash", "-euxc"]
 RUN <<EOF
-  set -eux
-
   echo 'deb http://deb.debian.org/debian/ stable contrib non-free non-free-firmware' | tee /etc/apt/sources.list
   apt-get update
   apt-get install -y --no-install-recommends ${RUNTIMES} ${DEPENDENCIES}
@@ -79,8 +78,10 @@ RUN <<EOF
   make -j${CPUS}
   make install
 
-  apt-get remove -y ${DEPENDENCIES}
-  apt-get autoremove -y
+  apt-get purge -y --auto-remove ${DEPENDENCIES}
+  apt-get clean
+  rm -rf \
+    /var/lib/apt/lists/* \
 EOF
 
 WORKDIR /

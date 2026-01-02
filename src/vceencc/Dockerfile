@@ -37,8 +37,7 @@ RUN <<EOF
   apt-get update
   apt-get install -y --no-install-recommends /tmp/package.deb
 
-  apt-get remove -y ${DEPENDENCIES}
-  apt-get autoremove -y
+  apt-get purge -y --auto-remove ${DEPENDENCIES}
   apt-get clean
   rm -rf \
     /tmp/* \
