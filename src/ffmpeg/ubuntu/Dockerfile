@@ -61,18 +61,14 @@ RUN <<EOF
   apt-get install -y --no-install-recommends ${DEPENDENCIES}
 EOF
 
-# copy nv-codec-headers
 COPY --from=download-nv-codec-headers /app/ /tmp/nv-codec-headers/
 WORKDIR /tmp/nv-codec-headers
-RUN make install && rm -rf /tmp/nv-codec-headers
+RUN make install
 
-# copy AMF
 COPY --from=download-amf /app/amf/public/include/ /usr/local/include/AMF/
 
-# copy ffmpeg
 COPY --from=download-ffmpeg /app/ /tmp/ffmpeg/
 WORKDIR /tmp/ffmpeg
-
 SHELL ["/usr/bin/bash", "-euxc"]
 RUN <<EOF
   ./configure \
