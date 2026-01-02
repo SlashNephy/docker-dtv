@@ -16,10 +16,8 @@ ARG AMDGPU_INSTALL_VERSION
 ARG DEPENDENCIES
 ENV DEBIAN_FRONTEND="noninteractive"
 
-# hadolint ignore=DL3009
+SHELL ["/usr/bin/bash", "-euxc"]
 RUN <<EOF
-  set -eux
-
   apt-get update
   apt-get install -y --no-install-recommends ${DEPENDENCIES}
 EOF
@@ -29,9 +27,9 @@ ADD https://github.com/rigaya/VCEEnc/releases/download/${VCEENCC_VERSION}/vceenc
 ADD https://repo.radeon.com/amdgpu-install/${AMDGPU_VERSION}/ubuntu/jammy/amdgpu-install_${AMDGPU_INSTALL_VERSION}_all.deb /tmp/amdgpu-install.deb
 
 WORKDIR /tmp
-ENV SUDO_FORCE_REMOVE=yes
+SHELL ["/usr/bin/bash", "-euxc"]
 RUN <<EOF
-  set -eux
+  export SUDO_FORCE_REMOVE="yes"
 
   apt-get install -y --no-install-recommends /tmp/amdgpu-install.deb
   amdgpu-install -y --accept-eula --usecase=graphics,amf,opencl --opencl=rocr,legacy --no-32

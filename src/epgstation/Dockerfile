@@ -32,7 +32,7 @@ ARG COMMIT_ID
 COPY --from=source /app/package.json ./package.json
 COPY --from=source /app/client/package.json ./client/package.json
 
-SHELL ["/bin/bash", "-euxc"]
+SHELL ["/usr/bin/bash", "-euxc"]
 RUN <<EOF
   cp /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
 

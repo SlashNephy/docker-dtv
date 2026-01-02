@@ -17,11 +17,11 @@ ARG RUNTIMES
 ARG DEPENDENCIES
 ENV DOCKER="YES"
 
+SHELL ["/usr/bin/bash", "-euxc"]
 RUN <<EOF
-  set -eux
-
   apt-get update
   apt-get install -y --no-install-recommends ${RUNTIMES} ${DEPENDENCIES}
+
   apt-get clean
   rm -rf /var/lib/apt/lists/*
 EOF
@@ -30,9 +30,8 @@ COPY --from=download /app/ ./
 RUN mkdir -p log bin && chown -R node .
 
 USER node
+SHELL ["/usr/bin/bash", "-euxc"]
 RUN <<EOF
-  set -eux
-
   echo 2 | ./chinachu installer
   echo 4 | ./chinachu installer
   echo 5 | ./chinachu installer
@@ -42,9 +41,8 @@ RUN <<EOF
 EOF
 
 USER root
+SHELL ["/usr/bin/bash", "-euxc"]
 RUN <<EOF
-  set -eux
-
   mv bin/chinachu-operator bin/chinachu-wui /usr/local/bin/
   rmdir bin
   chmod u+x /usr/local/bin/chinachu-operator /usr/local/bin/chinachu-wui

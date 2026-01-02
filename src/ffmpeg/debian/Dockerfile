@@ -48,9 +48,8 @@ EOF
 COPY --from=download /app/ /tmp/ffmpeg/
 
 WORKDIR /tmp/ffmpeg
+SHELL ["/usr/bin/bash", "-euxc"]
 RUN <<EOF
-  set -eux
-
   ./configure \
     --extra-libs="-lpthread -lm -lz" \
     --enable-small \

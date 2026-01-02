@@ -35,10 +35,8 @@ RUN cargo build --release --workspace --verbose
 FROM --platform=$TARGETPLATFORM debian:trixie-20251229-slim@sha256:4bcb9db66237237d03b55b969271728dd3d955eaaa254b9db8a3db94550b1885
 ARG RUNTIMES
 
+SHELL ["/usr/bin/bash", "-euxc"]
 RUN <<EOF
-  set -eux
-
-  # install runtimes
   apt-get update
   apt-get install -y --no-install-recommends ${RUNTIMES}
 

@@ -25,9 +25,9 @@ ARG DEPENDENCIES
 RUN apt-get update && apt-get install -y --no-install-recommends ${DEPENDENCIES}
 
 COPY --from=patch-source /app/ ./
-RUN <<EOF
-  set -eux
 
+SHELL ["/usr/bin/bash", "-euxc"]
+RUN <<EOF
   cmake -DCMAKE_VERBOSE_MAKEFILE=TRUE .
   make
   make install

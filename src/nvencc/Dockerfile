@@ -8,9 +8,8 @@ ARG NVENCC_VERSION
 
 ADD https://github.com/rigaya/NVEnc/releases/download/${NVENCC_VERSION}/nvencc_${NVENCC_VERSION}_Ubuntu24.04_amd64.deb /tmp/package.deb
 
+SHELL ["/usr/bin/bash", "-euxc"]
 RUN <<EOF
-  set -eux
-
   apt-get update
   apt-get install -y --no-install-recommends /tmp/package.deb
 

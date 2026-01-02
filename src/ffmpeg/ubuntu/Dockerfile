@@ -56,9 +56,8 @@ ARG CPUS
 ARG RUNTIMES
 ARG DEPENDENCIES
 
+SHELL ["/usr/bin/bash", "-euxc"]
 RUN <<EOF
-  set -eux
-
   apt-get update
   apt-get install -y --no-install-recommends ${RUNTIMES} ${DEPENDENCIES}
 EOF
@@ -74,9 +73,9 @@ COPY --from=download-amf /app/amf/public/include/ /usr/local/include/AMF/
 # copy ffmpeg
 COPY --from=download-ffmpeg /app/ /tmp/ffmpeg/
 WORKDIR /tmp/ffmpeg
-RUN <<EOF
-  set -eux
 
+SHELL ["/usr/bin/bash", "-euxc"]
+RUN <<EOF
   ./configure \
     --extra-libs="-lpthread -lm -lz" \
     --enable-small \
@@ -122,14 +121,11 @@ ENV LANG="C.UTF-8"
 ENV NVIDIA_VISIBLE_DEVICES="all"
 ENV NVIDIA_DRIVER_CAPABILITIES="video,compute,utility"
 
+SHELL ["/usr/bin/bash", "-euxc"]
 RUN <<EOF
-  set -eux
-
-  # install runtimes
   apt-get update
   apt-get install -y --no-install-recommends ${RUNTIMES}
 
-  # clean up
   apt-get clean
   rm -rf /var/lib/apt/lists/*
 EOF

@@ -15,6 +15,8 @@ ARG DEPENDENCIES
 
 WORKDIR /app
 COPY --from=download /app/ ./
+
+SHELL ["/usr/bin/bash", "-euxc"]
 RUN <<EOF
   apt-get update
   apt-get install -y --no-install-recommends ${DEPENDENCIES}
