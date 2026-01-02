@@ -5,11 +5,15 @@
   ],
   "packageRules": [
     {
+      "matchDatasources": [
+        "docker"
+      ],
       "matchPackageNames": [
         "ghcr.io/slashnephy/**"
       ],
       "minimumReleaseAge": null,
-      "versioning": "loose"
+      "versioning": "loose",
+      "automerge": true
     },
     {
       "matchFileNames": [
