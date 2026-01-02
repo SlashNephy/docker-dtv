@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # renovate: datasource=github-tags depName=xtne6f/tsreadex versioning=regex:^master-(?<patch>\d+)$
-ARG TSREADEX_VERSION="master-230809"
+ARG TSREADEX_VERSION="master-240517"
 
 ARG DEPENDENCIES="build-essential cmake"
 
