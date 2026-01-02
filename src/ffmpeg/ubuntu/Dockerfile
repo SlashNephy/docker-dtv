@@ -123,7 +123,7 @@ RUN <<EOF
   apt-get install -y --no-install-recommends ${RUNTIMES}
 
   apt-get clean
-  rm -rf /var/lib/apt/lists
+  rm -rf /var/lib/apt/lists/*
 EOF
 
 COPY --from=build /usr/local/bin/ffmpeg /usr/local/bin/ffmpeg
