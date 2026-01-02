@@ -24,6 +24,7 @@ FROM --platform=$TARGETPLATFORM chef AS build
 ARG DEPENDENCIES
 
 SHELL ["/usr/bin/bash", "-euxc"]
+# hadolint ignore=DL3009
 RUN <<EOF
   apt-get update
   apt-get install -y --no-install-recommends ${DEPENDENCIES}

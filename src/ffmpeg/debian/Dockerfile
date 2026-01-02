@@ -32,6 +32,7 @@ ARG CPUS
 ARG DEPENDENCIES
 
 SHELL ["/usr/bin/bash", "-euxc"]
+# hadolint ignore=DL3009
 RUN <<EOF
   echo 'deb http://deb.debian.org/debian/ stable contrib non-free non-free-firmware' | tee /etc/apt/sources.list
   apt-get update
