@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-# renovate: datasource=github-tags depName=xtne6f/tsselect_gcc
+# renovate: datasource=github-tags depName=xtne6f/tsselect_gcc versioning=regex:^r(?<major>\d+)$
 ARG TSSELECT_VERSION="r3"
 
 ARG DEPENDENCIES="build-essential"

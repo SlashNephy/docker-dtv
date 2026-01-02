@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-# renovate: datasource=github-releases depName=rigaya/NVEnc
+# renovate: datasource=github-releases depName=rigaya/NVEnc versioning=regex:^(?<major>\d+)\.(?<minor>\d+)$
 ARG NVENCC_VERSION="9.08"
 
 FROM nvidia/cuda:13.1.0-base-ubuntu24.04@sha256:ae7ce81a6af05a9a7ad3fe86115cb34db2d024e9c303959679e8889c45aeba73

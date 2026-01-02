@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-# renovate: datasource=github-tags depName=FFmpeg/FFmpeg
+# renovate: datasource=github-tags depName=FFmpeg/FFmpeg versioning=regex:^n(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)$
 ARG FFMPEG_VERSION="n6.1.4"
 
 ARG CPUS=4

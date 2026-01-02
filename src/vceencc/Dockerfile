@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-# renovate: datasource=github-releases depName=rigaya/VCEEnc
+# renovate: datasource=github-releases depName=rigaya/VCEEnc versioning=regex:^(?<major>\d+)\.(?<minor>\d+)$
 ARG VCEENCC_VERSION="9.02"
 
 # https://www.amd.com/en/support/download/linux-drivers.html
