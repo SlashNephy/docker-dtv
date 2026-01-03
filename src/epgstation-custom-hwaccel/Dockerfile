@@ -4,7 +4,7 @@ ARG NVENCC_RUNTIMES="libcuda1-340 libswresample3 libavcodec58 libavformat58 liba
 ARG RUNTIMES="ca-certificates ${NVENCC_RUNTIMES}"
 
 FROM ghcr.io/slashnephy/epgstation:20260102174840@sha256:7d585c2604477430bbf70ee11b020197c4ce3126b1d85c4d2d7cae5cce62d876 AS epgstation
-FROM ghcr.io/slashnephy/nvencc:20260102174845@sha256:bed4e881370e564937816f6529929aaaff047dc455fb027ea9a817365ca18ad4 AS nvencc
+FROM ghcr.io/slashnephy/nvencc:20260103153428@sha256:7f8469db22c76c84c315d08336ac00e815cff4a62fa9310e39fdb0b4db0e910a AS nvencc
 FROM ghcr.io/slashnephy/qsvencc:20260102174841@sha256:4e303d32f7f74ec810634590f72beba38bbefbf3cc08574bf96aeb1b3b1f6d6b AS qsvencc
 FROM ghcr.io/slashnephy/vceencc:20260102174840@sha256:2e9af7609a3a7e566e778f2a14be28221b2e2bafb6ceefaf82288f7d4eb7945b AS vceencc
 FROM node:24.12.0-bookworm-slim@sha256:b83af04d005d8e3716f542469a28ad2947ba382f6b4a76ddca0827a21446a540 AS node
