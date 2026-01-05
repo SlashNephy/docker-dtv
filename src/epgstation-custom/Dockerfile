@@ -4,7 +4,7 @@ FROM --platform=$TARGETPLATFORM ghcr.io/slashnephy/epgstation:20260104223134@sha
 
 FROM --platform=$TARGETPLATFORM node:24.12.0-bookworm-slim@sha256:b83af04d005d8e3716f542469a28ad2947ba382f6b4a76ddca0827a21446a540 AS node
 
-FROM --platform=$TARGETPLATFORM ghcr.io/slashnephy/ffmpeg-debian:20260102174836@sha256:08829c965ac3b44e5b420f33ba434f8654c01f386b053d9132ba3d7d26de632f
+FROM --platform=$TARGETPLATFORM ghcr.io/slashnephy/ffmpeg-debian:20260104223136@sha256:5f55254bb42265775ae97c38e6c816082e39179dded0f393a240610bf48e5164
 WORKDIR /app
 ARG USERNAME="app"
 ARG GROUPNAME="app"
