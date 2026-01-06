@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # renovate: datasource=github-tags depName=FFmpeg/FFmpeg versioning=regex:^n(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)$
-ARG FFMPEG_VERSION="n6.1.4"
+ARG FFMPEG_VERSION="n8.0.1"
 # renovate: datasource=github-tags depName=FFmpeg/nv-codec-headers versioning=regex:^n(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)\.(?<build>\d+)$
 ARG NV_CODEC_HEADERS_VERSION="n13.0.19.0"
 # renovate: datasource=github-tags depName=GPUOpen-LibrariesAndSDKs/AMF
