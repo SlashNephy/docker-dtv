@@ -5,7 +5,7 @@ ARG RECDVB_VERSION="v1.3.3"
 
 ARG DEPENDENCIES="build-essential autoconf automake"
 
-FROM --platform=$BUILDPLATFORM alpine/git:2.52.0@sha256:63d6641dc22922b38b8c19780d2308879ef29a8fb9766ddb90f7e4c9ddeefad3 AS download
+FROM --platform=$BUILDPLATFORM alpine/git:2.52.0@sha256:b4ba5e95ee803a9f98fe9f4306e0105f679d2386dedaf207ffe62dd20fdd3f1c AS download
 ARG RECDVB_VERSION
 
 RUN git clone https://github.com/k-pi/recdvb -b "${RECDVB_VERSION}" /app
