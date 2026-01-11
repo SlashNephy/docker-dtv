@@ -12,17 +12,10 @@ FROM node:24.12.0-bookworm-slim@sha256:b83af04d005d8e3716f542469a28ad2947ba382f6
 FROM ghcr.io/slashnephy/ffmpeg-ubuntu:20260106130120@sha256:30991dc065e181e2ad05ec6596b55d58e8c17f673821b7faf84df134a23083d1
 WORKDIR /app
 ARG RUNTIMES
-ARG USERNAME="app"
-ARG GROUPNAME="app"
-ARG UID=1000
-ARG GID=1000
 ENV TZ="Asia/Tokyo"
 
 SHELL ["/usr/bin/bash", "-euxc"]
 RUN <<EOF
-  groupadd -g "${GID}" "${GROUPNAME}"
-  useradd -l -u "${UID}" -g "${GID}" "${USERNAME}"
-
   apt-get update
   apt-get install -y --no-install-recommends ${RUNTIMES}
 
@@ -30,12 +23,12 @@ RUN <<EOF
   rm -rf /var/lib/apt/lists/*
 EOF
 
-COPY --from=epgstation --chown=$UID:$GID /app/ ./
-COPY --from=epgstation --chown=$UID:$GID /app/client/ ./client/
+COPY --from=epgstation --chown=ubuntu:ubuntu /app/ ./
+COPY --from=epgstation --chown=ubuntu:ubuntu /app/client/ ./client/
 COPY --from=nvencc /usr/bin/nvencc /usr/local/bin/
 COPY --from=qsvencc /usr/bin/qsvencc /usr/local/bin/
 COPY --from=vceencc /usr/bin/vceencc /usr/local/bin/
 COPY --from=node /usr/local/ /usr/local/
 
-USER $USERNAME
+USER ubuntu
 ENTRYPOINT [ "node", "dist/index.js" ]
