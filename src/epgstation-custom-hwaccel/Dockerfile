@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-ARG NVENCC_RUNTIMES="libcuda1-340 libswresample3 libavcodec58 libavformat58 libavfilter7"
+ARG NVENCC_RUNTIMES="libnvidia-compute libswresample4 libavcodec60 libavformat60 libavfilter9"
 ARG RUNTIMES="ca-certificates ${NVENCC_RUNTIMES}"
 
 FROM ghcr.io/slashnephy/epgstation:20260104223134@sha256:76fa0170aec7f29e72a1dea69998da05f88d4afaa76501f89d7e62097d556101 AS epgstation
