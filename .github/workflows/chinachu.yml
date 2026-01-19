@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   build:
-    uses: SlashNephy/actions/.github/workflows/build-docker-image.yml@3dbec9cde813d07525321de7ba55814cebf26c81 # v0.0.1
+    uses: SlashNephy/actions/.github/workflows/build-docker-image.yml@098bad3f838dcb7f95c293d2c4b91e530157644f # v0.0.2
     with:
       image-name: ghcr.io/slashnephy/chinachu
       context: src/chinachu
