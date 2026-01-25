@@ -6,7 +6,7 @@ ARG CHINACHU_REF="6b49bd77bb733c2843571cea1785719ca0819dae"
 ARG RUNTIMES="curl"
 ARG DEPENDENCIES="build-essential git sudo ca-certificates python3 wget xz-utils"
 
-FROM --platform=$BUILDPLATFORM alpine/git:2.52.0@sha256:d46d88ab234733c6b6a9771acd6d1384172fd0e2224e0232bdae32ec671aa099 AS download
+FROM --platform=$BUILDPLATFORM alpine/git:2.52.0@sha256:e6c6c4fd5fdb742d681fcdc6018cad699ca0a75909f7fe788e626b542a9c0438 AS download
 ARG CHINACHU_REF
 
 RUN git clone https://github.com/Chinachu/Chinachu --revision "${CHINACHU_REF}" --recursive /app
