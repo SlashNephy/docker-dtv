@@ -10,7 +10,7 @@ ARG RECISDB_VERSION
 
 RUN git clone https://github.com/kazuki0824/recisdb-rs -b "${RECISDB_VERSION}" --recursive /app
 
-FROM --platform=$TARGETPLATFORM rust:1.92.0-slim-bookworm@sha256:f1f73538ebe623fd3673a35aff3df358ae1084c64c55646516e5b17b321b6c9b AS chef
+FROM --platform=$TARGETPLATFORM rust:1.93.0-slim-bookworm@sha256:38d9e7c33a262bf1c58aecfbdf778205491d703a2196d4abf459e81cfe9f95e4 AS chef
 WORKDIR /app
 
 RUN cargo install cargo-chef
