@@ -7,7 +7,7 @@ FROM ghcr.io/slashnephy/epgstation:20260202025055@sha256:20cec57dee025711fbe0af3
 FROM ghcr.io/slashnephy/nvencc:20260126030508@sha256:51f6780d557a7888ce8c5e7c62137e05e35148af758344f3174653633121734c AS nvencc
 FROM ghcr.io/slashnephy/qsvencc:20260106225130@sha256:03908ff946fbec0895247508be74c5ef956b707e8cb4576d704df387696f420c AS qsvencc
 FROM ghcr.io/slashnephy/vceencc:20260122113829@sha256:6065111b7777fd26fa00d2091567db4eb42c48f2a4c85c8e3f3b5d807212568f AS vceencc
-FROM node:24.13.0-bookworm-slim@sha256:bf22df20270b654c4e9da59d8d4a3516cce6ba2852e159b27288d645b7a7eedc AS node
+FROM node:24.13.0-bookworm-slim@sha256:4660b1ca8b28d6d1906fd644abe34b2ed81d15434d26d845ef0aced307cf4b6f AS node
 
 FROM ghcr.io/slashnephy/ffmpeg-ubuntu:20260202025316@sha256:a2c65c9a486738b07c088c73fd3dbca10b17dfb1fa75b3605b8b4d7b99ad73ab
 WORKDIR /app
