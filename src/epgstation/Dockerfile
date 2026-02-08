@@ -7,12 +7,12 @@ ARG COMMIT_ID="unknown"
 
 ARG DEPENDENCIES="build-essential python3"
 
-FROM --platform=$BUILDPLATFORM alpine/git:2.52.0@sha256:49ba4b12ebea1d120da797a13e2cb480d74aae4c29c8d67f1646980b96060e92 AS source
+FROM --platform=$BUILDPLATFORM alpine/git:2.52.0@sha256:3b7890cb947afd3f71adab55aa6b549ad0f8ddc4b9ed28b027563d73d49d8e11 AS source
 ARG EPGSTATION_VERSION
 
 RUN git clone https://github.com/l3tnun/EPGStation -b "${EPGSTATION_VERSION}" /app
 
-FROM --platform=$BUILDPLATFORM alpine/git:2.52.0@sha256:49ba4b12ebea1d120da797a13e2cb480d74aae4c29c8d67f1646980b96060e92 AS patch-source
+FROM --platform=$BUILDPLATFORM alpine/git:2.52.0@sha256:3b7890cb947afd3f71adab55aa6b549ad0f8ddc4b9ed28b027563d73d49d8e11 AS patch-source
 WORKDIR /app
 
 COPY --from=source /app/ ./
