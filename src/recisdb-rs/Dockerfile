@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # renovate: datasource=github-tags depName=kazuki0824/recisdb-rs
-ARG RECISDB_VERSION="1.2.3"
+ARG RECISDB_VERSION="1.2.4"
 ARG RUNTIMES="libpcsclite1"
 ARG DEPENDENCIES="build-essential cmake clang pkg-config libpcsclite-dev"
 
