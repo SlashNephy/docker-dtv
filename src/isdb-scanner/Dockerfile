@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM ghcr.io/slashnephy/recisdb-rs:20260216105513@sha256:8e579e7f3ec6f8baa2c0403dfc017427c9cfbe86d1401dc9b77e9757c286819c
+FROM ghcr.io/slashnephy/recisdb-rs:20260223013928@sha256:beae8bb4e0082ce8dd1a623b5a69d1384ec3d12e2ee6c349710ec8e78d664149
 
 # renovate: datasource=github-tags depName=tsukumijima/ISDBScanner
 ARG ISDB_SCANNER_VERSION="v1.3.3"
