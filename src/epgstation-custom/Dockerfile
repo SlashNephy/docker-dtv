@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM --platform=$TARGETPLATFORM ghcr.io/slashnephy/epgstation:20260223013935@sha256:77156ff6c475f75e636f620a21a91a2b5cc790e53ecf0172a0b12bfe471b25e7 AS epgstation
+FROM --platform=$TARGETPLATFORM ghcr.io/slashnephy/epgstation:20260228180418@sha256:3e4bbfb8ecc4fee9bf01ea21a56975021d60dbae39e8f5152d009cc54f0364a8 AS epgstation
 
 FROM --platform=$TARGETPLATFORM node:24.14.0-bookworm-slim@sha256:e8e2e91b1378f83c5b2dd15f0247f34110e2fe895f6ca7719dbb780f929368eb AS node
 
