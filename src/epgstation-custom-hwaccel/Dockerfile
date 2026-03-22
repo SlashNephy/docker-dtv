@@ -6,7 +6,7 @@ ARG RUNTIMES="ca-certificates ${NVENCC_RUNTIMES}"
 FROM ghcr.io/slashnephy/epgstation:20260317180857@sha256:9f22bfb54b7eeeaa66e29b38c15bcffc8e0e852f8857ab859ce449ba01ef07cb AS epgstation
 FROM ghcr.io/slashnephy/nvencc:20260320143306@sha256:01a2933ad66e32f8f92bceea6f003099dc990f286e274e86690c8b02c5f3b628 AS nvencc
 FROM ghcr.io/slashnephy/qsvencc:20260106225130@sha256:03908ff946fbec0895247508be74c5ef956b707e8cb4576d704df387696f420c AS qsvencc
-FROM ghcr.io/slashnephy/vceencc:20260221092411@sha256:9653265f792000e2ffe3e11daf5fd2647eef9e4d011f8e7d969138d933ff1110 AS vceencc
+FROM ghcr.io/slashnephy/vceencc:20260322144632@sha256:e55cad8a4e6c8d54f7f04de9251fd36415ebee93b84aed5927b7dc8acc072d0e AS vceencc
 FROM node:24.14.0-bookworm-slim@sha256:d8e448a56fc63242f70026718378bd4b00f8c82e78d20eefb199224a4d8e33d8 AS node
 
 FROM ghcr.io/slashnephy/ffmpeg-ubuntu:20260320143557@sha256:67d4d98401068e29e2af2e8f0ebdb1277a8f277aa5fd56412ee6c6b79363bd07
