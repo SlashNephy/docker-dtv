@@ -51,7 +51,7 @@ ARG FFMPEG_VERSION
 
 RUN git clone https://github.com/FFmpeg/FFmpeg -b "${FFMPEG_VERSION}" --recursive /app
 
-FROM --platform=$TARGETPLATFORM nvidia/cuda:13.2.0-devel-ubuntu24.04@sha256:f9492f2eea77fbc3d0c14fa8738f35946b42da72917bf5959d284ca39b4f209a AS build
+FROM --platform=$TARGETPLATFORM nvidia/cuda:13.2.1-devel-ubuntu24.04@sha256:44a9504c6dfb50b1241464241b02a93871928f373de6f5a644cf5fe9f080aa63 AS build
 ARG CPUS
 ARG DEPENDENCIES
 
@@ -113,7 +113,7 @@ RUN <<EOF
   make install
 EOF
 
-FROM --platform=$TARGETPLATFORM nvidia/cuda:13.2.0-base-ubuntu24.04@sha256:36cccda4bebc3b0b1ebe1907ead8169cf144d45df890be871b36b304cf91145a
+FROM --platform=$TARGETPLATFORM nvidia/cuda:13.2.1-base-ubuntu24.04@sha256:7be56e69d8ae7c3648b8fca009fa35980ecd9c6eefaafbff3ee8c224e0043eb5
 ARG RUNTIMES
 ENV LANG="C.UTF-8"
 ENV NVIDIA_VISIBLE_DEVICES="all"
