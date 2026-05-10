@@ -9,7 +9,7 @@ FROM ghcr.io/slashnephy/qsvencc:20260424224934@sha256:3e4f09b5d9ad940993dc68a745
 FROM ghcr.io/slashnephy/vceencc:20260419224513@sha256:a79a4b5ffe032569b88228d54887bd2bd35cff2364e8b18430395537e6bf3465 AS vceencc
 FROM node:24.15.0-bookworm-slim@sha256:24dc26ef1e3c3690f27ebc4136c9c186c3133b25563ae4d7f0692e4d1fe5db0e AS node
 
-FROM ghcr.io/slashnephy/ffmpeg-ubuntu:20260507105216@sha256:7a290ccf9ac43566bf4cdd7614f318f1d11ab3af6f1f9c7303c40e731d83d988
+FROM ghcr.io/slashnephy/ffmpeg-ubuntu:20260510065224@sha256:c3e63a4c9ac18c62b1d818fceba230cfafccbcdd52fa1a08d2204fff39e337b8
 WORKDIR /app
 ARG RUNTIMES
 ENV TZ="Asia/Tokyo"
