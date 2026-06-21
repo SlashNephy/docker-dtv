@@ -5,12 +5,12 @@ ARG LIBARIB25_VERSION="v0.2.5-20220902"
 
 ARG DEPENDENCIES="build-essential ca-certificates cmake pkg-config libpcsclite-dev"
 
-FROM --platform=$BUILDPLATFORM alpine/git:2.52.0@sha256:d453f54c83320412aa89c391b076930bd8569bc1012285e8c68ce2d4435826a3 AS source
+FROM --platform=$BUILDPLATFORM alpine/git:2.52.0@sha256:4a0e72d49596a1f5d3701aeedafdadc5c0da4062be4657c7bdc4017387f591cc AS source
 ARG LIBARIB25_VERSION
 
 RUN git clone https://github.com/stz2012/libarib25 -b "${LIBARIB25_VERSION}" /app
 
-FROM --platform=$BUILDPLATFORM alpine/git:2.52.0@sha256:d453f54c83320412aa89c391b076930bd8569bc1012285e8c68ce2d4435826a3 AS patch-source
+FROM --platform=$BUILDPLATFORM alpine/git:2.52.0@sha256:4a0e72d49596a1f5d3701aeedafdadc5c0da4062be4657c7bdc4017387f591cc AS patch-source
 WORKDIR /app
 
 COPY --from=source /app/ ./
