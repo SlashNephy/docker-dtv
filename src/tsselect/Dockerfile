@@ -5,7 +5,7 @@ ARG TSSELECT_VERSION="r3"
 
 ARG DEPENDENCIES="build-essential"
 
-FROM --platform=$BUILDPLATFORM alpine/git:2.52.0@sha256:d453f54c83320412aa89c391b076930bd8569bc1012285e8c68ce2d4435826a3 AS download
+FROM --platform=$BUILDPLATFORM alpine/git:2.52.0@sha256:4a0e72d49596a1f5d3701aeedafdadc5c0da4062be4657c7bdc4017387f591cc AS download
 ARG TSSELECT_VERSION
 
 RUN git clone https://github.com/xtne6f/tsselect_gcc -b "${TSSELECT_VERSION}" /app
