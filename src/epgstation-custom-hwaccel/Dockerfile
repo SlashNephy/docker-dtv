@@ -3,7 +3,7 @@
 ARG NVENCC_RUNTIMES="libnvidia-compute libswresample4 libavcodec60 libavformat60 libavfilter9"
 ARG RUNTIMES="ca-certificates ${NVENCC_RUNTIMES}"
 
-FROM ghcr.io/slashnephy/epgstation:20260509224136@sha256:5bc56d24476dd0f3cb622ebb78a23e54e103f0ce5f295dd47c57519a61fdba14 AS epgstation
+FROM ghcr.io/slashnephy/epgstation:20260622155551@sha256:09694500f332f67bc190c168c14932237d1398d8e63de36534fe15b2cd3f0b67 AS epgstation
 FROM ghcr.io/slashnephy/nvencc:20260424054635@sha256:53bd31b824ba471dccf9015f4fc9a6eb02150a483dcd4e384cda5902287c72c0 AS nvencc
 FROM ghcr.io/slashnephy/qsvencc:20260424224934@sha256:3e4f09b5d9ad940993dc68a7453154c8885648533f2ea5c1fd95d672dce50436 AS qsvencc
 FROM ghcr.io/slashnephy/vceencc:20260419224513@sha256:a79a4b5ffe032569b88228d54887bd2bd35cff2364e8b18430395537e6bf3465 AS vceencc
