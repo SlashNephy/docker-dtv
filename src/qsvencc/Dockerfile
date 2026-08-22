@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # renovate: datasource=github-releases depName=rigaya/QSVEnc versioning=regex:^(?<major>\d+)\.(?<minor>\d+)$
-ARG QSVENCC_VERSION="8.04"
+ARG QSVENCC_VERSION="8.27"
 
 FROM ubuntu:noble-20260730.1@sha256:561618e2c15bf2397621dd04f96926663a3b5616c189cf7e38db7e82f5c538ea
 ARG QSVENCC_VERSION
