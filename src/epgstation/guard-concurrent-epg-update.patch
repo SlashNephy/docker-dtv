@@ -1,0 +1,91 @@
+diff --git a/src/model/epgUpdater/EPGUpdater.ts b/src/model/epgUpdater/EPGUpdater.ts
+index c1c9190..a8d8e06 100644
+--- a/src/model/epgUpdater/EPGUpdater.ts
++++ b/src/model/epgUpdater/EPGUpdater.ts
+@@ -17,6 +17,8 @@ class EPGUpdater implements IEPGUpdater {
+     private lastUpdatedTime: number = 0;
+     private lastDeletedTime: number = 0;
+     private retryCount: number = 0;
++    private isUpdatingAll: boolean = false;
++    private lastUpdateAllStartedTime: number = 0;
+ 
+     private static readonly EVENT_STREAM_REONNECTION_MAX = 12;
+ 
+@@ -43,8 +45,9 @@ class EPGUpdater implements IEPGUpdater {
+             this.log.system.info('event stream started');
+             this.retryCount = 0;
+             try {
+-                await this.updateManage.updateAll();
+-                this.notify();
++                if ((await this.updateAllExclusively()) === true) {
++                    this.notify();
++                }
+             } catch (err: any) {
+                 this.log.system.error('updateAll error');
+             }
+@@ -63,6 +66,47 @@ class EPGUpdater implements IEPGUpdater {
+         });
+     }
+ 
++    /**
++     * updateAll を多重起動させずに実行する
++     *
++     * updateAll は program テーブルの全件削除と全件挿入を単一トランザクションで行うため、
++     * 多重起動すると互いに行ロックを奪い合い、innodb_lock_wait_timeout まで待ってから
++     * ロールバックする。呼び出し元はいずれも完了を待たない周期実行なので、
++     * ガードが無いと一度崩れたきり永久に回復しない。
++     *
++     * STREAM_STARTED は event stream に接続するたびに発火する。
++     * 接続が即座に切れて再接続を繰り返す状況では発火が高頻度になるため、
++     * 最短でも epgUpdateIntervalTime の間隔を空ける。
++     *
++     * @return Promise<boolean> 実際に updateAll を実行したら true
++     */
++    private async updateAllExclusively(): Promise<boolean> {
++        const now = new Date().getTime();
++
++        if (this.isUpdatingAll === true) {
++            this.log.system.warn('updateAll is already running. skipped.');
++
++            return false;
++        }
++
++        const minInterval = this.config.epgUpdateIntervalTime * 60 * 1000;
++        if (this.lastUpdateAllStartedTime + minInterval > now) {
++            this.log.system.warn('updateAll is called too frequently. skipped.');
++
++            return false;
++        }
++
++        this.isUpdatingAll = true;
++        this.lastUpdateAllStartedTime = now;
++        try {
++            await this.updateManage.updateAll();
++        } finally {
++            this.isUpdatingAll = false;
++        }
++
++        return true;
++    }
++
+     /**
+      * EPG 更新処理開始
+      */
+@@ -92,11 +136,12 @@ class EPGUpdater implements IEPGUpdater {
+                         this.updateMirakcEvent(updateInterval, now);
+                     }
+                 } else if (this.isEventStreamAlive === false && this.lastUpdatedTime + updateInterval * 1.5 <= now) {
+-                    await this.updateManage.updateAll();
+-                    this.lastUpdatedTime = now;
+-                    // updateAll 後は全件数削除が行われるため削除時間も更新する
+-                    this.lastDeletedTime = now;
+-                    this.notify();
++                    if ((await this.updateAllExclusively()) === true) {
++                        this.lastUpdatedTime = now;
++                        // updateAll 後は全件数削除が行われるため削除時間も更新する
++                        this.lastDeletedTime = now;
++                        this.notify();
++                    }
+                 }
+             } catch (err: any) {
+                 this.log.system.error('EPG update error');
