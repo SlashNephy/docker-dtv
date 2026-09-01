@@ -49,7 +49,7 @@ RUN <<EOF
   mv -f /tmp/client.package.json ./client/package.json
 EOF
 
-FROM --platform=$BUILDPLATFORM node:24.19.0-bookworm-slim@sha256:3638d9a6fe4030bd716be989438248074489337ba3275657f93595428be4fc03 AS build-client
+FROM --platform=$BUILDPLATFORM node:24.19.0-bookworm-slim@sha256:a9f5f7c91a432850b2a8a7797adf5eadb6c733ceed61167806cee7ea7fbc29df AS build-client
 WORKDIR /app/client
 
 COPY --from=source /app/client/package*.json ./
@@ -58,7 +58,7 @@ RUN npm install
 COPY --from=patch-source /app/ ../
 RUN npm run build
 
-FROM --platform=$TARGETPLATFORM node:24.19.0-bookworm-slim@sha256:3638d9a6fe4030bd716be989438248074489337ba3275657f93595428be4fc03 AS build-server
+FROM --platform=$TARGETPLATFORM node:24.19.0-bookworm-slim@sha256:a9f5f7c91a432850b2a8a7797adf5eadb6c733ceed61167806cee7ea7fbc29df AS build-server
 WORKDIR /app
 ARG DEPENDENCIES
 
@@ -77,7 +77,7 @@ RUN npm install --no-save
 COPY --from=patch-source /app/ ./
 RUN rm -rf client && npm run build-server
 
-FROM --platform=$TARGETPLATFORM node:24.19.0-bookworm-slim@sha256:3638d9a6fe4030bd716be989438248074489337ba3275657f93595428be4fc03
+FROM --platform=$TARGETPLATFORM node:24.19.0-bookworm-slim@sha256:a9f5f7c91a432850b2a8a7797adf5eadb6c733ceed61167806cee7ea7fbc29df
 WORKDIR /app
 
 COPY --from=build-server /app/ ./
