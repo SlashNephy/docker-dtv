@@ -19,5 +19,3 @@ jobs:
     with:
       image-name: ghcr.io/slashnephy/epgstation-custom
       context: src/epgstation-custom
-    secrets:
-      registry-password: ${{ secrets.GHCR_TOKEN }}
