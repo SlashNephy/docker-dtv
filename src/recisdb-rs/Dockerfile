@@ -5,7 +5,7 @@ ARG RECISDB_VERSION="1.2.4"
 ARG RUNTIMES="libpcsclite1"
 ARG DEPENDENCIES="build-essential cmake clang pkg-config libpcsclite-dev"
 
-FROM --platform=$BUILDPLATFORM alpine/git:v2.54.0@sha256:6f3b5029566da8e90b24945933dcd806be866b64b1e706f51828bf84faccf21b AS download
+FROM --platform=$BUILDPLATFORM alpine/git:v2.54.0@sha256:ae0f6f4bce38d2b8c40becc0d6241a08d9f57186ea03029de2189a2b5e722d94 AS download
 ARG RECISDB_VERSION
 
 RUN git clone https://github.com/kazuki0824/recisdb-rs -b "${RECISDB_VERSION}" --recursive /app
