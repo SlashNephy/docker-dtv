@@ -3,7 +3,7 @@
 # renovate: datasource=github-releases depName=rigaya/NVEnc versioning=regex:^(?<major>\d+)\.(?<minor>\d+)$
 ARG NVENCC_VERSION="9.10"
 
-FROM nvidia/cuda:13.4.1-base-ubuntu24.04@sha256:3eb2d952d9cff2d7a4e42a1cedc19cfa610a7f72c3b8428811731dcea5a175fd
+FROM nvidia/cuda:13.4.2-base-ubuntu24.04@sha256:b395ba681833b0a9837674516abe258b2934d6ec5511f78745d71ea177da14a4
 ARG NVENCC_VERSION
 
 ADD https://github.com/rigaya/NVEnc/releases/download/${NVENCC_VERSION}/nvencc_${NVENCC_VERSION}_Ubuntu24.04_amd64.deb /tmp/package.deb
