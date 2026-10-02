@@ -1,0 +1,2 @@
+ALTER TABLE `rule`
+  ADD `BS4K` tinyint NOT NULL DEFAULT 0 AFTER `EXT9`;
