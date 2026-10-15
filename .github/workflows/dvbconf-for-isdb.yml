@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   build:
-    uses: SlashNephy/actions/.github/workflows/build-docker-image.yml@cf12e2d382df42d9fcfc4ee94f901661d8255d19 # v0.0.7
+    uses: SlashNephy/actions/.github/workflows/build-docker-image.yml@d5bbbb58e94f3b25497f996ea141b31d6db26857 # v1.0.1
     with:
       image-name: ghcr.io/slashnephy/dvbconf-for-isdb
       context: src/dvbconf-for-isdb
