@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   build:
-    uses: SlashNephy/actions/.github/workflows/build-docker-image.yml@cf12e2d382df42d9fcfc4ee94f901661d8255d19 # v0.0.7
+    uses: SlashNephy/actions/.github/workflows/build-docker-image.yml@4f8418a050cec08776dae7be3df42f5b13215933 # v1.0.2
     with:
       image-name: ghcr.io/slashnephy/qsvencc
       context: src/qsvencc

@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   build:
-    uses: SlashNephy/actions/.github/workflows/build-docker-image.yml@70aa7999543c0745815c8233fd18fc1759748f6c # v1.0.0
+    uses: SlashNephy/actions/.github/workflows/build-docker-image.yml@4f8418a050cec08776dae7be3df42f5b13215933 # v1.0.2
     with:
       image-name: ghcr.io/slashnephy/epgstation-custom-hwaccel
       context: src/epgstation-custom-hwaccel
